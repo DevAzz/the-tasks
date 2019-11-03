@@ -1,6 +1,7 @@
 package ru.devazz.service.impl;
 
 import lombok.AllArgsConstructor;
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 import ru.devazz.entity.RoleEntity;
 import ru.devazz.entity.UserEntity;
@@ -24,6 +25,8 @@ public class RoleService extends AbstractEntityService<RoleEntity>
 	/** Сервис работы с пользователями */
 	private IUserService userService;
 
+	private JmsTemplate broker;
+
 	@Override
 	protected AbstractRepository<RoleEntity> createRepository() {
 		return new RoleRepository();
@@ -32,6 +35,11 @@ public class RoleService extends AbstractEntityService<RoleEntity>
 	@Override
 	protected Class<? extends ObjectEvent> getTypeEntityEvent() {
 		return RoleEvent.class;
+	}
+
+	@Override
+	protected JmsTemplate getBroker() {
+		return broker;
 	}
 
 	@Override

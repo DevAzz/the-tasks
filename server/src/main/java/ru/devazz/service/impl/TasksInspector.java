@@ -1,12 +1,15 @@
 package ru.devazz.service.impl;
 
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import ru.devazz.entity.DefaultTaskEntity;
 import ru.devazz.entity.SubordinationElementEntity;
 import ru.devazz.entity.TaskEntity;
 import ru.devazz.entity.TaskHistoryEntity;
+import ru.devazz.event.TaskEvent;
 import ru.devazz.service.ISubordinationElementService;
 import ru.devazz.service.ITaskHistoryService;
 import ru.devazz.service.ITaskService;
@@ -27,7 +30,7 @@ public class TasksInspector {
 	/** Сервис задач */
 	private ITaskService taskService;
 
-	/** Сервис боевых постов */
+	/** Сервис элементов дерева подчиненности */
 	private ISubordinationElementService subelService;
 
 	/** Сервис работы с историческими записями */
@@ -42,12 +45,16 @@ public class TasksInspector {
 	/** Задачи по которым уже было выведено уведомление об истечении времени */
 	private List<Long> timeLeftOverTasks = new ArrayList<>();
 
+	private JmsTemplate broker;
+
 	public TasksInspector(ITaskService taskService,
 						  ISubordinationElementService subelService,
-						  ITaskHistoryService historyService) {
+						  ITaskHistoryService historyService,
+						  JmsTemplate broker) {
 		this.taskService = taskService;
 		this.subelService = subelService;
 		this.historyService = historyService;
+		this.broker = broker;
 	}
 
 	/**
@@ -147,8 +154,8 @@ public class TasksInspector {
 								&& !(TaskStatus.OVERDUE.equals(entity.getStatus()))
 								&& nonArchiveTask) {
 							timeLeftOverTasks.add(entity.getSuid());
-//							publisher.sendEvent(taskService
-//									.getEventByEntity(SystemEventType.TIME_LEFT_OVER, entity));
+							broker.convertAndSend(JmsQueueName.DEFAULT.getName(), taskService
+									.getEventByEntity(SystemEventType.OVERDUE, entity));
 							Thread.sleep(100L);
 						}
 
@@ -158,8 +165,8 @@ public class TasksInspector {
 							entity.setStatus(TaskStatus.OVERDUE);
 							taskService.update(entity, false);
 
-//							publisher.sendEvent(
-//									taskService.getEventByEntity(SystemEventType.OVERDUE, entity));
+							broker.convertAndSend(JmsQueueName.DEFAULT.getName(), taskService
+									.getEventByEntity(SystemEventType.OVERDUE, entity));
 
 							//	@formatter:off
 							TaskHistoryEntity historyEntity = TaskHistoryEntity.builder()

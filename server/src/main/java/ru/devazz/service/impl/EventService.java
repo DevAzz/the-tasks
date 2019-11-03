@@ -1,6 +1,7 @@
 package ru.devazz.service.impl;
 
 import lombok.AllArgsConstructor;
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 import ru.devazz.entity.EventEntity;
 import ru.devazz.event.EventOccurEvent;
@@ -19,6 +20,8 @@ import java.util.List;
 public class EventService extends AbstractEntityService<EventEntity>
 		implements IEventService {
 
+	private JmsTemplate broker;
+
 	@Override
 	protected EventRepository createRepository() {
 		return new EventRepository();
@@ -27,6 +30,11 @@ public class EventService extends AbstractEntityService<EventEntity>
 	@Override
 	protected Class<? extends ObjectEvent> getTypeEntityEvent() {
 		return EventOccurEvent.class;
+	}
+
+	@Override
+	protected JmsTemplate getBroker() {
+		return broker;
 	}
 
 

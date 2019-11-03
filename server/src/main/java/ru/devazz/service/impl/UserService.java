@@ -1,6 +1,8 @@
 package ru.devazz.service.impl;
 
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 import ru.devazz.entity.UserEntity;
 import ru.devazz.event.ObjectEvent;
@@ -9,6 +11,8 @@ import ru.devazz.repository.UserRepository;
 import ru.devazz.service.AbstractEntityService;
 import ru.devazz.service.ITaskService;
 import ru.devazz.service.IUserService;
+import ru.devazz.utils.JmsQueueName;
+import ru.devazz.utils.SystemEventType;
 import ru.devazz.utils.Utils;
 
 import javax.persistence.NoResultException;
@@ -21,6 +25,8 @@ import java.util.List;
 @AllArgsConstructor
 public class UserService extends AbstractEntityService<UserEntity>
 		implements IUserService {
+
+	private JmsTemplate broker;
 
 	@Override
 	public UserEntity checkUser(String aUsername, String aPassword) throws Exception {
@@ -39,15 +45,15 @@ public class UserService extends AbstractEntityService<UserEntity>
 				for (UserEntity entity : users) {
 					if ((!entity.equals(result)) && entity.getOnline()) {
 						throw new Exception(
-								"Пользователь на данном боевом посте уже авторизирован");
+								"Пользователь на данной должности уже авторизирован");
 					}
 				}
 
 				result.setOnline(true);
 				getRepository().update(result);
 
-				//TODO публикация сообщения
-//				publisher.sendEvent(getEventByEntity(SystemEventType.USER_ONLINE, result));
+				getBroker().convertAndSend(JmsQueueName.DEFAULT.getName(), getEventByEntity(
+						SystemEventType.USER_ONLINE, result));
 			}
 		} catch (Exception e) {
 			// В случае, если не было найдено пользователей
@@ -78,6 +84,11 @@ public class UserService extends AbstractEntityService<UserEntity>
 	@Override
 	protected Class<? extends ObjectEvent> getTypeEntityEvent() {
 		return UserEvent.class;
+	}
+
+	@Override
+	protected JmsTemplate getBroker() {
+		return broker;
 	}
 
 	@Override

@@ -1,6 +1,7 @@
 package ru.devazz.service.impl;
 
 import lombok.AllArgsConstructor;
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 import ru.devazz.entity.SubordinationElementEntity;
 import ru.devazz.entity.UserEntity;
@@ -25,6 +26,8 @@ public class SubordinationElementService
 
 	/** Сервис пользователей */
 	private IUserService userService;
+
+	private JmsTemplate broker;
 
 	@Override
 	public List<SubordinationElementEntity> getAll(Long aUserSuid) {
@@ -56,6 +59,11 @@ public class SubordinationElementService
 	@Override
 	protected Class<? extends ObjectEvent> getTypeEntityEvent() {
 		return SubElEvent.class;
+	}
+
+	@Override
+	protected JmsTemplate getBroker() {
+		return broker;
 	}
 
 	@Override

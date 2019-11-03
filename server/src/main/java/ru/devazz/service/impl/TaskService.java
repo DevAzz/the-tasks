@@ -4,6 +4,8 @@
 package ru.devazz.service.impl;
 
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 import ru.devazz.entity.*;
 import ru.devazz.event.ObjectEvent;
@@ -38,6 +40,8 @@ public class TaskService extends AbstractEntityService<TaskEntity>
 
 	/** Репозиторий типовых задач */
 	private DefaultTaskRepository defaultTaskRepository = new DefaultTaskRepository();
+
+	private JmsTemplate broker;
 
 	@Override
 	public TaskEntity add(TaskEntity aEntity, Boolean aNeedPublishEvent) {
@@ -161,6 +165,11 @@ public class TaskService extends AbstractEntityService<TaskEntity>
 	@Override
 	protected Class<? extends ObjectEvent> getTypeEntityEvent() {
 		return TaskEvent.class;
+	}
+
+	@Override
+	protected JmsTemplate getBroker() {
+		return broker;
 	}
 
 	/**

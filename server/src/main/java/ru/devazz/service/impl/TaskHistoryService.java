@@ -1,5 +1,7 @@
 package ru.devazz.service.impl;
 
+import lombok.AllArgsConstructor;
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 import ru.devazz.entity.TaskHistoryEntity;
 import ru.devazz.event.ObjectEvent;
@@ -18,8 +20,11 @@ import java.util.List;
  * Реализация интерфейса взаимодействия с историческими записями
  */
 @Service
+@AllArgsConstructor
 public class TaskHistoryService extends AbstractEntityService<TaskHistoryEntity>
 		implements ITaskHistoryService {
+
+	private JmsTemplate broker;
 
 	@Override
 	public TaskHistoryEntity add(TaskHistoryEntity aEntity, Boolean aNeedPublishEvent) {
@@ -44,6 +49,11 @@ public class TaskHistoryService extends AbstractEntityService<TaskHistoryEntity>
 	@Override
 	protected Class<? extends ObjectEvent> getTypeEntityEvent() {
 		return TaskHistoryEvent.class;
+	}
+
+	@Override
+	protected JmsTemplate getBroker() {
+		return broker;
 	}
 
 	@Override

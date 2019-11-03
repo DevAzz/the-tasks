@@ -1,13 +1,14 @@
 package ru.devazz.service;
 
+import org.springframework.jms.core.JmsTemplate;
 import ru.devazz.entity.IEntity;
 import ru.devazz.event.ObjectEvent;
 import ru.devazz.repository.AbstractRepository;
+import ru.devazz.utils.JmsQueueName;
 import ru.devazz.utils.SystemEventType;
 
 import java.util.List;
 
-//TODO Подключить Jms
 /**
  * Абстрактный сервис
  */
@@ -28,7 +29,8 @@ public abstract class AbstractEntityService<T extends IEntity> implements IEntit
 	public T add(T aEntity, Boolean aNeedPublishEvent) {
 		T createdEntity = repository.add(aEntity);
 		if (aNeedPublishEvent) {
-//			publisher.sendEvent(getEventByEntity(SystemEventType.CREATE, createdEntity));
+			getBroker().convertAndSend(JmsQueueName.DEFAULT.getName(),
+									   (getEventByEntity(SystemEventType.CREATE, createdEntity)));
 		}
 		return createdEntity;
 	}
@@ -38,7 +40,8 @@ public abstract class AbstractEntityService<T extends IEntity> implements IEntit
 		T deletedEntity = repository.get(aSuid);
 		repository.delete(aSuid);
 		if (aNeedPublishEvent) {
-//			publisher.sendEvent(getEventByEntity(SystemEventType.DELETE, deletedEntity));
+			getBroker().convertAndSend(JmsQueueName.DEFAULT.getName(),
+									   getEventByEntity(SystemEventType.DELETE, deletedEntity));
 		}
 	}
 
@@ -51,7 +54,8 @@ public abstract class AbstractEntityService<T extends IEntity> implements IEntit
 	public void update(T aEntity, Boolean aNeedPublishEvent) {
 		repository.update(aEntity);
 		if (aNeedPublishEvent) {
-//			publisher.sendEvent(getEventByEntity(SystemEventType.UPDATE, aEntity));
+			getBroker().convertAndSend(JmsQueueName.DEFAULT.getName(),
+									   getEventByEntity(SystemEventType.UPDATE, aEntity));
 		}
 	}
 
@@ -92,5 +96,7 @@ public abstract class AbstractEntityService<T extends IEntity> implements IEntit
 	 * @return тип события
 	 */
 	protected abstract Class<? extends ObjectEvent> getTypeEntityEvent();
+
+	protected abstract JmsTemplate getBroker();
 
 }
