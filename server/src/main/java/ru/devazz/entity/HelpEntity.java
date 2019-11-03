@@ -12,7 +12,7 @@ import java.io.Serializable;
 @Data
 @ToString
 @Entity
-@Table(name = "help")
+@Table(name = "help", schema = "tasksdb")
 public class HelpEntity implements Serializable, IEntity {
 
 	/** Идентификатор */

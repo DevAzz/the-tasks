@@ -1,6 +1,6 @@
 package ru.devazz.service;
 
-import ru.devazz.entity.ReportEntity;
+import ru.devazz.entity.Report;
 
 import java.util.Date;
 
@@ -19,6 +19,6 @@ public interface IReportService extends ICommonService {
 	 * @return сущность отчета
 	 * @throws Exception в случае ошибки
 	 */
-	ReportEntity createReportEntity(Long aPositionSuid, Date aStartDate, Date aEndDate) throws Exception;
+	Report createReportEntity(Long aPositionSuid, Date aStartDate, Date aEndDate) throws Exception;
 
 }

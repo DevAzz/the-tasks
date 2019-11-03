@@ -11,7 +11,7 @@ import java.util.Date;
  */
 @Data
 @Entity
-@Table(name = "events")
+@Table(name = "events", schema = "tasksdb")
 public class EventEntity implements Serializable, IEntity {
 
 	/** Идентификатор события */

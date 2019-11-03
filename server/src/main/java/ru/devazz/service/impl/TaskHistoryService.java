@@ -1,5 +1,6 @@
 package ru.devazz.service.impl;
 
+import org.springframework.stereotype.Service;
 import ru.devazz.entity.TaskHistoryEntity;
 import ru.devazz.event.ObjectEvent;
 import ru.devazz.event.TaskHistoryEvent;
@@ -16,7 +17,8 @@ import java.util.List;
 /**
  * Реализация интерфейса взаимодействия с историческими записями
  */
-public class TaskHistoryServiceBean extends AbstractEntityService<TaskHistoryEntity>
+@Service
+public class TaskHistoryService extends AbstractEntityService<TaskHistoryEntity>
 		implements ITaskHistoryService {
 
 	@Override

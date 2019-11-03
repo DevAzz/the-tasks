@@ -1,5 +1,7 @@
 package ru.devazz.service.impl;
 
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
 import ru.devazz.entity.RoleEntity;
 import ru.devazz.entity.UserEntity;
 import ru.devazz.event.ObjectEvent;
@@ -14,7 +16,9 @@ import ru.devazz.utils.UserRoles;
 /**
  * Реализация сервиса взаимодействия с ролями пользователей
  */
-public class RoleServiceBean extends AbstractEntityService<RoleEntity>
+@Service
+@AllArgsConstructor
+public class RoleService extends AbstractEntityService<RoleEntity>
 		implements IRoleService {
 
 	/** Сервис работы с пользователями */

@@ -1,6 +1,8 @@
 package ru.devazz.service.impl;
 
-import ru.devazz.entity.ReportEntity;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
+import ru.devazz.entity.Report;
 import ru.devazz.entity.SubordinationElementEntity;
 import ru.devazz.entity.TaskEntity;
 import ru.devazz.service.IReportService;
@@ -17,7 +19,9 @@ import java.util.*;
 /**
  * Реализация сервиса взаимодействия с отчетами
  */
-public class ReportServiceBean implements IReportService {
+@Service
+@AllArgsConstructor
+public class ReportService implements IReportService {
 
 	/** Сервис работы с должностями */
 	private ISubordinationElementService subElService;
@@ -29,9 +33,9 @@ public class ReportServiceBean implements IReportService {
 	private ITaskHistoryService taskHistoryService;
 
 	@Override
-	public ReportEntity createReportEntity(Long aPositionSuid, Date aStartDate, Date aEndDate)
+	public Report createReportEntity(Long aPositionSuid, Date aStartDate, Date aEndDate)
 			throws Exception {
-		ReportEntity report = null;
+		Report report = null;
 		SubordinationElementEntity subElEntity = subElService.get(aPositionSuid);
 		if (null != subElEntity) {
 			List<TaskEntity> tasksLists = taskService.getAllUserTasksExecutorWithFilter(
@@ -55,7 +59,7 @@ public class ReportServiceBean implements IReportService {
 			}
 
 			//@formatter:off
-			report = ReportEntity.builder()
+			report = Report.builder()
 					.suid((long) (Math.random() * 10000000L) + 1000000L)
 					.battlePostSuid(aPositionSuid)
 					.battlePostName(subElEntity.getName())

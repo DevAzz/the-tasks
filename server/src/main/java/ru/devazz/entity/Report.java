@@ -13,7 +13,7 @@ import java.util.Date;
  */
 @Data
 @Builder
-public class ReportEntity implements Serializable, IEntity {
+public class Report implements Serializable, IEntity {
 
 	/** Идентификатор сущности отчета */
 	private Long suid;

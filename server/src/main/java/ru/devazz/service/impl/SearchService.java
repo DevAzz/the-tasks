@@ -1,10 +1,13 @@
 package ru.devazz.service.impl;
 
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
 import ru.devazz.entity.*;
 import ru.devazz.service.*;
 import ru.devazz.utils.Utils;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -13,7 +16,9 @@ import java.util.Set;
 /**
  * Реалиазция сервиса поиска сущностей
  */
-public class SearchServiceBean implements ISearchService {
+@Service
+@AllArgsConstructor
+public class SearchService implements ISearchService {
 
 	/** Сервис пользователей */
 	private IUserService userService;
@@ -93,7 +98,7 @@ public class SearchServiceBean implements ISearchService {
 		for (TaskEntity entity : service.getAll()) {
 			String taskName = Utils.getInstance().fromBase64(entity.getName());
 			try {
-				String taskNameUTF8 = new String(taskName.getBytes(), "UTF-8");
+				String taskNameUTF8 = new String(taskName.getBytes(), StandardCharsets.UTF_8);
 				String taskNameCp1251 = new String(taskName.getBytes(), "windows-1251");
 				if (taskNameUTF8.contains(aName) || taskNameCp1251.contains(aName)) {
 					result.add(entity);
@@ -125,7 +130,7 @@ public class SearchServiceBean implements ISearchService {
 	 * @return сервис работы с сущностями
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends IEntityService<? extends IEntity>> T getService(
+	private <T extends IEntityService<? extends IEntity>> T getService(
 			Class<? extends IEntity> aTypeEntity) {
 		T service = null;
 

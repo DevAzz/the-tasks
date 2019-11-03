@@ -1,5 +1,6 @@
 package ru.devazz.repository;
 
+import org.springframework.stereotype.Repository;
 import ru.devazz.entity.TaskHistoryEntity;
 import ru.devazz.entity.TaskHistoryEntity_;
 import ru.devazz.utils.*;
@@ -13,6 +14,7 @@ import java.util.Map.Entry;
 /**
  * Репизиторий исторических записей
  */
+@Repository
 public class TaskHistoryRepository extends AbstractRepository<TaskHistoryEntity> {
 
 	@Override
@@ -89,9 +91,9 @@ public class TaskHistoryRepository extends AbstractRepository<TaskHistoryEntity>
 		Root<TaskHistoryEntity> personRoot = cq.from(TaskHistoryEntity.class);
 		cq.select(builder.count(personRoot));
 		cq.where(getHistoryExpression(aFilter, aTaskSuid, personRoot));
-		Integer countEntries = Integer
+		int countEntries = Integer
 				.parseInt(Long.toString(em.createQuery(cq).getSingleResult()));
-		result = (int) Math.ceil(countEntries.doubleValue() / aCountEntriesOnPage);
+		result = (int) Math.ceil((double) countEntries / aCountEntriesOnPage);
 		if (0 == result) {
 			result = 1;
 		}
@@ -330,20 +332,12 @@ public class TaskHistoryRepository extends AbstractRepository<TaskHistoryEntity>
 	 * @param aTaskSuid иденификатор задачи
 	 */
 	public void deleteHistory(Long aTaskSuid) {
-		try {
-			if (!em.getTransaction().isActive()) {
-				em.getTransaction().begin();
-				em.createQuery("delete from TaskHistoryEntity t where t.taskSuid = :param")
-						.setParameter("param", aTaskSuid).executeUpdate();
-				em.getTransaction().commit();
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			if (em.getTransaction().isActive()) {
-				em.getTransaction().rollback();
-			}
-		}
-
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+		CriteriaDelete<TaskHistoryEntity> query =
+				builder.createCriteriaDelete(TaskHistoryEntity.class);
+		Root<TaskHistoryEntity> root = query.from(TaskHistoryEntity.class);
+		query.where(builder.equal(root.get(TaskHistoryEntity_.taskSuid), aTaskSuid));
+		em.createQuery(query).executeUpdate();
 	}
 
 }

@@ -1,5 +1,7 @@
 package ru.devazz.service.impl;
 
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
 import ru.devazz.entity.SubordinationElementEntity;
 import ru.devazz.entity.UserEntity;
 import ru.devazz.event.ObjectEvent;
@@ -15,7 +17,9 @@ import java.util.List;
 /**
  * Реализация сервиса работы с элементами дерева подчиненности
  */
-public class SubordinationElementServiceBean
+@Service
+@AllArgsConstructor
+public class SubordinationElementService
 		extends AbstractEntityService<SubordinationElementEntity>
 		implements ISubordinationElementService {
 

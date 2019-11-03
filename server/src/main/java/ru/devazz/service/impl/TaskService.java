@@ -3,6 +3,8 @@
  */
 package ru.devazz.service.impl;
 
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
 import ru.devazz.entity.*;
 import ru.devazz.event.ObjectEvent;
 import ru.devazz.event.TaskEvent;
@@ -20,7 +22,9 @@ import java.util.List;
 /**
  * Реализация сервиса взаимодействия с задачами
  */
-public class TaskServiceBean extends AbstractEntityService<TaskEntity>
+@Service
+@AllArgsConstructor
+public class TaskService extends AbstractEntityService<TaskEntity>
 		implements ITaskService {
 
 	/** Сервис событий */
@@ -31,9 +35,6 @@ public class TaskServiceBean extends AbstractEntityService<TaskEntity>
 
 	/** Сервис работы с историческими записями */
 	private ITaskHistoryService historyService;
-
-	/** Сервис отслеживания состояния задач */
-	private TasksInspector tasksInspector;
 
 	/** Репозиторий типовых задач */
 	private DefaultTaskRepository defaultTaskRepository = new DefaultTaskRepository();
@@ -55,7 +56,6 @@ public class TaskServiceBean extends AbstractEntityService<TaskEntity>
 
 	@Override
 	public void delete(Long aSuid, Boolean aNeedPublishEvent) {
-		tasksInspector.removeTaskSuidFromTimeLeftOverTasksCollection(aSuid);
 		TaskEntity deletedEntity = repository.get(aSuid);
 		historyService.deleteHistory(aSuid);
 		super.delete(aSuid, aNeedPublishEvent);
@@ -151,7 +151,6 @@ public class TaskServiceBean extends AbstractEntityService<TaskEntity>
 		if (null != historyEntity.getHistoryType()) {
 			historyService.add(historyEntity, true);
 		}
-		tasksInspector.removeTaskSuidFromTimeLeftOverTasksCollection(aEntity.getSuid());
 	}
 
 	@Override

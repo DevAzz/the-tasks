@@ -1,5 +1,6 @@
 package ru.devazz.repository;
 
+import org.springframework.stereotype.Repository;
 import ru.devazz.entity.SubordinationElementEntity;
 
 import javax.persistence.TypedQuery;
@@ -12,6 +13,7 @@ import java.util.List;
 /**
  * Репозиторий элементов дерева подчиненности
  */
+@Repository
 public class SubordinationElementRepository extends AbstractRepository<SubordinationElementEntity> {
 
 	@Override

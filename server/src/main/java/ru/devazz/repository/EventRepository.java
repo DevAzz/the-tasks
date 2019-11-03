@@ -1,13 +1,19 @@
 package ru.devazz.repository;
 
+import org.springframework.stereotype.Repository;
 import ru.devazz.entity.EventEntity;
+import ru.devazz.entity.EventEntity_;
 
 import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.util.List;
 
 /**
  * Репохиторий событий
  */
+@Repository
 public class EventRepository extends AbstractRepository<EventEntity> {
 
 	/**
@@ -28,12 +34,12 @@ public class EventRepository extends AbstractRepository<EventEntity> {
 	 * @param aSuid идентификатор задачи
 	 * @return список событий
 	 */
-	private List<EventEntity> getEventsByTaskSuid(Long aSuid) {
-		em.clear();
-		String nameQuery = getEntityClass().getSimpleName() + ".getEventsByTaskSuid";
-		TypedQuery<EventEntity> namedQuery = em.createNamedQuery(nameQuery, getEntityClass()).setParameter("taskSuid",
-				aSuid);
-		return namedQuery.getResultList();
+	public List<EventEntity> getEventsByTaskSuid(Long aSuid) {
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+		CriteriaQuery<EventEntity> query = builder.createQuery(EventEntity.class);
+		Root<EventEntity> root = query.from(EventEntity.class);
+		query.select(root).where(builder.equal(root.get(EventEntity_.taskSuid), aSuid));
+		return em.createQuery(query).getResultList();
 
 	}
 

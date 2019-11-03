@@ -1,5 +1,6 @@
 package ru.devazz.repository;
 
+import org.springframework.stereotype.Repository;
 import ru.devazz.entity.DefaultTaskEntity;
 import ru.devazz.entity.DefaultTaskEntity_;
 
@@ -13,19 +14,22 @@ import java.util.List;
  * Репозиторий типовых задач
  *
  */
+@Repository
 public class DefaultTaskRepository extends AbstractRepository<DefaultTaskEntity> {
+
 	/**
-	 * Получение типовых задач по SUID поевого поста
+	 * Получение типовых задач по SUID должности
 	 *
-	 * @param SubordinationSUID боевой пост
+	 * @param subordinationSUID идентификатор должности
 	 * @return список типовых задач
 	 */
-	public List<DefaultTaskEntity> getDefaultTaskByExecuter(Long SubordinationSUID) {
-		em.clear();
-		TypedQuery<DefaultTaskEntity> namedQuery = em
-				.createNamedQuery("DefaultTaskEntity.getDefaultTaskBySub", getEntityClass())
-				.setParameter("subordinationSUID", SubordinationSUID);
-		return namedQuery.getResultList();
+	public List<DefaultTaskEntity> getDefaultTaskByExecuter(Long subordinationSUID) {
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+		CriteriaQuery<DefaultTaskEntity> query = builder.createQuery(DefaultTaskEntity.class);
+		Root<DefaultTaskEntity> root = query.from(DefaultTaskEntity.class);
+		query.select(root).where(builder.equal(root.get(DefaultTaskEntity_.subordinationSUID),
+											   subordinationSUID));
+		return em.createQuery(query).getResultList();
 	}
 
 	/**

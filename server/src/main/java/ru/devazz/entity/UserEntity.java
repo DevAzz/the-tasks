@@ -11,7 +11,7 @@ import java.io.Serializable;
  */
 @Data
 @Entity
-@Table(name = "user")
+@Table(name = "user", schema = "tasksdb")
 public class UserEntity implements Serializable, IEntity {
 
 	/** Идентификатор пользователя */

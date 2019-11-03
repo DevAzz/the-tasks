@@ -11,7 +11,7 @@ import java.util.List;
  */
 @Data
 @Entity
-@Table(name = "subordination_element")
+@Table(name = "subordination_element", schema = "tasksdb")
 public class SubordinationElementEntity implements Serializable, IEntity {
 
 	/** Идентификатор подразделения */

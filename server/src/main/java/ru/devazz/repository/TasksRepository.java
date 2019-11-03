@@ -1,5 +1,6 @@
 package ru.devazz.repository;
 
+import org.springframework.stereotype.Repository;
 import ru.devazz.entity.TaskEntity;
 import ru.devazz.entity.TaskEntity_;
 import ru.devazz.utils.*;
@@ -15,6 +16,7 @@ import java.util.Map.Entry;
 /**
  * Репозиторий задач
  */
+@Repository
 public class TasksRepository extends AbstractRepository<TaskEntity> {
 
 	@Override
@@ -96,20 +98,13 @@ public class TasksRepository extends AbstractRepository<TaskEntity> {
 	 * @return страница задач
 	 */
 	public List<TaskEntity> getInTasksWithPagination(Long aPositionSuid, int aLimit, int aOffset) {
-		List<TaskEntity> result = new ArrayList<>();
-		em.clear();
-		//	@formatter:off
-		TypedQuery<TaskEntity> namedQuery = em
-				.createNamedQuery("TaskEntity.getTaskByExecutorWithPagination", getEntityClass())
-				.setParameter("taskType", TaskType.USUAL)
-				.setParameter("executorSuid", aPositionSuid)
-				.setFirstResult(aOffset)
-				.setMaxResults(aLimit);
-		//	@formatter:on
-		List<TaskEntity> allTasks = namedQuery.getResultList();
-		result.addAll(allTasks);
-
-		return result;
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+		CriteriaQuery<TaskEntity> query = builder.createQuery(TaskEntity.class);
+		Root<TaskEntity> root = query.from(TaskEntity.class);
+		query.select(root);
+		query.where(builder.and(builder.equal(root.get(TaskEntity_.executorSuid), aPositionSuid),
+								builder.equal(root.get(TaskEntity_.taskType), TaskType.USUAL)));
+		return em.createQuery(query).setFirstResult(aOffset).setMaxResults(aLimit).getResultList();
 	}
 
 	/**
@@ -121,20 +116,13 @@ public class TasksRepository extends AbstractRepository<TaskEntity> {
 	 * @return страница задач
 	 */
 	public List<TaskEntity> getOutTasksWithPagination(Long aPositionSuid, int aLimit, int aOffset) {
-		List<TaskEntity> result = new ArrayList<>();
-		em.clear();
-		//	@formatter:off
-		TypedQuery<TaskEntity> namedQuery = em
-				.createNamedQuery("TaskEntity.getTaskByAuthorWithPagination", getEntityClass())
-				.setParameter("taskType", TaskType.USUAL)
-				.setParameter("authorSuid", aPositionSuid)
-				.setFirstResult(aOffset)
-				.setMaxResults(aLimit);
-		//	@formatter:on
-		List<TaskEntity> allTasks = namedQuery.getResultList();
-		result.addAll(allTasks);
-
-		return result;
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+		CriteriaQuery<TaskEntity> query = builder.createQuery(TaskEntity.class);
+		Root<TaskEntity> root = query.from(TaskEntity.class);
+		query.select(root);
+		query.where(builder.and(builder.equal(root.get(TaskEntity_.authorSuid), aPositionSuid),
+								builder.equal(root.get(TaskEntity_.taskType), TaskType.USUAL)));
+		return em.createQuery(query).setFirstResult(aOffset).setMaxResults(aLimit).getResultList();
 	}
 
 	/**
@@ -161,15 +149,16 @@ public class TasksRepository extends AbstractRepository<TaskEntity> {
 	 * @return список задач
 	 */
 	public List<TaskEntity> getTasksByType(Long aPositionSuid, TaskType aType) {
-		List<TaskEntity> result = new ArrayList<>();
-		em.clear();
-		TypedQuery<TaskEntity> namedQuery = em
-				.createNamedQuery("TaskEntity.getTasksByType", getEntityClass())
-				.setParameter("taskType", aType).setParameter("suid", aPositionSuid);
-		List<TaskEntity> allTasks = namedQuery.getResultList();
-		result.addAll(allTasks);
-
-		return result;
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+		CriteriaQuery<TaskEntity> cq = builder.createQuery(TaskEntity.class);
+		Root<TaskEntity> personRoot = cq.from(TaskEntity.class);
+		cq.select(personRoot);
+		cq.where(builder.and(builder.equal(personRoot.get(TaskEntity_.taskType), TaskType.DEFAULT),
+							 builder.or(builder.equal(personRoot.get(TaskEntity_.authorSuid),
+													  aPositionSuid)),
+							 builder.equal(personRoot.get(TaskEntity_.executorSuid),
+										   aPositionSuid)));
+		return em.createQuery(cq).getResultList();
 	}
 
 	/**
@@ -490,22 +479,17 @@ public class TasksRepository extends AbstractRepository<TaskEntity> {
 	 */
 	public List<TaskEntity> getTasksByTypeWithPagination(Long aPositionSuid, TaskType aType,
 			int aLimit, int aOffset) {
-		List<TaskEntity> result = new ArrayList<>();
-		em.clear();
-
-		//	@formatter:off
-		TypedQuery<TaskEntity> namedQuery = em
-				.createNamedQuery("TaskEntity.getTasksByType", getEntityClass())
-				.setParameter("taskType", aType)
-				.setParameter("suid", aPositionSuid)
-				.setFirstResult(aOffset)
-				.setMaxResults(aLimit);
-		//	@formatter:on
-
-		List<TaskEntity> allTasks = namedQuery.getResultList();
-		result.addAll(allTasks);
-
-		return result;
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+		CriteriaQuery<TaskEntity> cq = builder.createQuery(TaskEntity.class);
+		Root<TaskEntity> personRoot = cq.from(TaskEntity.class);
+		cq.select(personRoot);
+		cq.where(builder.and(builder.equal(personRoot.get(TaskEntity_.taskType), TaskType.DEFAULT),
+							 builder.or(builder.equal(personRoot.get(TaskEntity_.authorSuid),
+													  aPositionSuid)),
+							 builder.equal(personRoot.get(TaskEntity_.executorSuid),
+										   aPositionSuid)));
+		return em.createQuery(cq).setFirstResult(aOffset)
+				.setMaxResults(aLimit).getResultList();
 	}
 
 	/**
@@ -517,35 +501,15 @@ public class TasksRepository extends AbstractRepository<TaskEntity> {
 	 * @return страница записей в виде списка
 	 */
 	public List<TaskEntity> getSubElPageTasks(Long aPositionSuid, int aLimit, int aOffset) {
-		List<TaskEntity> result = new ArrayList<>();
-		em.clear();
-		//	@formatter:off
-		TypedQuery<TaskEntity> namedQuery = em
-				.createNamedQuery("TaskEntity.getSubElTasks", getEntityClass())
-				.setParameter("suid", aPositionSuid)
-				.setFirstResult(aOffset)
-				.setMaxResults(aLimit);
-		//	@formatter:on
-
-		List<TaskEntity> allTasks = namedQuery.getResultList();
-		result.addAll(allTasks);
-		return result;
-	}
-
-	/**
-	 * Возвращает страницу записей
-	 *
-	 * @param aPositionSuid идентификатор должности
-	 * @return страница записей в виде списка
-	 */
-	public List<TaskEntity> getAllUserTasks(Long aPositionSuid) {
-		em.clear();
-		//	@formatter:off
-		TypedQuery<TaskEntity> namedQuery = em
-				.createNamedQuery("TaskEntity.getSubElTasks", getEntityClass())
-				.setParameter("suid", aPositionSuid);
-		//	@formatter:on
-		return namedQuery.getResultList();
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+		CriteriaQuery<TaskEntity> cq = builder.createQuery(TaskEntity.class);
+		Root<TaskEntity> personRoot = cq.from(TaskEntity.class);
+		cq.select(personRoot);
+		cq.where(builder.or(builder.equal(personRoot.get(TaskEntity_.authorSuid),
+													  aPositionSuid),
+							 builder.equal(personRoot.get(TaskEntity_.executorSuid),
+										   aPositionSuid)));
+		return em.createQuery(cq).getResultList();
 	}
 
 	/**

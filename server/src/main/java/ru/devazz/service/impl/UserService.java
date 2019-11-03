@@ -1,5 +1,7 @@
 package ru.devazz.service.impl;
 
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
 import ru.devazz.entity.UserEntity;
 import ru.devazz.event.ObjectEvent;
 import ru.devazz.event.UserEvent;
@@ -15,11 +17,10 @@ import java.util.List;
 /**
  * Сервис работы с пользователями
  */
-public class UserServiceBean extends AbstractEntityService<UserEntity>
+@Service
+@AllArgsConstructor
+public class UserService extends AbstractEntityService<UserEntity>
 		implements IUserService {
-
-	/** Сервис задач */
-	public ITaskService taskService;
 
 	@Override
 	public UserEntity checkUser(String aUsername, String aPassword) throws Exception {

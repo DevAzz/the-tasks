@@ -14,12 +14,12 @@ import java.io.Serializable;
  */
 @Data
 @Entity
-@Table(name = "defaultTasks")
+@Table(name = "default_tasks", schema = "tasksdb")
 public class DefaultTaskEntity implements Serializable, IEntity {
 
 	/** Идентификатор */
 	@Id
-	@Column(name = "defaultTaskID", columnDefinition = "bigint")
+	@Column(name = "id", columnDefinition = "bigint")
 	private long defaultTaskID;
 
 	/** Наименование */

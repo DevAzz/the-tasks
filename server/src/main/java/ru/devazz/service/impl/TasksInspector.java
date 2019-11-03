@@ -1,5 +1,8 @@
 package ru.devazz.service.impl;
 
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import ru.devazz.entity.DefaultTaskEntity;
 import ru.devazz.entity.SubordinationElementEntity;
 import ru.devazz.entity.TaskEntity;
@@ -18,6 +21,7 @@ import java.util.*;
 /**
  * Сервис отслеживания состояния задач
  */
+@Component
 public class TasksInspector {
 
 	/** Сервис задач */
@@ -37,6 +41,14 @@ public class TasksInspector {
 
 	/** Задачи по которым уже было выведено уведомление об истечении времени */
 	private List<Long> timeLeftOverTasks = new ArrayList<>();
+
+	public TasksInspector(ITaskService taskService,
+						  ISubordinationElementService subelService,
+						  ITaskHistoryService historyService) {
+		this.taskService = taskService;
+		this.subelService = subelService;
+		this.historyService = historyService;
+	}
 
 	/**
 	 * Инициализация инспектора

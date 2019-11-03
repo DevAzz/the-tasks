@@ -1,5 +1,8 @@
 package ru.devazz.repository;
 
+import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 import ru.devazz.entity.IEntity;
 
 import javax.persistence.EntityManager;
@@ -10,11 +13,12 @@ import java.util.List;
 /**
  * Абстрактный репозиторий
  */
+@Repository
 public abstract class AbstractRepository<T extends IEntity> {
 
 	/** Менеджер сущностей */
-	EntityManager em = Persistence.createEntityManagerFactory("hqtasksdb")
-			.createEntityManager();
+	@Autowired
+	EntityManager em;
 
 	/**
 	 * Удаляет сущность
@@ -98,10 +102,9 @@ public abstract class AbstractRepository<T extends IEntity> {
 	 * @return список сущностей
 	 */
 	public List<T> getAll() {
-		em.clear();
-		String nameQuery = getEntityClass().getSimpleName() + ".getAll";
-		TypedQuery<T> namedQuery = em.createNamedQuery(nameQuery, getEntityClass());
-		return namedQuery.getResultList();
+		return em.createQuery("SELECT entity FROM " + getEntityClass().getSimpleName() + " entity",
+							  getEntityClass())
+				.getResultList();
 	}
 
 	/**

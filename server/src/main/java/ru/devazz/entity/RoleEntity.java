@@ -10,7 +10,7 @@ import java.io.Serializable;
  */
 @Data
 @Entity
-@Table(name = "role")
+@Table(name = "role", schema = "tasksdb")
 public class RoleEntity implements Serializable, IEntity {
 
 	/** Идентификатор роли */

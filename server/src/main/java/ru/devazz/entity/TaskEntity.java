@@ -17,7 +17,7 @@ import java.util.Date;
 @Data
 @Builder
 @Entity
-@Table(name = "tasks")
+@Table(name = "tasks", schema = "tasksdb")
 public class TaskEntity implements Serializable, IEntity {
 
 	/** Идентификатор сериализации */

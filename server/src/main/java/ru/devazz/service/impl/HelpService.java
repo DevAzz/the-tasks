@@ -1,5 +1,7 @@
 package ru.devazz.service.impl;
 
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
 import ru.devazz.entity.HelpEntity;
 import ru.devazz.event.ObjectEvent;
 import ru.devazz.repository.HelpRepository;
@@ -13,7 +15,9 @@ import java.util.List;
 /**
  * Сервис работы с помощью
  */
-public class HelpServiceBean extends AbstractEntityService<HelpEntity> implements IHelpService {
+@Service
+@AllArgsConstructor
+public class HelpService extends AbstractEntityService<HelpEntity> implements IHelpService {
 
 	/** Сервис задач */
 	public IUserService userService;

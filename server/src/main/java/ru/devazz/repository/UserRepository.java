@@ -1,9 +1,11 @@
 package ru.devazz.repository;
 
+import org.springframework.stereotype.Repository;
 import ru.devazz.entity.UserEntity;
 import ru.devazz.entity.UserEntity_;
 
 import javax.persistence.NoResultException;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -13,6 +15,7 @@ import java.util.List;
 /**
  * Репозиторий пользователей
  */
+@Repository
 public class UserRepository extends AbstractRepository<UserEntity> {
 
 	/**
@@ -24,12 +27,14 @@ public class UserRepository extends AbstractRepository<UserEntity> {
 	 *         был найден
 	 */
 	public UserEntity findByUserName(String aUsername, String aPassword) {
-		em.clear();
-		TypedQuery<UserEntity> namedQuery = em
-				.createNamedQuery("UserEntity.checkUser", getEntityClass())
-				.setParameter("login", aUsername).setParameter("password", aPassword);
-
-		return namedQuery.getSingleResult();
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+		CriteriaQuery<UserEntity> query = builder.createQuery(UserEntity.class);
+		Root<UserEntity> root = query.from(UserEntity.class);
+		query.select(root).where(builder.and(builder.equal(root.get(UserEntity_.login),
+														   aUsername),
+											 builder.equal(root.get(UserEntity_.password),
+														   aPassword)));
+		return em.createQuery(query).getSingleResult();
 	}
 
 	/**
@@ -40,8 +45,8 @@ public class UserRepository extends AbstractRepository<UserEntity> {
 	 */
 	public List<UserEntity> getUserWithoutImage(Long aSuid) {
 		em.clear();
-		TypedQuery<UserEntity> namedQuery = em
-				.createNamedQuery("UserEntity.getUserWithoutImage", getEntityClass())
+		Query namedQuery = em.createQuery("SELECT NEW ru.devazz.entity.UserEntity(c.iduser,c" +
+										  ".login, c.password, c.idrole, c.positionSuid, c.name, c.militaryRank, c.position, c.online) FROM UserEntity c WHERE c.iduser = :iduser")
 				.setParameter("iduser", aSuid);
 		return namedQuery.getResultList();
 	}
@@ -53,18 +58,19 @@ public class UserRepository extends AbstractRepository<UserEntity> {
 	 * @return сущность польщователя
 	 */
 	public List<UserEntity> getUserBySubElSuid(Long aSuid) {
-		em.clear();
-		TypedQuery<UserEntity> namedQuery = em
-				.createNamedQuery("UserEntity.getUserBySubElSuid", getEntityClass())
-				.setParameter("subElSuid", aSuid);
-
-		return namedQuery.getResultList();
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+		CriteriaQuery<UserEntity> query = builder.createQuery(UserEntity.class);
+		Root<UserEntity> root = query.from(UserEntity.class);
+		query.select(root).where(builder.equal(root.get(UserEntity_.positionSuid), aSuid));
+		return em.createQuery(query).getResultList();
 	}
 
 	public List<UserEntity> getServiceUserList() {
-		em.clear();
-		TypedQuery<UserEntity> namedQuery = em.createNamedQuery("UserEntity.getServiceUserList",
-				getEntityClass());
+		TypedQuery<UserEntity> namedQuery = em.createQuery("SELECT NEW ru.devazz.entity.UserEntity(c" +
+														   ".iduser,c.login, c.password, c" +
+														   ".idrole, c.positionSuid, c.name, c" +
+														   ".militaryRank, c.position, c.online) " +
+														   "FROM UserEntity c", UserEntity.class);
 		return namedQuery.getResultList();
 	}
 
