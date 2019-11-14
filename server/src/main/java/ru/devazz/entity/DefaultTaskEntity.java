@@ -38,16 +38,16 @@ public class DefaultTaskEntity implements Serializable, IEntity {
 	@Column(name = "end_time", nullable = false, unique = true, columnDefinition = "varchar")
 	private String endTime;
 
-	/** идентификатор боевого поста (исполнитель задачи) */
-	@Column(name = "subordinationSUID", columnDefinition = "bigint")
+	/** идентификатор должности (исполнитель задачи) */
+	@Column(name = "subordination_id", columnDefinition = "bigint")
 	private long subordinationSUID;
 
 	/** Идентификатор автора типовой задачи */
-	@Column(name = "authorSuid", columnDefinition = "bigint")
+	@Column(name = "author_id", columnDefinition = "bigint")
 	private long authorSuid;
 
 	/** Флаг принадлежности задачи к следующему дню */
-	@Column(name = "nextDay", nullable = false, columnDefinition = "INT", length = 1)
+	@Column(name = "next_day", nullable = false, columnDefinition = "INT", length = 1)
 	@Type(type = "org.hibernate.type.NumericBooleanType")
 	private Boolean nextDay;
 

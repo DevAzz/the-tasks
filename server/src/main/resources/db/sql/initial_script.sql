@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS `tasksdb`.`default_tasks` (
   `end_time` VARCHAR(5) NOT NULL,
   `subordination_id` BIGINT(20) NOT NULL,
   `author_id` BIGINT(20) NOT NULL,
-  `nextDay` INT(1) NOT NULL DEFAULT '0',
+  `next_day` INT(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
