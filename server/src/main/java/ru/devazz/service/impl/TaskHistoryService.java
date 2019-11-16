@@ -1,33 +1,46 @@
 package ru.devazz.service.impl;
 
-import lombok.AllArgsConstructor;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 import ru.devazz.entity.TaskHistoryEntity;
-import ru.devazz.event.ObjectEvent;
-import ru.devazz.event.TaskHistoryEvent;
-import ru.devazz.repository.AbstractRepository;
 import ru.devazz.repository.TaskHistoryRepository;
+import ru.devazz.server.api.ITaskHistoryService;
+import ru.devazz.server.api.event.ObjectEvent;
+import ru.devazz.server.api.event.TaskHistoryEvent;
+import ru.devazz.server.api.model.Filter;
+import ru.devazz.server.api.model.TaskHistoryModel;
+import ru.devazz.server.api.model.enums.TaskHistoryType;
 import ru.devazz.service.AbstractEntityService;
-import ru.devazz.service.ITaskHistoryService;
-import ru.devazz.utils.Filter;
-import ru.devazz.utils.TaskHistoryType;
+import ru.devazz.service.impl.converters.TaskHistoryEntityConverter;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Реализация интерфейса взаимодействия с историческими записями
  */
 @Service
-@AllArgsConstructor
-public class TaskHistoryService extends AbstractEntityService<TaskHistoryEntity>
+public class TaskHistoryService extends AbstractEntityService<TaskHistoryModel, TaskHistoryEntity>
 		implements ITaskHistoryService {
 
 	private JmsTemplate broker;
 
+	private TaskHistoryRepository repository;
+
+	private TaskHistoryEntityConverter converter;
+
+	public TaskHistoryService(JmsTemplate broker,
+			TaskHistoryRepository repository,
+			TaskHistoryEntityConverter converter) {
+		super(repository, converter, broker);
+		this.broker = broker;
+		this.repository = repository;
+		this.converter = converter;
+	}
+
 	@Override
-	public TaskHistoryEntity add(TaskHistoryEntity aEntity, Boolean aNeedPublishEvent) {
+	public TaskHistoryModel add(TaskHistoryModel aEntity, Boolean aNeedPublishEvent) {
 		if (!checkRepeatTaskHistoryEntry(aEntity)) {
 			Long suid = (long) (Math.random() * 10000000L) + 1000000L;
 			aEntity.setSuid(suid);
@@ -37,13 +50,9 @@ public class TaskHistoryService extends AbstractEntityService<TaskHistoryEntity>
 	}
 
 	@Override
-	public List<TaskHistoryEntity> getTaskHistory(Long aTaskSuid, Filter aFilter) {
-		return getRepository().getTaskHistory(aTaskSuid, aFilter);
-	}
-
-	@Override
-	protected AbstractRepository<TaskHistoryEntity> createRepository() {
-		return new TaskHistoryRepository();
+	public List<TaskHistoryModel> getTaskHistory(Long aTaskSuid, Filter aFilter) {
+		return repository.getTaskHistory(aTaskSuid, aFilter).stream().map(converter::entityToModel)
+				.collect(Collectors.toList());
 	}
 
 	@Override
@@ -52,36 +61,30 @@ public class TaskHistoryService extends AbstractEntityService<TaskHistoryEntity>
 	}
 
 	@Override
-	protected JmsTemplate getBroker() {
-		return broker;
-	}
-
-	@Override
-	protected TaskHistoryRepository getRepository() {
-		return (TaskHistoryRepository) repository;
-	}
-
-	@Override
-	public List<TaskHistoryEntity> getTaskHistoryWithPagination(Long aTaskSuid, int aLimit,
+	public List<TaskHistoryModel> getTaskHistoryWithPagination(Long aTaskSuid, int aLimit,
 			int aOffset) {
-		return getRepository().getTaskHistoryWithPagination(aTaskSuid, aLimit, aOffset);
+		return repository.getTaskHistoryWithPagination(aTaskSuid, aLimit, aOffset).stream().map(converter::entityToModel)
+				.collect(Collectors.toList());
 	}
 
 	@Override
 	public int getCountPages(Long aTaskSuid, Integer aCountEntriesOnPage, Filter aFilter) {
-		return getRepository().getCountPages(aTaskSuid, aCountEntriesOnPage, aFilter);
+		return repository.getCountPages(aTaskSuid, aCountEntriesOnPage, aFilter);
 	}
 
 	@Override
-	public Integer getNumberPageByTask(TaskHistoryEntity aEntry, Long aTaskSuid,
+	public Integer getNumberPageByTask(TaskHistoryModel aEntry, Long aTaskSuid,
 			Integer aCountTaskOnPage, Filter aFilter) {
-		return getRepository().getNumberPageByTask(aEntry, aTaskSuid, aCountTaskOnPage, aFilter);
+		return repository.getNumberPageByTask(converter.modelToEntity(aEntry), aTaskSuid,
+											  aCountTaskOnPage,
+											  aFilter);
 	}
 
 	@Override
-	public List<TaskHistoryEntity> getAllTaskHistoryEntriesByType(Long aTaskSuid,
+	public List<TaskHistoryModel> getAllTaskHistoryEntriesByType(Long aTaskSuid,
 			TaskHistoryType aType) {
-		return getRepository().getAllTaskHistoryEntriesByType(aTaskSuid, aType);
+		return repository.getAllTaskHistoryEntriesByType(aTaskSuid, aType).stream().map(converter::entityToModel)
+				.collect(Collectors.toList());
 	}
 
 	/**
@@ -91,10 +94,10 @@ public class TaskHistoryService extends AbstractEntityService<TaskHistoryEntity>
 	 * @param aEntry добавляемая запись
 	 * @return {@code true} - в случае, если есть хотя бы одна такая запись
 	 */
-	private boolean checkRepeatTaskHistoryEntry(TaskHistoryEntity aEntry) {
+	private boolean checkRepeatTaskHistoryEntry(TaskHistoryModel aEntry) {
 		boolean result = false;
 		SimpleDateFormat parser = new SimpleDateFormat("dd.MM.yyyy HH:mm");
-		List<TaskHistoryEntity> list = getRepository()
+		List<TaskHistoryEntity> list = repository
 				.getAllTaskHistoryEntriesByType(aEntry.getTaskSuid(), aEntry.getHistoryType());
 		for (TaskHistoryEntity entity : list) {
 			String entityDate = parser.format(entity.getDate());
@@ -108,14 +111,16 @@ public class TaskHistoryService extends AbstractEntityService<TaskHistoryEntity>
 	}
 
 	@Override
-	public List<TaskHistoryEntity> getTaskHistoryWithPagination(Long aTaskSuid, int aLimit,
-			int aOffset, Filter aFilter) {
-		return getRepository().getTaskHistoryWithPagination(aTaskSuid, aLimit, aOffset, aFilter);
+	public List<TaskHistoryModel> getTaskHistoryWithPagination(Long aTaskSuid, int aLimit,
+															   int aOffset, Filter aFilter) {
+		return repository.getTaskHistoryWithPagination(aTaskSuid, aLimit, aOffset, aFilter).stream()
+				.map(converter::entityToModel).collect(
+						Collectors.toList());
 	}
 
 	@Override
 	public void deleteHistory(Long aTaskSuid) {
-		getRepository().deleteHistory(aTaskSuid);
+		repository.deleteHistory(aTaskSuid);
 	}
 
 }

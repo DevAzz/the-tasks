@@ -1,0 +1,137 @@
+/*******************************************************************************
+ *                                                                             *
+ * General                                                                     *
+ *                                                                             *
+ ******************************************************************************/
+.root {
+    -fx-background-color:#3a3f41;
+    -fx-font-family: 'Roboto';
+}
+@font-face {
+    font-family: Roboto;
+    src: url('ui/Roboto-Bold.ttf');
+}
+/*******************************************************************************
+ *                                                                             *
+ * Panel                                                                       *
+ *                                                                             *
+ ******************************************************************************/
+.anchor-pane{
+    -fx-background-color:#3a3f41;
+}
+.split-pane{
+    -fx-background-color:#3a3f41;
+    -fx-border-color:#4a4e4c;
+}
+.split-pane *.split-pane-divider {
+    -fx-background-color:#4a4e4c;
+}
+/*******************************************************************************
+ *                                                                             *
+ * TreeView                                                                    *
+ *                                                                             *
+ ******************************************************************************/
+.tree-view, .tree-cell {
+    -fx-background-color:#3a3f41;
+    -fx-text-fill: #d7d8d9;
+    /*Font*/
+    -fx-font-family: 'Roboto';
+    -fx-font-size: 12px; 
+    -fx-font-weight: bold;
+}
+.tree-cell:expanded, .tree-cell:sub-tree-item {
+    -fx-background-color: #2d2e30 ;
+    -fx-text-fill: #d7d8d9 ;
+}
+.tree-cell:selected {
+    -fx-background-color: #2d2e30;
+    -fx-text-fill: #d7d8d9 ;
+}
+.tree-cell > .tree-disclosure-node > .arrow  {
+    -fx-background-color: #6fb5f1;
+}
+.tree-cell:expanded > .tree-disclosure-node > .arrow {
+    -fx-background-color: #6fb5f1;
+}
+/*******************************************************************************
+ *                                                                             *
+ * Menu/MenuBar                                                                *
+ *                                                                             *
+ ******************************************************************************/
+.menu, .menu-bar{
+    -fx-background-color:#3a3f41;
+    /*Font*/
+    -fx-font-family: 'Roboto';
+    -fx-font-size: 12px; 
+    -fx-font-weight: bold;
+}
+.menu-bar{
+    -fx-background-image: url("ui/army.png");
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: right 10px center;
+    -fx-background-size: 30px;
+}
+.menu .label{ 
+    -fx-text-fill: #d7d8d9;
+    /*Font*/
+    -fx-font-family: 'Roboto';
+    -fx-font-size: 12px; 
+    -fx-font-weight: bold;
+}
+.menu:hover{ 
+    -fx-background-color: #2d2e30;
+}
+.menu-item{
+    -fx-background-color:#3a3f41;
+    /*Font*/
+    -fx-font-family: 'Roboto';
+    -fx-font-size: 12px; 
+    -fx-font-weight: bold;
+}
+.menu-item:hover{
+    -fx-background-color:#2d2e30;
+}
+.context-menu {
+    -fx-skin: "com.sun.javafx.scene.control.skin.ContextMenuSkin";
+    -fx-background-color: #3a3f41;
+    -fx-background-insets: 0, 1, 2;
+    -fx-background-radius: 0 6 6 6, 0 5 5 5, 0 4 4 4;
+/*    -fx-padding: 0.666667em 0.083333em 0.666667em 0.083333em;  8 1 8 1 */
+    -fx-padding: 0.333333em 0.083333em 0.666667em 0.083333em; /* 4 1 8 1 */
+}
+/*******************************************************************************
+ *                                                                             *
+ * Search-Field & Button                                                       *
+ *                                                                             *
+ ******************************************************************************/
+ .search-field {
+    -fx-background-color: #454646;
+    -fx-background-image: url("ui/search.png");
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: left 10px center;
+    -fx-padding: 0px 0px 0px 25px;
+    -fx-background-size: 13px;
+    /*-fx-border-radius:30;*/
+    -fx-border-width:0.5px;
+    -fx-border-color:#333434;
+    -fx-text-fill: #d7d8d9;
+
+    /*Font*/
+    -fx-font-family: 'Roboto';
+    -fx-font-size: 12px; 
+    -fx-font-weight: bold;
+}
+.search-field:hover{
+    -fx-border-color:#6fb5f1;
+    -fx-border-width:1.0px;
+}
+.extended_search_button{
+    -fx-background-color: rgba(0,0,0,0);
+    -fx-background-repeat: no-repeat;
+    -fx-background-image: url("ui/search_plus.png");
+    -fx-background-position: center;
+    -fx-background-size: 13px;
+}
+.extended_search_button:hover{
+    -fx-background-color: rgba(0,0,0,0.2);
+}

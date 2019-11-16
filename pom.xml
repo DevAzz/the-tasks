@@ -16,6 +16,8 @@
 
     <modules>
         <module>server</module>
+        <module>client</module>
+        <module>server-api</module>
     </modules>
 
     <dependencies>
@@ -23,8 +25,20 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.10</version>
-            <scope>provided</scope>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>12</source>
+                    <target>12</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

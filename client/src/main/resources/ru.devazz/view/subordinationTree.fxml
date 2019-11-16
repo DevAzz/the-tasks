@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ContextMenu?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TreeView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.SplitPane?>
+<?import ru.siencesquad.hqtasks.ui.widgets.TreeViewWithItems?>
+
+<AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="271.0" stylesheets="@../../../../../css/main.css" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.siencesquad.hqtasks.ui.view.SubordinationTreeView">
+   <children>
+      <TabPane fx:id="tabPaneSubTree" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                       		<contextMenu>
+	               		<ContextMenu fx:id="subTreeMenu" opacity="0.85">
+			               <items>
+			                  <MenuItem fx:id="createTaskMenuItem" mnemonicParsing="false" text="Создать задачу " />
+			                  <MenuItem fx:id="generateTasksReport" mnemonicParsing="false" text="Отчет по задачам" />
+			               </items>
+			            </ContextMenu>
+               		</contextMenu>
+        <tabs>
+          <Tab onClosed="#closeTabView" text="Дерево подчиненности">
+            <content>
+               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+	               <SplitPane fx:id="subTreeSplitPane" dividerPositions="0.37681159420289856" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="243.0" prefWidth="278.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-0.0">
+					  <items>
+					    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+					         <children>
+					             <TreeViewWithItems fx:id="leftTreeView" layoutX="-49.0" layoutY="-40.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-0.0">
+					      
+	                             </TreeViewWithItems>
+	                             <Label fx:id="downloadLabel" layoutX="50.0" layoutY="59.0" prefHeight="51.0" prefWidth="171.0" text="Загрузка дерева подчиненности..." textAlignment="CENTER" wrapText="true" AnchorPane.bottomAnchor="67.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" />
+					         </children>
+					    </AnchorPane>
+					    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+					         <children>
+					            <TreeViewWithItems fx:id="rightTreeView" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+	                             </TreeViewWithItems>
+					         </children>
+					    </AnchorPane>
+					  </items>
+					</SplitPane>
+				 </AnchorPane>
+               </content>
+          </Tab>
+        </tabs>
+      </TabPane>
+   </children>
+</AnchorPane>

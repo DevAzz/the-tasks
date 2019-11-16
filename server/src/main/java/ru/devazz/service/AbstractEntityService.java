@@ -1,82 +1,74 @@
 package ru.devazz.service;
 
+import lombok.AllArgsConstructor;
 import org.springframework.jms.core.JmsTemplate;
-import ru.devazz.entity.IEntity;
-import ru.devazz.event.ObjectEvent;
 import ru.devazz.repository.AbstractRepository;
-import ru.devazz.utils.JmsQueueName;
-import ru.devazz.utils.SystemEventType;
+import ru.devazz.server.api.IEntityService;
+import ru.devazz.server.api.event.ObjectEvent;
+import ru.devazz.server.api.model.IEntity;
+import ru.devazz.server.api.model.enums.JmsQueueName;
+import ru.devazz.server.api.model.enums.SystemEventType;
+import ru.devazz.service.impl.converters.IEntityConverter;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Абстрактный сервис
  */
-public abstract class AbstractEntityService<T extends IEntity> implements IEntityService<T> {
+@AllArgsConstructor
+public abstract class AbstractEntityService<M extends IEntity, E extends IEntity> implements IEntityService<M> {
 
-	/** Репозиторий элементов дерева подчиненности */
-	protected AbstractRepository<T> repository;
+	/** Абстрактный репозиторий */
+	private AbstractRepository<E> repository;
 
-	/**
-	 * Конструктор
-	 */
-	public AbstractEntityService() {
-		super();
-		repository = createRepository();
-	}
+	private IEntityConverter<M, E> converter;
+
+	private final JmsTemplate broker;
 
 	@Override
-	public T add(T aEntity, Boolean aNeedPublishEvent) {
-		T createdEntity = repository.add(aEntity);
+	public M add(M aEntity, Boolean aNeedPublishEvent) {
+		E createdEntity = repository.add(converter.modelToEntity(aEntity));
 		if (aNeedPublishEvent) {
-			getBroker().convertAndSend(JmsQueueName.DEFAULT.getName(),
-									   (getEventByEntity(SystemEventType.CREATE, createdEntity)));
+			broker.convertAndSend(JmsQueueName.DEFAULT.getName(),
+									   (getEventByEntity(SystemEventType.CREATE,
+														 converter.entityToModel(createdEntity))));
 		}
-		return createdEntity;
+		return converter.entityToModel(createdEntity);
 	}
 
 	@Override
 	public void delete(Long aSuid, Boolean aNeedPublishEvent) {
-		T deletedEntity = repository.get(aSuid);
+		E deletedEntity = repository.get(aSuid);
 		repository.delete(aSuid);
 		if (aNeedPublishEvent) {
-			getBroker().convertAndSend(JmsQueueName.DEFAULT.getName(),
-									   getEventByEntity(SystemEventType.DELETE, deletedEntity));
+			broker.convertAndSend(JmsQueueName.DEFAULT.getName(),
+									   getEventByEntity(SystemEventType.DELETE,
+														converter.entityToModel(deletedEntity)));
 		}
 	}
 
 	@Override
-	public T get(Long aSuid) {
-		return repository.get(aSuid);
+	public M get(Long aSuid) {
+		return converter.entityToModel(repository.get(aSuid));
 	}
 
 	@Override
-	public void update(T aEntity, Boolean aNeedPublishEvent) {
-		repository.update(aEntity);
+	public void update(M aEntity, Boolean aNeedPublishEvent) {
+		repository.update(converter.modelToEntity(aEntity));
 		if (aNeedPublishEvent) {
-			getBroker().convertAndSend(JmsQueueName.DEFAULT.getName(),
+			broker.convertAndSend(JmsQueueName.DEFAULT.getName(),
 									   getEventByEntity(SystemEventType.UPDATE, aEntity));
 		}
 	}
 
 	@Override
-	public List<T> getAll(Long aUserSuid) {
-		return repository.getAll();
-	}
-
-	/**
-	 * Создает репозиторий
-	 *
-	 * @return репозиторий {@link@A}
-	 */
-	protected abstract AbstractRepository<T> createRepository();
-
-	protected AbstractRepository<T> getRepository() {
-		return repository;
+	public List<M> getAll(Long aUserSuid) {
+		return repository.getAll().stream().map(converter::entityToModel).collect(Collectors.toList());
 	}
 
 	@Override
-	public ObjectEvent getEventByEntity(SystemEventType aType, T aEntity) {
+	public ObjectEvent getEventByEntity(SystemEventType aType, M aEntity) {
 		ObjectEvent event = null;
 		try {
 			Class<? extends ObjectEvent> typeEntityEvent = getTypeEntityEvent();
@@ -84,7 +76,7 @@ public abstract class AbstractEntityService<T extends IEntity> implements IEntit
 			event.setType(aType.getName());
 			event.setEntity(aEntity);
 		} catch (InstantiationException | IllegalAccessException e) {
-			// Логирование
+			// TODO Логирование
 			e.printStackTrace();
 		}
 		return event;
@@ -96,7 +88,4 @@ public abstract class AbstractEntityService<T extends IEntity> implements IEntit
 	 * @return тип события
 	 */
 	protected abstract Class<? extends ObjectEvent> getTypeEntityEvent();
-
-	protected abstract JmsTemplate getBroker();
-
 }

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import jfxtras.scene.control.LocalDateTimeTextField?>
+<?import jfxtras.scene.control.LocalTimeTextField?>
+
+<AnchorPane prefHeight="354.0" prefWidth="804.0" stylesheets="@../../../../../css/main.css" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <TitledPane prefHeight="354.0" prefWidth="804.0" text="Цикличное назначение" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+         <content>
+            <AnchorPane prefHeight="200.0" prefWidth="200.0">
+               <children>
+                  <BorderPane AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="10.0">
+                     <center>
+                        <Label text="Управление цикличным назначением задачи" BorderPane.alignment="CENTER" />
+                     </center>
+                  </BorderPane>
+                  <BorderPane layoutX="26.4" layoutY="86.4" prefHeight="198.0" prefWidth="769.0" AnchorPane.leftAnchor="16.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="76.0">
+                     <center>
+                        <ScrollPane fitToHeight="true" fitToWidth="true" prefWidth="550.0" BorderPane.alignment="CENTER">
+                           <content>
+                              <AnchorPane prefHeight="107.0" prefWidth="517.0">
+                                 <children>
+                                    <CheckBox layoutX="8.0" layoutY="3.0" mnemonicParsing="false" prefHeight="22.0" prefWidth="137.0" text="Ежедневная" />
+                                    <CheckBox layoutX="8.0" layoutY="85.0" mnemonicParsing="false" text="Ежемесячная" />
+                                    <ComboBox layoutX="374.0" layoutY="39.0" prefWidth="150.0" />
+                                    <LocalDateTimeTextField layoutX="374.0" layoutY="80.0" prefHeight="25.0" prefWidth="150.0" styleClass="LocalDateTimeTextFieldSkin" />
+                                    <CheckBox layoutX="224.0" layoutY="41.0" mnemonicParsing="false" prefHeight="22.0" prefWidth="137.0" text="День недели" />
+                                    <CheckBox layoutX="224.0" layoutY="82.0" mnemonicParsing="false" prefHeight="22.0" prefWidth="137.0" text="День месяца" />
+                                    <CheckBox layoutX="8.0" layoutY="42.0" mnemonicParsing="false" text="Еженедельная" />
+                                    <CheckBox layoutX="224.0" layoutY="3.0" mnemonicParsing="false" text="Часы" />
+                                    <LocalTimeTextField layoutX="373.0" layoutY="1.0" prefHeight="25.0" prefWidth="150.0" styleClass="LocalDateTimeTextFieldSkin" />
+                                 </children>
+                              </AnchorPane>
+                           </content>
+                           <BorderPane.margin>
+                              <Insets bottom="5.0" top="5.0" />
+                           </BorderPane.margin>
+                        </ScrollPane>
+                     </center>
+                  </BorderPane>
+               </children>
+            </AnchorPane>
+         </content>
+      </TitledPane>
+   </children>
+</AnchorPane>

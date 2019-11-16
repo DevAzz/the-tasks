@@ -3,9 +3,11 @@ package ru.devazz.repository;
 import org.springframework.stereotype.Repository;
 import ru.devazz.entity.TaskEntity;
 import ru.devazz.entity.TaskEntity_;
+import ru.devazz.server.api.model.Filter;
+import ru.devazz.server.api.model.enums.*;
 import ru.devazz.utils.*;
 
-import javax.persistence.TypedQuery;
+import javax.persistence.EntityManager;
 import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,6 +20,13 @@ import java.util.Map.Entry;
  */
 @Repository
 public class TasksRepository extends AbstractRepository<TaskEntity> {
+
+	private EntityManager em;
+
+	public TasksRepository(EntityManager em) {
+		super(em);
+		this.em = em;
+	}
 
 	@Override
 	public void delete(Long aSuid) {

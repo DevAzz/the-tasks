@@ -1,30 +1,38 @@
 package ru.devazz.service.impl;
 
-import lombok.AllArgsConstructor;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 import ru.devazz.entity.EventEntity;
-import ru.devazz.event.EventOccurEvent;
-import ru.devazz.event.ObjectEvent;
 import ru.devazz.repository.EventRepository;
+import ru.devazz.server.api.IEventService;
+import ru.devazz.server.api.event.EventOccurEvent;
+import ru.devazz.server.api.event.ObjectEvent;
+import ru.devazz.server.api.model.EventModel;
 import ru.devazz.service.AbstractEntityService;
-import ru.devazz.service.IEventService;
+import ru.devazz.service.impl.converters.EventEntityConverter;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Реализация сервиса взаимодействия с событиями
  */
 @Service
-@AllArgsConstructor
-public class EventService extends AbstractEntityService<EventEntity>
+public class EventService extends AbstractEntityService<EventModel, EventEntity>
 		implements IEventService {
 
-	private JmsTemplate broker;
+	private final JmsTemplate broker;
 
-	@Override
-	protected EventRepository createRepository() {
-		return new EventRepository();
+	private final EventEntityConverter converter;
+
+	private final EventRepository repository;
+
+	public EventService(EventEntityConverter converter,
+			EventRepository repository, JmsTemplate broker) {
+		super(repository, converter, broker);
+		this.broker = broker;
+		this.converter = converter;
+		this.repository = repository;
 	}
 
 	@Override
@@ -33,19 +41,14 @@ public class EventService extends AbstractEntityService<EventEntity>
 	}
 
 	@Override
-	protected JmsTemplate getBroker() {
-		return broker;
-	}
-
-
-	@Override
-	public List<EventEntity> getEventsByTaskSuid(Long aSuid) {
-		return ((EventRepository) repository).getEventsByTaskSuid(aSuid);
+	public List<EventModel> getEventsByTaskSuid(Long aSuid) {
+		return repository.getEventsByTaskSuid(aSuid).stream().map(converter::entityToModel).collect(
+				Collectors.toList());
 	}
 
 	@Override
 	public void deleteEventsByTaskSuid(Long aSuid) {
-		((EventRepository) repository).deleteEventsByTasksSuid(aSuid);
+		repository.deleteEventsByTasksSuid(aSuid);
 	}
 
 }

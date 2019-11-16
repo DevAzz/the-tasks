@@ -1,50 +1,51 @@
 package ru.devazz.service.impl;
 
-import lombok.AllArgsConstructor;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 import ru.devazz.entity.HelpEntity;
-import ru.devazz.event.ObjectEvent;
 import ru.devazz.repository.HelpRepository;
+import ru.devazz.server.api.IHelpService;
+import ru.devazz.server.api.IRoleService;
+import ru.devazz.server.api.IUserService;
+import ru.devazz.server.api.event.ObjectEvent;
+import ru.devazz.server.api.model.HelpModel;
 import ru.devazz.service.AbstractEntityService;
-import ru.devazz.service.IHelpService;
-import ru.devazz.service.IRoleService;
-import ru.devazz.service.IUserService;
-
-import java.util.List;
+import ru.devazz.service.impl.converters.HelpEntityConverter;
 
 /**
  * Сервис работы с помощью
  */
 @Service
-@AllArgsConstructor
-public class HelpService extends AbstractEntityService<HelpEntity> implements IHelpService {
+public class HelpService extends AbstractEntityService<HelpModel, HelpEntity> implements
+		IHelpService {
 
 	/** Сервис задач */
-	public IUserService userService;
+	private IUserService userService;
 
 	/** Сервис задач */
-	public IRoleService roleService;
+	private IRoleService roleService;
 
+	/** Брокер сообщений */
 	private JmsTemplate broker;
 
-	@Override
-	public List<HelpEntity> getAll(Long aUserSuid) {
-		return repository.getAll();
-	}
+	private HelpRepository repository;
 
-	protected HelpRepository createRepository() {
-		return new HelpRepository();
+	private HelpEntityConverter converter;
+
+	public HelpService(HelpRepository repository, HelpEntityConverter converter,
+					   JmsTemplate broker, IUserService userService,
+					   IRoleService roleService) {
+		super(repository, converter, broker);
+		this.userService = userService;
+		this.roleService = roleService;
+		this.broker = broker;
+		this.repository = repository;
+		this.converter = converter;
 	}
 
 	@Override
 	protected Class<? extends ObjectEvent> getTypeEntityEvent() {
 		return null;
-	}
-
-	@Override
-	protected JmsTemplate getBroker() {
-		return broker;
 	}
 
 

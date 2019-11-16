@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane id="root" cache="true" cacheHint="SCALE" layoutX="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="431.0" prefWidth="1368.0" stylesheets="@../../../../../css/main.css" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.siencesquad.hqtasks.ui.view.PositionBookView">   
+   <children>
+      <TabPane fx:id="positionBookTabPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <tabs>
+          <Tab onClosed="#closeTabView" text="Книга должностных лиц">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0">
+                     <children>
+                        <ScrollPane fitToHeight="true" fitToWidth="true" AnchorPane.bottomAnchor="25.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="0.0">
+                           <content>
+                              <TableView fx:id="personsTable" minHeight="300.0" minWidth="600.0">
+                                <columns>
+                                  <TableColumn id="column1" fx:id="fioColumn" prefWidth="238.0" text="ФИО" />
+                                    <TableColumn fx:id="rankColumn" prefWidth="287.0" text="Воинское звание" />
+                                  <TableColumn id="column2" fx:id="positionColumn" minWidth="12.0" prefWidth="167.0" text="Должность" />
+                                    <TableColumn fx:id="subElColumn" prefWidth="114.0" text="Боевой пост" />
+                                    <TableColumn fx:id="imageColumn" prefWidth="75.0" text="Портрет" />
+                                </columns>
+                                 <columnResizePolicy>
+                                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                 </columnResizePolicy>
+                                 <padding>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </padding>
+                              </TableView>
+                           </content>
+                        </ScrollPane>
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+        </tabs>
+      </TabPane>
+   </children>
+</AnchorPane>

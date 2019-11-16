@@ -3,6 +3,7 @@ package ru.devazz.repository;
 import org.springframework.stereotype.Repository;
 import ru.devazz.entity.SubordinationElementEntity;
 
+import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -15,6 +16,13 @@ import java.util.List;
  */
 @Repository
 public class SubordinationElementRepository extends AbstractRepository<SubordinationElementEntity> {
+
+	private EntityManager em;
+
+	public SubordinationElementRepository(EntityManager em) {
+		super(em);
+		this.em = em;
+	}
 
 	@Override
 	public Class<SubordinationElementEntity> getEntityClass() {

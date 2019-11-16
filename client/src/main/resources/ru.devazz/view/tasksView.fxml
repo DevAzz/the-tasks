@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckMenuItem?>
+<?import javafx.scene.control.CustomMenuItem?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Pagination?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane fx:id="rootPane" prefHeight="463.0" prefWidth="845.0" stylesheets="@../../../../../css/main.css" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.siencesquad.hqtasks.ui.view.TasksView">
+   <children>
+      <MenuBar layoutY="3.0" nodeOrientation="LEFT_TO_RIGHT" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="140.0">
+        <menus>
+          <Menu mnemonicParsing="false" text="Фильтр">
+            <items>
+                  <MenuItem fx:id="showAll" mnemonicParsing="false" onAction="#showAllTasks" text="Отобразить все записи" />
+                  <Menu fx:id="dateFilterMenu" mnemonicParsing="false" text="По дате">
+                     <items>
+                        <CheckMenuItem fx:id="dayFilterItem" mnemonicParsing="false" text="За день " />
+                        <CheckMenuItem fx:id="weekFilterItem" mnemonicParsing="false" text="За неделю" />
+                        <CheckMenuItem fx:id="monthFilterItem" mnemonicParsing="false" text="За месяц" />
+                        <CheckMenuItem fx:id="allTimeFilterItem" mnemonicParsing="false" text="За все время" />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <Menu mnemonicParsing="false" text="Выбрать временной промежуток">
+                           <items>
+                              <CustomMenuItem fx:id="timeIntervalFilterItem" mnemonicParsing="false" text="Выбрать временной промежуток" />
+                           </items>
+                        </Menu>
+                     </items>
+                  </Menu>
+                  <Menu fx:id="statusFilterMenu" mnemonicParsing="false" text="По статусу">
+                     <items>
+                        <CheckMenuItem fx:id="statusWorking" mnemonicParsing="false" text="В работе" />
+                        <CheckMenuItem fx:id="statusDone" mnemonicParsing="false" text="Завершенные" />
+                        <CheckMenuItem fx:id="statusClosed" mnemonicParsing="false" text="Выполненные" />
+                        <CheckMenuItem fx:id="statusFaild" mnemonicParsing="false" text="Проваленные" />
+                        <CheckMenuItem fx:id="statusOverdue" mnemonicParsing="false" text="Просроченные" />
+                        <CheckMenuItem fx:id="statusRework" mnemonicParsing="false" text="На доработке" />
+                     </items>
+                  </Menu>
+                  <Menu fx:id="priorityFilterMenu" mnemonicParsing="false" text="По приоритету">
+                     <items>
+                        <CheckMenuItem fx:id="priorityCritical" mnemonicParsing="false" text="Критические" />
+                        <CheckMenuItem fx:id="priorityMajor" mnemonicParsing="false" text="Высокие" />
+                        <CheckMenuItem fx:id="priorityMinor" mnemonicParsing="false" text="Средние" />
+                        <CheckMenuItem fx:id="priorityTrivial" mnemonicParsing="false" text="Низкие" />
+                     </items>
+                  </Menu>
+            </items>
+          </Menu>
+            <Menu mnemonicParsing="false" text="Сортировка записей">
+               <items>
+                  <Menu fx:id="sortByPriorityMenu" mnemonicParsing="false" text="По приоритету">
+                    <items>
+                        <CheckMenuItem fx:id="sortByPriorityDescending" mnemonicParsing="false" text="По убыванию" />
+                        <CheckMenuItem fx:id="sortByPriorityAscending" mnemonicParsing="false" text="По возрастанию" />
+                    </items>
+                  </Menu>
+                  <Menu fx:id="sortByDateMenu" mnemonicParsing="false" text="По дате">
+                    <items>
+                        <CheckMenuItem fx:id="sortByDateFirstNewItem" mnemonicParsing="false" text="Сначала новые" />
+                        <CheckMenuItem fx:id="sortByDateFirstOldItem" mnemonicParsing="false" text="Сначала старые" />
+                    </items>
+                  </Menu>
+               </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Настройка страниц">
+               <items>
+                  <CustomMenuItem fx:id="pageSettingsMenuItem" mnemonicParsing="false" />
+               </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Настройка записей">
+               <items>
+                  <CheckMenuItem fx:id="illumnationEnableCheckMenuItem" mnemonicParsing="false" selected="true" text="Подсветка записей" />
+               </items>
+            </Menu>
+        </menus>
+      </MenuBar>
+      <AnchorPane layoutY="111.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="54.0" prefWidth="694.0" AnchorPane.bottomAnchor="9.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+         <children>
+            <Separator layoutX="5.0" layoutY="-1.0" prefWidth="200.0" AnchorPane.bottomAnchor="46.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" />
+            <Button fx:id="deleteTaskButton" layoutX="5.0" layoutY="11.0" mnemonicParsing="false" text="Удалить задачу" visible="false" AnchorPane.leftAnchor="5.0" />
+            <Button fx:id="openTaskButton" layoutX="528.0" layoutY="11.0" mnemonicParsing="false" text="Просмотр задачи" AnchorPane.rightAnchor="5.0" />
+         </children>
+      </AnchorPane>
+      <AnchorPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="73.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="36.0" />
+   	  <Pagination fx:id="pagination" layoutY="41.0" maxPageIndicatorCount="0" prefHeight="355.0" prefWidth="694.0" AnchorPane.bottomAnchor="73.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="36.0" />
+      <MenuBar layoutX="713.0" layoutY="3.0" nodeOrientation="RIGHT_TO_LEFT" AnchorPane.rightAnchor="0.0">
+        <menus>
+          <Menu fx:id="activeFiltersMenu" mnemonicParsing="false" text="Активные фильтры" />
+        </menus>
+      </MenuBar>
+   </children>
+</AnchorPane>

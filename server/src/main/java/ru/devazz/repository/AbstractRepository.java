@@ -1,24 +1,19 @@
 package ru.devazz.repository;
 
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-import ru.devazz.entity.IEntity;
+import ru.devazz.server.api.model.IEntity;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Persistence;
-import javax.persistence.TypedQuery;
 import java.util.List;
 
 /**
  * Абстрактный репозиторий
  */
-@Repository
+@AllArgsConstructor
 public abstract class AbstractRepository<T extends IEntity> {
 
 	/** Менеджер сущностей */
-	@Autowired
-	EntityManager em;
+	private EntityManager em;
 
 	/**
 	 * Удаляет сущность

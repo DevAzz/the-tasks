@@ -4,6 +4,7 @@ import org.springframework.stereotype.Repository;
 import ru.devazz.entity.UserEntity;
 import ru.devazz.entity.UserEntity_;
 
+import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
@@ -17,6 +18,13 @@ import java.util.List;
  */
 @Repository
 public class UserRepository extends AbstractRepository<UserEntity> {
+
+	private EntityManager em;
+
+	public UserRepository(EntityManager em) {
+		super(em);
+		this.em = em;
+	}
 
 	/**
 	 * Ищет пользователя по логину и паролю

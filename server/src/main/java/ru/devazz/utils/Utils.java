@@ -34,12 +34,12 @@ public class Utils {
 	 *
 	 * @param input - входные данные
 	 * @return sha1 хеш от input
-	 * @throws NoSuchAlgorithmException
+	 * @throws NoSuchAlgorithmException в случае ошибки
 	 */
 	public String sha(String input) throws NoSuchAlgorithmException {
 		MessageDigest mDigest = MessageDigest.getInstance("SHA");
 		byte[] result = mDigest.digest(input.getBytes());
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		for (byte element : result) {
 			sb.append(Integer.toString((element & 0xff) + 0x100, 16).substring(1));
 		}
@@ -57,8 +57,7 @@ public class Utils {
 		calendarStart.set(Calendar.HOUR, 0);
 		calendarStart.set(Calendar.MINUTE, 0);
 		calendarStart.set(Calendar.SECOND, 0);
-		Date dateStart = calendarStart.getTime();
-		return dateStart;
+		return calendarStart.getTime();
 	}
 
 	/**
@@ -72,8 +71,7 @@ public class Utils {
 		calendarEnd.set(Calendar.HOUR, 11);
 		calendarEnd.set(Calendar.MINUTE, 59);
 		calendarEnd.set(Calendar.SECOND, 59);
-		Date dateEnd = calendarEnd.getTime();
-		return dateEnd;
+		return calendarEnd.getTime();
 	}
 
 	/**
@@ -88,8 +86,7 @@ public class Utils {
 		calendarStart.set(Calendar.HOUR, 0);
 		calendarStart.set(Calendar.MINUTE, 0);
 		calendarStart.set(Calendar.SECOND, 0);
-		Date dateStart = calendarStart.getTime();
-		return dateStart;
+		return calendarStart.getTime();
 	}
 
 	/**
@@ -104,8 +101,7 @@ public class Utils {
 		calendarEnd.set(Calendar.HOUR, 11);
 		calendarEnd.set(Calendar.MINUTE, 59);
 		calendarEnd.set(Calendar.SECOND, 59);
-		Date dateEnd = calendarEnd.getTime();
-		return dateEnd;
+		return calendarEnd.getTime();
 	}
 
 	/**
@@ -117,8 +113,7 @@ public class Utils {
 		GregorianCalendar commonCalendar = new GregorianCalendar();
 		GregorianCalendar calendarStart = new GregorianCalendar(commonCalendar.get(Calendar.YEAR),
 				commonCalendar.get(Calendar.MONTH), 1, 0, 0, 0);
-		Date dateStart = calendarStart.getTime();
-		return dateStart;
+		return calendarStart.getTime();
 	}
 
 	/**
@@ -131,8 +126,7 @@ public class Utils {
 		GregorianCalendar calendarEnd = new GregorianCalendar(commonCalendar.get(Calendar.YEAR),
 				commonCalendar.get(Calendar.MONTH),
 				commonCalendar.getMaximum(Calendar.DAY_OF_MONTH), 23, 59, 59);
-		Date dateEnd = calendarEnd.getTime();
-		return dateEnd;
+		return calendarEnd.getTime();
 	}
 
 	/**
@@ -165,7 +159,7 @@ public class Utils {
 	public String toBase64(String data) {
 		String result = "";
 		if (null != data) {
-			result = new String(Base64.getEncoder().encodeToString(data.getBytes()));
+			result = Base64.getEncoder().encodeToString(data.getBytes());
 		}
 		return result;
 	}

@@ -3,448 +3,516 @@
  */
 package ru.devazz.service.impl;
 
-import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
-import ru.devazz.entity.*;
-import ru.devazz.event.ObjectEvent;
-import ru.devazz.event.TaskEvent;
+import ru.devazz.entity.TaskEntity;
 import ru.devazz.repository.DefaultTaskRepository;
 import ru.devazz.repository.TasksRepository;
-import ru.devazz.service.*;
-import ru.devazz.utils.*;
+import ru.devazz.server.api.IEventService;
+import ru.devazz.server.api.ISubordinationElementService;
+import ru.devazz.server.api.ITaskHistoryService;
+import ru.devazz.server.api.ITaskService;
+import ru.devazz.server.api.event.ObjectEvent;
+import ru.devazz.server.api.event.TaskEvent;
+import ru.devazz.server.api.model.*;
+import ru.devazz.server.api.model.enums.*;
+import ru.devazz.service.AbstractEntityService;
+import ru.devazz.service.impl.converters.DefaultTaskConverter;
+import ru.devazz.service.impl.converters.TaskEntityConverter;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Реализация сервиса взаимодействия с задачами
  */
 @Service
-@AllArgsConstructor
-public class TaskService extends AbstractEntityService<TaskEntity>
-		implements ITaskService {
+public class TaskService extends AbstractEntityService<TaskModel, TaskEntity>
+        implements ITaskService {
 
-	/** Сервис событий */
-	private IEventService eventService;
+    /** Сервис событий */
+    private IEventService eventService;
 
-	/** Сервис работы с должностями */
-	private ISubordinationElementService subElService;
+    /** Сервис работы с должностями */
+    private ISubordinationElementService subElService;
 
-	/** Сервис работы с историческими записями */
-	private ITaskHistoryService historyService;
+    /** Сервис работы с историческими записями */
+    private ITaskHistoryService historyService;
 
-	/** Репозиторий типовых задач */
-	private DefaultTaskRepository defaultTaskRepository = new DefaultTaskRepository();
+    /** Репозиторий типовых задач */
+    private DefaultTaskRepository defaultTaskRepository;
 
-	private JmsTemplate broker;
+    private JmsTemplate broker;
 
-	@Override
-	public TaskEntity add(TaskEntity aEntity, Boolean aNeedPublishEvent) {
-		Long suid = (long) (Math.random() * 10000000L) + 1000000L;
-		if ((null == aEntity.getSuid())
-				|| ((null != aEntity.getSuid()) && (0 == aEntity.getSuid()))) {
-			aEntity.setTaskSuid(suid);
-		}
-		TaskEntity createdEntity = super.add(aEntity, aNeedPublishEvent);
+    private TaskEntityConverter converter;
 
-		if (aNeedPublishEvent) {
-			createEventByEntity(SystemEventType.CREATE, createdEntity);
-		}
-		return createdEntity;
-	}
+    private TasksRepository repository;
 
-	@Override
-	public void delete(Long aSuid, Boolean aNeedPublishEvent) {
-		TaskEntity deletedEntity = repository.get(aSuid);
-		historyService.deleteHistory(aSuid);
-		super.delete(aSuid, aNeedPublishEvent);
-		if (aNeedPublishEvent) {
-			createEventByEntity(SystemEventType.DELETE, deletedEntity);
-		}
+    private DefaultTaskConverter defaultTaskConverter;
 
-	}
+    public TaskService(IEventService eventService,
+                       ISubordinationElementService subElService,
+                       ITaskHistoryService historyService,
+                       DefaultTaskRepository defaultTaskRepository,
+                       JmsTemplate broker, TaskEntityConverter converter,
+                       TasksRepository repository,
+                       DefaultTaskConverter defaultTaskConverter) {
+        super(repository, converter, broker);
+        this.eventService = eventService;
+        this.subElService = subElService;
+        this.historyService = historyService;
+        this.defaultTaskRepository = defaultTaskRepository;
+        this.broker = broker;
+        this.converter = converter;
+        this.repository = repository;
+        this.defaultTaskConverter = defaultTaskConverter;
+    }
 
-	@Override
-	public void update(TaskEntity aEntity, Boolean aNeedPublishEvent) {
-		TaskEntity oldEntity = get(aEntity.getSuid());
-		TaskStatus oldStatus = (null != oldEntity) ? oldEntity.getStatus() : null;
-		super.update(aEntity, aNeedPublishEvent);
+    @Override
+    public TaskModel add(TaskModel aEntity, Boolean aNeedPublishEvent) {
+        Long suid = (long) (Math.random() * 10000000L) + 1000000L;
+        if ((null == aEntity.getSuid())
+            || ((null != aEntity.getSuid()) && (0 == aEntity.getSuid()))) {
+            aEntity.setSuid(suid);
+        }
+        TaskModel createdEntity = super.add(aEntity, aNeedPublishEvent);
 
-		//	@formatter:off
-		TaskHistoryEntity historyEntity = TaskHistoryEntity.builder()
-				.taskSuid(aEntity.getSuid())
-				.date(new Date())
-				.build();
-		//	@formatter:on
+        if (aNeedPublishEvent) {
+            createEventByEntity(SystemEventType.CREATE, createdEntity);
+        }
+        return createdEntity;
+    }
 
-		SubordinationElementEntity subEl = null;
-		switch (aEntity.getStatus()) {
-		case DONE:
-			if (aNeedPublishEvent) {
-				//TODO добовить отправку
-//				publisher.sendEvent(getEventByEntity(SystemEventType.DONE, aEntity));
-				createEventByEntity(SystemEventType.DONE, aEntity);
-			}
-			historyEntity.setActorSuid(aEntity.getExecutorSuid());
-			subEl = subElService.get(aEntity.getExecutorSuid());
+    @Override
+    public void delete(Long aSuid, Boolean aNeedPublishEvent) {
+        TaskEntity deletedEntity = repository.get(aSuid);
+        historyService.deleteHistory(aSuid);
+        super.delete(aSuid, aNeedPublishEvent);
+        if (aNeedPublishEvent) {
+            createEventByEntity(SystemEventType.DELETE, converter.entityToModel(deletedEntity));
+        }
 
-			if (TaskStatus.OVERDUE.equals(oldStatus)) {
-				historyEntity.setHistoryType(TaskHistoryType.TASK_OVERDUE_DONE);
-				historyEntity.setText("Пользователь " + subEl.getName()
-						+ " завершил выполнение задачи c опозданием");
-				historyEntity.setTitle("Задача завершена с опозданием");
-			} else {
-				historyEntity.setHistoryType(TaskHistoryType.TASK_DONE);
-				historyEntity
-						.setText("Пользователь " + subEl.getName() + " завершил выполнение задачи");
-				historyEntity.setTitle("Задача завершена");
-			}
+    }
 
-			break;
-		case REWORK:
-			if (aNeedPublishEvent) {
-//				publisher.sendEvent(getEventByEntity(SystemEventType.REWORK, aEntity));
-				createEventByEntity(SystemEventType.REWORK, aEntity);
-			}
-			historyEntity.setActorSuid(aEntity.getAuthorSuid());
-			historyEntity.setHistoryType(TaskHistoryType.TASK_REWORK);
-			subEl = subElService.get(aEntity.getAuthorSuid());
-			historyEntity
-					.setText("Пользователь " + subEl.getName() + " отправил задачу на доработку");
-			historyEntity.setTitle("Задача отправлена на доработку");
-			break;
-		case FAILD:
-			if (aNeedPublishEvent) {
-//				publisher.sendEvent(getEventByEntity(SystemEventType.FAIL, aEntity));
-				createEventByEntity(SystemEventType.FAIL, aEntity);
-			}
-			historyEntity.setActorSuid(aEntity.getAuthorSuid());
-			historyEntity.setHistoryType(TaskHistoryType.TASK_FAILED);
-			subEl = subElService.get(aEntity.getAuthorSuid());
-			historyEntity
-					.setText("Пользователь " + subEl.getName() + " отметил задачу как проваленную");
-			historyEntity.setTitle("Задача провалена");
-			break;
-		case CLOSED:
-			if (aNeedPublishEvent) {
-//				publisher.sendEvent(getEventByEntity(SystemEventType.CLOSED, aEntity));
-				createEventByEntity(SystemEventType.CLOSED, aEntity);
-			}
-			historyEntity.setActorSuid(aEntity.getAuthorSuid());
-			historyEntity.setHistoryType(TaskHistoryType.TASK_CLOSED);
-			subEl = subElService.get(aEntity.getAuthorSuid());
-			historyEntity.setText("Пользователь " + subEl.getName() + " закрыл задачу");
-			historyEntity.setTitle("Задача закрыта");
-			break;
-		default:
-			if (aNeedPublishEvent) {
-				createEventByEntity(SystemEventType.UPDATE, aEntity);
-			}
-			historyEntity.setActorSuid(aEntity.getAuthorSuid());
-			historyEntity.setHistoryType(TaskHistoryType.TASK_UPDATED);
-			subEl = subElService.get(aEntity.getAuthorSuid());
-			historyEntity.setText("Пользователь " + subEl.getName() + " обновил задачу");
-			historyEntity.setTitle("Задача обновлена");
-		}
+    @Override
+    public void update(TaskModel aEntity, Boolean aNeedPublishEvent) {
+        TaskModel oldEntity = get(aEntity.getSuid());
+        TaskStatus oldStatus = (null != oldEntity) ? oldEntity.getStatus() : null;
+        super.update(aEntity, aNeedPublishEvent);
 
-		if (null != historyEntity.getHistoryType()) {
-			historyService.add(historyEntity, true);
-		}
-	}
+        //	@formatter:off
+        TaskHistoryModel historyEntity = TaskHistoryModel.builder()
+                .taskSuid(aEntity.getSuid())
+                .date(new Date())
+                .build();
+        //	@formatter:on
 
-	@Override
-	protected TasksRepository createRepository() {
-		return new TasksRepository();
-	}
+        SubordinationElementModel subEl = null;
+        switch (aEntity.getStatus()) {
+            case DONE:
+                if (aNeedPublishEvent) {
+                    broker.convertAndSend(JmsQueueName.DEFAULT.getName(),
+                                          getEventByEntity(SystemEventType.DONE, aEntity));
+                    createEventByEntity(SystemEventType.DONE, aEntity);
+                }
+                historyEntity.setActorSuid(aEntity.getExecutorSuid());
+                subEl = subElService.get(aEntity.getExecutorSuid());
 
-	@Override
-	protected Class<? extends ObjectEvent> getTypeEntityEvent() {
-		return TaskEvent.class;
-	}
+                if (TaskStatus.OVERDUE.equals(oldStatus)) {
+                    historyEntity.setHistoryType(TaskHistoryType.TASK_OVERDUE_DONE);
+                    historyEntity.setText("Пользователь " + subEl.getName()
+                                          + " завершил выполнение задачи c опозданием");
+                    historyEntity.setTitle("Задача завершена с опозданием");
+                } else {
+                    historyEntity.setHistoryType(TaskHistoryType.TASK_DONE);
+                    historyEntity
+                            .setText("Пользователь " + subEl.getName() +
+                                     " завершил выполнение задачи");
+                    historyEntity.setTitle("Задача завершена");
+                }
 
-	@Override
-	protected JmsTemplate getBroker() {
-		return broker;
-	}
+                break;
+            case REWORK:
+                if (aNeedPublishEvent) {
+                    broker.convertAndSend(JmsQueueName.DEFAULT.getName(),
+                                          getEventByEntity(SystemEventType.REWORK, aEntity));
+                    createEventByEntity(SystemEventType.REWORK, aEntity);
+                }
+                historyEntity.setActorSuid(aEntity.getAuthorSuid());
+                historyEntity.setHistoryType(TaskHistoryType.TASK_REWORK);
+                subEl = subElService.get(aEntity.getAuthorSuid());
+                historyEntity
+                        .setText("Пользователь " + subEl.getName() +
+                                 " отправил задачу на доработку");
+                historyEntity.setTitle("Задача отправлена на доработку");
+                break;
+            case FAILD:
+                if (aNeedPublishEvent) {
+                    broker.convertAndSend(JmsQueueName.DEFAULT.getName(),
+                                          getEventByEntity(SystemEventType.FAIL, aEntity));
+                    createEventByEntity(SystemEventType.FAIL, aEntity);
+                }
+                historyEntity.setActorSuid(aEntity.getAuthorSuid());
+                historyEntity.setHistoryType(TaskHistoryType.TASK_FAILED);
+                subEl = subElService.get(aEntity.getAuthorSuid());
+                historyEntity
+                        .setText("Пользователь " + subEl.getName() +
+                                 " отметил задачу как проваленную");
+                historyEntity.setTitle("Задача провалена");
+                break;
+            case CLOSED:
+                if (aNeedPublishEvent) {
+                    broker.convertAndSend(JmsQueueName.DEFAULT.getName(),
+                                          getEventByEntity(SystemEventType.CLOSED, aEntity));
+                    createEventByEntity(SystemEventType.CLOSED, aEntity);
+                }
+                historyEntity.setActorSuid(aEntity.getAuthorSuid());
+                historyEntity.setHistoryType(TaskHistoryType.TASK_CLOSED);
+                subEl = subElService.get(aEntity.getAuthorSuid());
+                historyEntity.setText("Пользователь " + subEl.getName() + " закрыл задачу");
+                historyEntity.setTitle("Задача закрыта");
+                break;
+            default:
+                if (aNeedPublishEvent) {
+                    broker.convertAndSend(JmsQueueName.DEFAULT.getName(),
+                                          getEventByEntity(SystemEventType.UPDATE, aEntity));
+                    createEventByEntity(SystemEventType.UPDATE, aEntity);
+                }
+                historyEntity.setActorSuid(aEntity.getAuthorSuid());
+                historyEntity.setHistoryType(TaskHistoryType.TASK_UPDATED);
+                subEl = subElService.get(aEntity.getAuthorSuid());
+                historyEntity.setText("Пользователь " + subEl.getName() + " обновил задачу");
+                historyEntity.setTitle("Задача обновлена");
+        }
 
-	/**
-	 * Создание события по задаче
-	 *
-	 * @param aType тип события
-	 * @param aEntity задача
-	 */
-	public void createEventByEntity(SystemEventType aType, TaskEntity aEntity) {
-		if (null != aEntity) {
-			SubordinationElementEntity author = subElService.get(aEntity.getAuthorSuid());
-			SubordinationElementEntity executer = subElService.get(aEntity.getExecutorSuid());
+        if (null != historyEntity.getHistoryType()) {
+            historyService.add(historyEntity, true);
+        }
+    }
 
-			EventEntity entity = new EventEntity();
-			Long suid = (long) (Math.random() * 10000000L) + 1000000L;
-			System.out.println();
-			System.out.println(aType.getName() + " " + suid);
-			System.out.println();
-			entity.setDate(new Date());
-			entity.setEventType(aType.getName());
-			entity.setIdEvents(suid);
+    @Override
+    protected Class<? extends ObjectEvent> getTypeEntityEvent() {
+        return TaskEvent.class;
+    }
 
-			entity.setAuthorSuid(author.getSuid());
-			entity.setExecutorSuid(executer.getSuid());
-			entity.setTaskSuid(aEntity.getTaskSuid());
+    /**
+     * Создание события по задаче
+     *
+     * @param aType тип события
+     * @param aEntity задача
+     */
+    private void createEventByEntity(SystemEventType aType, TaskModel aEntity) {
+        if (null != aEntity) {
+            SubordinationElementModel author = subElService.get(aEntity.getAuthorSuid());
+            SubordinationElementModel executer = subElService.get(aEntity.getExecutorSuid());
 
-			SimpleDateFormat formatter = new SimpleDateFormat("HH:mm dd.MM.yyyy");
-			String nameEntity = new String(Base64.getDecoder().decode(aEntity.getName()));
+            EventModel entity = new EventModel();
+            Long suid = (long) (Math.random() * 10000000L) + 1000000L;
+            System.out.println();
+            System.out.println(aType.getName() + " " + suid);
+            System.out.println();
+            entity.setDate(new Date());
+            entity.setEventType(aType.getName());
+            entity.setSuid(suid);
 
-			switch (aType) {
-			case CREATE:
-				entity.setName(new String(Base64.getEncoder()
-						.encode(("Создана задача \"" + nameEntity + "\"" + ", Дата начала: "
-								+ formatter.format(aEntity.getStartDate())).getBytes())));
+            entity.setAuthorSuid(author.getSuid());
+            entity.setExecutorSuid(executer.getSuid());
+            entity.setTaskSuid(aEntity.getSuid());
 
-				break;
-			case DELETE:
-				entity.setName(new String(Base64.getEncoder().encode(("Удалена задача \""
-						+ nameEntity + "\"" + ". " + formatter.format(new Date())).getBytes())));
-				break;
-			case UPDATE:
-				entity.setName(new String(Base64.getEncoder().encode(("Обновлена задача \""
-						+ nameEntity + "\"" + ". " + formatter.format(new Date())).getBytes())));
-				break;
-			case DONE:
-				entity.setName(new String(Base64.getEncoder().encode(("Завершена задача \""
-						+ nameEntity + "\"" + ". " + formatter.format(new Date())).getBytes())));
-				break;
-			case REWORK:
-				entity.setName(
-						new String(Base64.getEncoder()
-								.encode(("Задача \"" + nameEntity + "\""
-										+ " отправлена на доработку. "
-										+ formatter.format(new Date())).getBytes())));
-				break;
-			case FAIL:
-				entity.setName(new String(Base64.getEncoder().encode(("Задача \"" + nameEntity
-						+ "\"" + " отклонена. " + formatter.format(new Date())).getBytes())));
-				break;
-			case CLOSED:
-				entity.setName(new String(Base64.getEncoder().encode(("Задача \"" + nameEntity
-						+ "\"" + " принята. " + formatter.format(new Date())).getBytes())));
-			case OVERDUE:
-				entity.setName(new String(Base64.getEncoder().encode(("Задача \"" + nameEntity
-						+ "\"" + " просрочена. " + formatter.format(new Date())).getBytes())));
-			case TASK_REMAPPING:
-				entity.setName(
-						new String(
-								Base64.getEncoder()
-										.encode(("Задача \"" + nameEntity + "\""
-												+ " переназначена. " + formatter.format(new Date()))
-														.getBytes())));
-			default:
-				break;
-			}
-			eventService.add(entity, true);
-		}
-	}
+            SimpleDateFormat formatter = new SimpleDateFormat("HH:mm dd.MM.yyyy");
+            String nameEntity = new String(Base64.getDecoder().decode(aEntity.getName()));
 
-	@Override
-	public List<TaskEntity> getTasksByAuthor(Long aPositionSuid) {
-		return ((TasksRepository) repository).getTasksByAuthor(aPositionSuid);
-	}
+            switch (aType) {
+                case CREATE:
+                    entity.setName(new String(Base64.getEncoder()
+                                                      .encode(("Создана задача \"" + nameEntity +
+                                                               "\"" + ", Дата начала: "
+                                                               + formatter
+                                                                       .format(aEntity.getStartDate()))
+                                                                      .getBytes())));
 
-	@Override
-	public List<TaskEntity> getTasksByExecutor(Long aPositionSuid) {
-		return ((TasksRepository) repository).getTasksByExecutor(aPositionSuid);
-	}
+                    break;
+                case DELETE:
+                    entity.setName(new String(Base64.getEncoder().encode(("Удалена задача \""
+                                                                          + nameEntity + "\"" +
+                                                                          ". " + formatter
+                                                                                  .format(new Date()))
+                                                                                 .getBytes())));
+                    break;
+                case UPDATE:
+                    entity.setName(new String(Base64.getEncoder().encode(("Обновлена задача \""
+                                                                          + nameEntity + "\"" +
+                                                                          ". " + formatter
+                                                                                  .format(new Date()))
+                                                                                 .getBytes())));
+                    break;
+                case DONE:
+                    entity.setName(new String(Base64.getEncoder().encode(("Завершена задача \""
+                                                                          + nameEntity + "\"" +
+                                                                          ". " + formatter
+                                                                                  .format(new Date()))
+                                                                                 .getBytes())));
+                    break;
+                case REWORK:
+                    entity.setName(
+                            new String(Base64.getEncoder()
+                                               .encode(("Задача \"" + nameEntity + "\""
+                                                        + " отправлена на доработку. "
+                                                        + formatter.format(new Date()))
+                                                               .getBytes())));
+                    break;
+                case FAIL:
+                    entity.setName(new String(Base64.getEncoder().encode(("Задача \"" + nameEntity
+                                                                          + "\"" + " отклонена. " +
+                                                                          formatter
+                                                                                  .format(new Date()))
+                                                                                 .getBytes())));
+                    break;
+                case CLOSED:
+                    entity.setName(new String(Base64.getEncoder().encode(("Задача \"" + nameEntity
+                                                                          + "\"" + " принята. " +
+                                                                          formatter
+                                                                                  .format(new Date()))
+                                                                                 .getBytes())));
+                case OVERDUE:
+                    entity.setName(new String(Base64.getEncoder().encode(("Задача \"" + nameEntity
+                                                                          + "\"" + " просрочена. " +
+                                                                          formatter
+                                                                                  .format(new Date()))
+                                                                                 .getBytes())));
+                case TASK_REMAPPING:
+                    entity.setName(
+                            new String(
+                                    Base64.getEncoder()
+                                            .encode(("Задача \"" + nameEntity + "\""
+                                                     + " переназначена. " +
+                                                     formatter.format(new Date()))
+                                                            .getBytes())));
+                default:
+                    break;
+            }
+            eventService.add(entity, true);
+        }
+    }
 
-	/**
-	 * Получение типовых задач по SUID поевого поста
-	 *
-	 * @param aPositionSuid боевой пост
-	 * @return список типовых задач
-	 */
-	@Override
-	public List<DefaultTaskEntity> getDefaultTaskBySub(Long aPositionSuid) {
-		return defaultTaskRepository.getDefaultTaskByExecuter(aPositionSuid);
-	}
+    @Override
+    public List<TaskModel> getTasksByAuthor(Long aPositionSuid) {
+        return repository.getTasksByAuthor(aPositionSuid).stream().map(converter::entityToModel)
+                .collect(Collectors.toList());
+    }
 
-	/**
-	 * Получение типовой задачи
-	 *
-	 * @param aPositionSuid SUID задачи
-	 * @return сущность типовой задачи
-	 */
-	@Override
-	public DefaultTaskEntity getDefaultTaskBySUID(Long aPositionSuid) {
-		return defaultTaskRepository.get(aPositionSuid);
-	}
+    @Override
+    public List<TaskModel> getTasksByExecutor(Long aPositionSuid) {
+        return repository.getTasksByExecutor(aPositionSuid).stream().map(converter::entityToModel)
+                .collect(Collectors.toList());
+    }
 
-	/**
-	 * Получение всех типовых задач
-	 *
-	 * @return список типовых задач
-	 */
-	@Override
-	public List<DefaultTaskEntity> getDefaultTaskAll() {
-		return defaultTaskRepository.getAll();
-	}
+    /**
+     * Получение типовых задач по SUID поевого поста
+     *
+     * @param aPositionSuid боевой пост
+     * @return список типовых задач
+     */
+    @Override
+    public List<DefaultTaskModel> getDefaultTaskBySub(Long aPositionSuid) {
+        return defaultTaskRepository.getDefaultTaskByExecuter(aPositionSuid).stream()
+                .map(defaultTaskConverter::entityToModel).collect(Collectors.toList());
+    }
 
-	@Override
-	public List<TaskEntity> getAllUserTasks(Long aPositionSuid) {
-		List<TaskEntity> result = new ArrayList<>();
-		for (TaskType type : TaskType.values()) {
-			result.addAll(((TasksRepository) repository).getTasksByType(aPositionSuid, type));
-		}
-		return result;
-	}
+    /**
+     * Получение типовой задачи
+     *
+     * @param aPositionSuid SUID задачи
+     * @return сущность типовой задачи
+     */
+    @Override
+    public DefaultTaskModel getDefaultTaskBySUID(Long aPositionSuid) {
+        return defaultTaskConverter.entityToModel(defaultTaskRepository.get(aPositionSuid));
+    }
 
-	@Override
-	public List<TaskEntity> getClosedTasks(Long aPositionSuid) {
-		return getRepository().getTasksByType(aPositionSuid, TaskType.ARCHIVAL);
-	}
+    /**
+     * Получение всех типовых задач
+     *
+     * @return список типовых задач
+     */
+    @Override
+    public List<DefaultTaskModel> getDefaultTaskAll() {
+        return defaultTaskRepository.getAll().stream().map(defaultTaskConverter::entityToModel)
+                .collect(Collectors.toList());
+    }
 
-	@Override
-	public List<TaskEntity> getInTasks(Long aPositionSuid) {
-		return ((TasksRepository) repository).getTasksByExecutor(aPositionSuid);
-	}
+    @Override
+    public List<TaskModel> getAllUserTasks(Long aPositionSuid) {
+        List<TaskModel> result = new ArrayList<>();
+        for (TaskType type : TaskType.values()) {
+            result.addAll(repository.getTasksByType(aPositionSuid, type).stream()
+                                  .map(converter::entityToModel).collect(Collectors.toList()));
+        }
+        return result;
+    }
 
-	@Override
-	public List<TaskEntity> getOutTasks(Long aPositionSuid) {
-		return ((TasksRepository) repository).getTasksByAuthor(aPositionSuid);
-	}
+    @Override
+    public List<TaskModel> getClosedTasks(Long aPositionSuid) {
+        return repository.getTasksByType(aPositionSuid, TaskType.ARCHIVAL).stream()
+                .map(converter::entityToModel).collect(Collectors.toList());
+    }
 
-	@Override
-	public List<TaskEntity> getDefaultTasks(Long aPositionSuid) {
-		return getRepository().getDefaultTask(aPositionSuid);
-	}
+    @Override
+    public List<TaskModel> getInTasks(Long aPositionSuid) {
+        return repository.getTasksByExecutor(aPositionSuid).stream().map(converter::entityToModel)
+                .collect(Collectors.toList());
+    }
 
-	@Override
-	protected TasksRepository getRepository() {
-		return (TasksRepository) repository;
-	}
+    @Override
+    public List<TaskModel> getOutTasks(Long aPositionSuid) {
+        return repository.getTasksByAuthor(aPositionSuid).stream().map(converter::entityToModel)
+                .collect(Collectors.toList());
+    }
 
-	@Override
-	public List<TaskEntity> getAllTasksByAuthor(Long aPositionSuid) {
-		return getRepository().getAllTasksByAuthor(aPositionSuid);
-	}
+    @Override
+    public List<TaskModel> getDefaultTasks(Long aPositionSuid) {
+        return repository.getDefaultTask(aPositionSuid).stream().map(converter::entityToModel)
+                .collect(Collectors.toList());
+    }
 
-	@Override
-	public List<TaskEntity> getAllTasksByExecutor(Long aPositionSuid) {
-		return getRepository().getAllTasksByExecutor(aPositionSuid);
-	}
+    @Override
+    public List<TaskModel> getAllTasksByAuthor(Long aPositionSuid) {
+        return repository.getAllTasksByAuthor(aPositionSuid).stream().map(converter::entityToModel)
+                .collect(Collectors.toList());
+    }
 
-	@Override
-	public List<TaskEntity> getSubElPageTasks(Long aPositionSuid, int aLimit, int aOffset) {
-		return getRepository().getSubElPageTasks(aPositionSuid, aLimit, aOffset);
-	}
+    @Override
+    public List<TaskModel> getAllTasksByExecutor(Long aPositionSuid) {
+        return repository.getAllTasksByExecutor(aPositionSuid).stream()
+                .map(converter::entityToModel).collect(Collectors.toList());
+    }
 
-	@Override
-	public Long getCountTasks(TasksViewType aType, Long aPositionSuid, Filter aFilter) {
-		return getRepository().getCountTasks(aType, aPositionSuid, aFilter);
-	}
+    @Override
+    public List<TaskModel> getSubElPageTasks(Long aPositionSuid, int aLimit, int aOffset) {
+        return repository.getSubElPageTasks(aPositionSuid, aLimit, aOffset).stream()
+                .map(converter::entityToModel).collect(Collectors.toList());
+    }
 
-	@Override
-	public List<TaskEntity> getCloseTasksWithPagination(Long aPositionSuid, int aLimit,
-			int aOffset) {
-		return getRepository().getTasksByTypeWithPagination(aPositionSuid, TaskType.ARCHIVAL,
-				aLimit, aOffset);
-	}
+    @Override
+    public Long getCountTasks(TasksViewType aType, Long aPositionSuid, Filter aFilter) {
+        return repository.getCountTasks(aType, aPositionSuid, aFilter);
+    }
 
-	@Override
-	public List<TaskEntity> getInTasksWithPagination(Long aPositionSuid, int aLimit, int aOffset) {
-		return getRepository().getInTasksWithPagination(aPositionSuid, aLimit, aOffset);
-	}
+    @Override
+    public List<TaskModel> getCloseTasksWithPagination(Long aPositionSuid, int aLimit,
+                                                       int aOffset) {
+        return repository.getTasksByTypeWithPagination(aPositionSuid, TaskType.ARCHIVAL,
+                                                       aLimit, aOffset).stream()
+                .map(converter::entityToModel).collect(Collectors.toList());
+    }
 
-	@Override
-	public List<TaskEntity> getOutTasksWithPagination(Long aPositionSuid, int aLimit, int aOffset) {
-		return getRepository().getOutTasksWithPagination(aPositionSuid, aLimit, aOffset);
-	}
+    @Override
+    public List<TaskModel> getInTasksWithPagination(Long aPositionSuid, int aLimit, int aOffset) {
+        return repository.getInTasksWithPagination(aPositionSuid, aLimit, aOffset).stream()
+                .map(converter::entityToModel).collect(Collectors.toList());
+    }
 
-	@Override
-	public List<TaskEntity> getDefaultTasksWithPagination(Long aPositionSuid, int aLimit,
-			int aOffset) {
-		return getRepository().getTasksByTypeWithPagination(aPositionSuid, TaskType.DEFAULT, aLimit,
-				aOffset);
-	}
+    @Override
+    public List<TaskModel> getOutTasksWithPagination(Long aPositionSuid, int aLimit, int aOffset) {
+        return repository.getOutTasksWithPagination(aPositionSuid, aLimit, aOffset).stream()
+                .map(converter::entityToModel).collect(Collectors.toList());
+    }
 
-	@Override
-	public Integer getPageNumberByTask(Long aPositionSuid, Long aTaskSuid, Integer aCountTaskOnPage,
-			TasksViewType aTypeView, Filter aFilter) {
-		return calcTaskPageNumber(
-				getRepository().getTasksByViewType(aPositionSuid, aTypeView, aFilter), aTaskSuid,
-				aCountTaskOnPage);
-	}
+    @Override
+    public List<TaskModel> getDefaultTasksWithPagination(Long aPositionSuid, int aLimit,
+                                                         int aOffset) {
+        return repository.getTasksByTypeWithPagination(aPositionSuid, TaskType.DEFAULT, aLimit,
+                                                       aOffset).stream()
+                .map(converter::entityToModel).collect(Collectors.toList());
+    }
 
-	/**
-	 * Рассчитывает номер страницы по идентификатору задачи
-	 *
-	 * @param aCountTaskOnPage количество задач на странице
-	 * @param aTaskSuid идентификатор задачи
-	 * @return номер страницы
-	 */
-	private Integer calcTaskPageNumber(List<TaskEntity> aList, Long aTaskSuid,
-			Integer aCountTaskOnPage) {
-		Integer result = 0;
-		if (null != aList) {
-			int k = 0;
-			int countPages = 0;
-			for (TaskEntity task : aList) {
-				if (k == aCountTaskOnPage) {
-					k = 0;
-					countPages++;
-				}
-				k++;
-				if (task.getSuid().equals(aTaskSuid)) {
-					result = countPages;
-					break;
-				}
-			}
-		}
-		return result;
-	}
+    @Override
+    public Integer getPageNumberByTask(Long aPositionSuid, Long aTaskSuid, Integer aCountTaskOnPage,
+                                       TasksViewType aTypeView, Filter aFilter) {
+        return calcTaskPageNumber(
+                repository.getTasksByViewType(aPositionSuid, aTypeView, aFilter), aTaskSuid,
+                aCountTaskOnPage);
+    }
 
-	@Override
-	public List<DefaultTaskEntity> getDefaultTasksByAuthor(Long aPositionSuid) {
-		return defaultTaskRepository.getDefaultTasksByAuthor(aPositionSuid);
-	}
+    /**
+     * Рассчитывает номер страницы по идентификатору задачи
+     *
+     * @param aCountTaskOnPage количество задач на странице
+     * @param aTaskSuid идентификатор задачи
+     * @return номер страницы
+     */
+    private Integer calcTaskPageNumber(List<TaskEntity> aList, Long aTaskSuid,
+                                       Integer aCountTaskOnPage) {
+        Integer result = 0;
+        if (null != aList) {
+            int k = 0;
+            int countPages = 0;
+            for (TaskEntity task : aList) {
+                if (k == aCountTaskOnPage) {
+                    k = 0;
+                    countPages++;
+                }
+                k++;
+                if (task.getSuid().equals(aTaskSuid)) {
+                    result = countPages;
+                    break;
+                }
+            }
+        }
+        return result;
+    }
 
-	@Override
-	public List<Long> getDefaultTasksAuthorsSuids() {
-		return defaultTaskRepository.getDefaultTasksAuthorsSuids();
-	}
+    @Override
+    public List<DefaultTaskModel> getDefaultTasksByAuthor(Long aPositionSuid) {
+        return defaultTaskRepository.getDefaultTasksByAuthor(aPositionSuid).stream()
+                .map(defaultTaskConverter::entityToModel).collect(Collectors.toList());
+    }
 
-	@Override
-	public List<TaskEntity> getTasksByViewTypeWithPagination(Long aPositionSuid,
-			TasksViewType aViewType, int aLimit, int aOffset, Filter aFilter) {
-		return getRepository().getTasksByViewTypeWithPagination(aPositionSuid, aViewType, aLimit,
-				aOffset, aFilter);
-	}
+    @Override
+    public List<Long> getDefaultTasksAuthorsSuids() {
+        return defaultTaskRepository.getDefaultTasksAuthorsSuids();
+    }
 
-	@Override
-	public List<TaskEntity> getCycleTasks() {
-		return getRepository().getCycleTasks();
-	}
+    @Override
+    public List<TaskModel> getTasksByViewTypeWithPagination(Long aPositionSuid,
+                                                            TasksViewType aViewType, int aLimit,
+                                                            int aOffset, Filter aFilter) {
+        return repository.getTasksByViewTypeWithPagination(aPositionSuid, aViewType, aLimit,
+                                                           aOffset, aFilter).stream()
+                .map(converter::entityToModel).collect(Collectors.toList());
+    }
 
-	@Override
-	public List<TaskEntity> getAllUserTasksWithFilter(Long aPositionSuid, Filter aFilter) {
-		return getRepository().getAllUserTasksWithFilter(aPositionSuid, aFilter);
-	}
+    @Override
+    public List<TaskModel> getCycleTasks() {
+        return repository.getCycleTasks().stream().map(converter::entityToModel).collect(Collectors.toList());
+    }
 
-	@Override
-	public List<TaskEntity> getAllUserTasksAuthorWithFilter(Long aPositionSuid, Filter aFilter) {
-		return getRepository().getAllUserTasksAuthorWithFilter(aPositionSuid, aFilter);
-	}
+    @Override
+    public List<TaskModel> getAllUserTasksWithFilter(Long aPositionSuid, Filter aFilter) {
+        return repository.getAllUserTasksWithFilter(aPositionSuid, aFilter).stream()
+                .map(converter::entityToModel).collect(Collectors.toList());
+    }
 
-	@Override
-	public List<TaskEntity> getAllUserTasksExecutorWithFilter(Long aPositionSuid, Filter aFilter) {
-		return getRepository().getAllUserTasksExecutorWithFilter(aPositionSuid, aFilter);
-	}
+    @Override
+    public List<TaskModel> getAllUserTasksAuthorWithFilter(Long aPositionSuid, Filter aFilter) {
+        return repository.getAllUserTasksAuthorWithFilter(aPositionSuid, aFilter).stream()
+                .map(converter::entityToModel).collect(Collectors.toList());
+    }
 
-	@Override
-	public List<TaskEntity> getAll() {
-		return getRepository().getAll();
-	}
+    @Override
+    public List<TaskModel> getAllUserTasksExecutorWithFilter(Long aPositionSuid, Filter aFilter) {
+        return repository.getAllUserTasksExecutorWithFilter(aPositionSuid, aFilter).stream()
+                .map(converter::entityToModel).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<TaskModel> getAll() {
+        return repository.getAll().stream().map(converter::entityToModel)
+                .collect(Collectors.toList());
+    }
 
 }

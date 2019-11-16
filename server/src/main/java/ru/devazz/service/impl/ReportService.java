@@ -2,17 +2,17 @@ package ru.devazz.service.impl;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.devazz.entity.Report;
-import ru.devazz.entity.SubordinationElementEntity;
-import ru.devazz.entity.TaskEntity;
-import ru.devazz.service.IReportService;
-import ru.devazz.service.ISubordinationElementService;
-import ru.devazz.service.ITaskHistoryService;
-import ru.devazz.service.ITaskService;
-import ru.devazz.utils.Filter;
-import ru.devazz.utils.FilterType;
-import ru.devazz.utils.TaskHistoryType;
-import ru.devazz.utils.TaskTimeInterval;
+import ru.devazz.server.api.IReportService;
+import ru.devazz.server.api.ISubordinationElementService;
+import ru.devazz.server.api.ITaskHistoryService;
+import ru.devazz.server.api.ITaskService;
+import ru.devazz.server.api.model.Filter;
+import ru.devazz.server.api.model.ReportModel;
+import ru.devazz.server.api.model.SubordinationElementModel;
+import ru.devazz.server.api.model.TaskModel;
+import ru.devazz.server.api.model.enums.FilterType;
+import ru.devazz.server.api.model.enums.TaskHistoryType;
+import ru.devazz.server.api.model.enums.TaskTimeInterval;
 
 import java.util.*;
 
@@ -33,12 +33,12 @@ public class ReportService implements IReportService {
 	private ITaskHistoryService taskHistoryService;
 
 	@Override
-	public Report createReportEntity(Long aPositionSuid, Date aStartDate, Date aEndDate)
+	public ReportModel createReportEntity(Long aPositionSuid, Date aStartDate, Date aEndDate)
 			throws Exception {
-		Report report = null;
-		SubordinationElementEntity subElEntity = subElService.get(aPositionSuid);
+		ReportModel report = null;
+		SubordinationElementModel subElEntity = subElService.get(aPositionSuid);
 		if (null != subElEntity) {
-			List<TaskEntity> tasksLists = taskService.getAllUserTasksExecutorWithFilter(
+			List<TaskModel> tasksLists = taskService.getAllUserTasksExecutorWithFilter(
 					subElEntity.getSuid(), getTasksFilter(aStartDate));
 			Long successDoneTasks = 0L;
 			Long closedTasks = 0L;
@@ -48,7 +48,7 @@ public class ReportService implements IReportService {
 			long inWorksTasks = 0L;
 			Long reworkTasks = 0L;
 
-			for (TaskEntity entity : tasksLists) {
+			for (TaskModel entity : tasksLists) {
 				overdueDoneTasks += getTaskOverdueDoneAmount(entity, aStartDate, aEndDate);
 				successDoneTasks += getTaskSuccessDoneAmount(entity, aStartDate, aEndDate);
 				overdueTasks += getTaskOverdueAmount(entity, aStartDate, aEndDate);
@@ -59,10 +59,10 @@ public class ReportService implements IReportService {
 			}
 
 			//@formatter:off
-			report = Report.builder()
+			report = ReportModel.builder()
 					.suid((long) (Math.random() * 10000000L) + 1000000L)
-					.battlePostSuid(aPositionSuid)
-					.battlePostName(subElEntity.getName())
+					.postSuid(aPositionSuid)
+					.postName(subElEntity.getName())
 					.reworkAmount(reworkTasks)
 					.overdueDoneAmount(overdueDoneTasks)
 					.closedAmount(closedTasks)
@@ -132,7 +132,7 @@ public class ReportService implements IReportService {
 	 * @param aEndDate дата завершения отчета
 	 * @return {@code true} - в случае, если задача была завершена после просрочки
 	 */
-	private Integer getTaskOverdueDoneAmount(TaskEntity aTask, Date aStartDate, Date aEndDate) {
+	private Integer getTaskOverdueDoneAmount(TaskModel aTask, Date aStartDate, Date aEndDate) {
 		return taskHistoryService
 				.getTaskHistory(aTask.getSuid(),
 						getHistoryFilter(TaskHistoryType.TASK_OVERDUE_DONE, aStartDate, aEndDate))
@@ -147,7 +147,7 @@ public class ReportService implements IReportService {
 	 * @param aEndDate дата завершения отчета
 	 * @return {@code true} - в случае, если задача была завершена после просрочки
 	 */
-	private Integer getTaskSuccessDoneAmount(TaskEntity aTask, Date aStartDate, Date aEndDate) {
+	private Integer getTaskSuccessDoneAmount(TaskModel aTask, Date aStartDate, Date aEndDate) {
 		return taskHistoryService.getTaskHistory(aTask.getSuid(),
 				getHistoryFilter(TaskHistoryType.TASK_DONE, aStartDate, aEndDate)).size();
 	}
@@ -160,7 +160,7 @@ public class ReportService implements IReportService {
 	 * @param aEndDate дата завершения отчета
 	 * @return {@code true} - в случае, если задача была завершена после просрочки
 	 */
-	private Integer getTaskClosedAmount(TaskEntity aTask, Date aStartDate, Date aEndDate) {
+	private Integer getTaskClosedAmount(TaskModel aTask, Date aStartDate, Date aEndDate) {
 		return taskHistoryService.getTaskHistory(aTask.getSuid(),
 				getHistoryFilter(TaskHistoryType.TASK_CLOSED, aStartDate, aEndDate)).size();
 	}
@@ -173,7 +173,7 @@ public class ReportService implements IReportService {
 	 * @param aEndDate дата завершения отчета
 	 * @return {@code true} - в случае, если задача была завершена после просрочки
 	 */
-	private Integer getTaskFailedAmount(TaskEntity aTask, Date aStartDate, Date aEndDate) {
+	private Integer getTaskFailedAmount(TaskModel aTask, Date aStartDate, Date aEndDate) {
 		return taskHistoryService.getTaskHistory(aTask.getSuid(),
 				getHistoryFilter(TaskHistoryType.TASK_FAILED, aStartDate, aEndDate)).size();
 	}
@@ -186,7 +186,7 @@ public class ReportService implements IReportService {
 	 * @param aEndDate дата завершения отчета
 	 * @return {@code true} - в случае, если задача была завершена после просрочки
 	 */
-	private Integer getTaskOverdueAmount(TaskEntity aTask, Date aStartDate, Date aEndDate) {
+	private Integer getTaskOverdueAmount(TaskModel aTask, Date aStartDate, Date aEndDate) {
 		return taskHistoryService
 				.getTaskHistory(aTask.getSuid(),
 						getHistoryFilter(TaskHistoryType.TASK_OVERDUE, aStartDate, aEndDate))
@@ -201,7 +201,7 @@ public class ReportService implements IReportService {
 	 * @param aEndDate дата завершения отчета
 	 * @return {@code true} - в случае, если задача была завершена после просрочки
 	 */
-	private Integer getTaskReworkAmount(TaskEntity aTask, Date aStartDate, Date aEndDate) {
+	private Integer getTaskReworkAmount(TaskModel aTask, Date aStartDate, Date aEndDate) {
 		return taskHistoryService.getTaskHistory(aTask.getSuid(),
 				getHistoryFilter(TaskHistoryType.TASK_REWORK, aStartDate, aEndDate)).size();
 	}

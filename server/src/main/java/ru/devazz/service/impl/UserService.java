@@ -1,39 +1,51 @@
 package ru.devazz.service.impl;
 
-import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 import ru.devazz.entity.UserEntity;
-import ru.devazz.event.ObjectEvent;
-import ru.devazz.event.UserEvent;
 import ru.devazz.repository.UserRepository;
+import ru.devazz.server.api.IUserService;
+import ru.devazz.server.api.event.ObjectEvent;
+import ru.devazz.server.api.event.UserEvent;
+import ru.devazz.server.api.model.UserModel;
+import ru.devazz.server.api.model.enums.JmsQueueName;
+import ru.devazz.server.api.model.enums.SystemEventType;
 import ru.devazz.service.AbstractEntityService;
-import ru.devazz.service.ITaskService;
-import ru.devazz.service.IUserService;
-import ru.devazz.utils.JmsQueueName;
-import ru.devazz.utils.SystemEventType;
+import ru.devazz.service.impl.converters.UserEntityConverter;
 import ru.devazz.utils.Utils;
 
 import javax.persistence.NoResultException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Сервис работы с пользователями
  */
 @Service
-@AllArgsConstructor
-public class UserService extends AbstractEntityService<UserEntity>
+public class UserService extends AbstractEntityService<UserModel, UserEntity>
 		implements IUserService {
 
 	private JmsTemplate broker;
 
+	private UserRepository repository;
+
+	private UserEntityConverter converter;
+
+	public UserService(JmsTemplate broker,
+					   UserRepository repository,
+					   UserEntityConverter converter) {
+		super(repository, converter, broker);
+		this.broker = broker;
+		this.repository = repository;
+		this.converter = converter;
+	}
+
 	@Override
-	public UserEntity checkUser(String aUsername, String aPassword) throws Exception {
+	public UserModel checkUser(String aUsername, String aPassword) throws Exception {
 		UserEntity result = null;
 		List<UserEntity> users = null;
 		try {
-			result = getRepository().findByUserName(aUsername, Utils.getInstance().sha(aPassword));
+			result = repository.findByUserName(aUsername, Utils.getInstance().sha(aPassword));
 			if (null != result) {
 
 				if (result.getOnline()) {
@@ -41,7 +53,7 @@ public class UserService extends AbstractEntityService<UserEntity>
 							"Пользователь с таким логином уже авторизирован");
 				}
 
-				users = getRepository().getUserBySubElSuid(result.getPositionSuid());
+				users = repository.getUserBySubElSuid(result.getPositionSuid());
 				for (UserEntity entity : users) {
 					if ((!entity.equals(result)) && entity.getOnline()) {
 						throw new Exception(
@@ -50,10 +62,10 @@ public class UserService extends AbstractEntityService<UserEntity>
 				}
 
 				result.setOnline(true);
-				getRepository().update(result);
+				repository.update(result);
 
-				getBroker().convertAndSend(JmsQueueName.DEFAULT.getName(), getEventByEntity(
-						SystemEventType.USER_ONLINE, result));
+				broker.convertAndSend(JmsQueueName.DEFAULT.getName(), getEventByEntity(
+						SystemEventType.USER_ONLINE, converter.entityToModel(result)));
 			}
 		} catch (Exception e) {
 			// В случае, если не было найдено пользователей
@@ -63,22 +75,13 @@ public class UserService extends AbstractEntityService<UserEntity>
 			}
 
 		}
-		return result;
+		return converter.entityToModel(result);
 	}
 
 	@Override
-	public List<UserEntity> getServiceUserList() {
-		return ((UserRepository) repository).getServiceUserList();
-	}
-
-	@Override
-	protected UserRepository createRepository() {
-		return new UserRepository();
-	}
-
-	@Override
-	protected UserRepository getRepository() {
-		return (UserRepository) repository;
+	public List<UserModel> getServiceUserList() {
+		return repository.getServiceUserList().stream().map(converter::entityToModel).collect(
+				Collectors.toList());
 	}
 
 	@Override
@@ -87,16 +90,11 @@ public class UserService extends AbstractEntityService<UserEntity>
 	}
 
 	@Override
-	protected JmsTemplate getBroker() {
-		return broker;
-	}
-
-	@Override
-	public UserEntity getUserBySubElSuid(Long aSuid) {
+	public UserModel getUserBySubElSuid(Long aSuid) {
 		UserEntity entity = null;
 		List<UserEntity> users = null;
 		try {
-			users = ((UserRepository) repository).getUserBySubElSuid(aSuid);
+			users = repository.getUserBySubElSuid(aSuid);
 			for (UserEntity user : users) {
 				if (user.getOnline()) {
 					entity = user;
@@ -110,17 +108,17 @@ public class UserService extends AbstractEntityService<UserEntity>
 			// TODO Логирование
 			// Не обрабатываем
 		}
-		return entity;
+		return converter.entityToModel(entity);
 	}
 
 	@Override
 	public byte[] getUserImage(Long aUserSuid) {
-		return getRepository().getUserImage(aUserSuid);
+		return repository.getUserImage(aUserSuid);
 	}
 
 	@Override
 	public void disableUser(Long aUserSuid) {
-		UserEntity user = get(aUserSuid);
+		UserModel user = get(aUserSuid);
 		if (null != user) {
 			user.setOnline(false);
 			try {
@@ -135,12 +133,12 @@ public class UserService extends AbstractEntityService<UserEntity>
 
 	@Override
 	public byte[] getUserImageBySubElSuid(Long aSubElSuid) {
-		return getRepository().getUserImageBySubElSuid(aSubElSuid);
+		return repository.getUserImageBySubElSuid(aSubElSuid);
 	}
 
 	@Override
 	public Long getUserSuidBySubElSuid(Long aSubElSuid) {
-		return getRepository().getUserSuidBySubElSuid(aSubElSuid);
+		return repository.getUserSuidBySubElSuid(aSubElSuid);
 	}
 
 }

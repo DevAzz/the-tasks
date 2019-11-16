@@ -3,8 +3,13 @@ package ru.devazz.repository;
 import org.springframework.stereotype.Repository;
 import ru.devazz.entity.TaskHistoryEntity;
 import ru.devazz.entity.TaskHistoryEntity_;
-import ru.devazz.utils.*;
+import ru.devazz.server.api.model.Filter;
+import ru.devazz.server.api.model.enums.FilterType;
+import ru.devazz.server.api.model.enums.TaskHistoryType;
+import ru.devazz.server.api.model.enums.TaskTimeInterval;
+import ru.devazz.utils.Utils;
 
+import javax.persistence.EntityManager;
 import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.Date;
@@ -16,6 +21,13 @@ import java.util.Map.Entry;
  */
 @Repository
 public class TaskHistoryRepository extends AbstractRepository<TaskHistoryEntity> {
+
+	private EntityManager em;
+
+	public TaskHistoryRepository(EntityManager em) {
+		super(em);
+		this.em = em;
+	}
 
 	@Override
 	public Class<TaskHistoryEntity> getEntityClass() {

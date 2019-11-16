@@ -4,6 +4,7 @@ import org.springframework.stereotype.Repository;
 import ru.devazz.entity.EventEntity;
 import ru.devazz.entity.EventEntity_;
 
+import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -16,6 +17,13 @@ import java.util.List;
 @Repository
 public class EventRepository extends AbstractRepository<EventEntity> {
 
+	private EntityManager em;
+
+	public EventRepository(EntityManager em) {
+		super(em);
+		this.em = em;
+	}
+
 	/**
 	 * Удаляет события по идентификатору задачи
 	 *
@@ -24,7 +32,7 @@ public class EventRepository extends AbstractRepository<EventEntity> {
 	public void deleteEventsByTasksSuid(Long aSuid) {
 		List<EventEntity> list = getEventsByTaskSuid(aSuid);
 		for (EventEntity entity : list) {
-			delete(entity.getIdEvents());
+			delete(entity.getSuid());
 		}
 	}
 

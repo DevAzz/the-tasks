@@ -1,25 +1,27 @@
 package ru.devazz.service.impl;
 
-import lombok.AllArgsConstructor;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 import ru.devazz.entity.RoleEntity;
 import ru.devazz.entity.UserEntity;
-import ru.devazz.event.ObjectEvent;
-import ru.devazz.event.RoleEvent;
 import ru.devazz.repository.AbstractRepository;
 import ru.devazz.repository.RoleRepository;
+import ru.devazz.server.api.IRoleService;
+import ru.devazz.server.api.IUserService;
+import ru.devazz.server.api.event.ObjectEvent;
+import ru.devazz.server.api.event.RoleEvent;
+import ru.devazz.server.api.model.RoleModel;
+import ru.devazz.server.api.model.UserModel;
+import ru.devazz.server.api.model.enums.UserRoles;
 import ru.devazz.service.AbstractEntityService;
-import ru.devazz.service.IRoleService;
-import ru.devazz.service.IUserService;
-import ru.devazz.utils.UserRoles;
+import ru.devazz.service.impl.converters.IEntityConverter;
+import ru.devazz.service.impl.converters.RoleEntityConverter;
 
 /**
  * Реализация сервиса взаимодействия с ролями пользователей
  */
 @Service
-@AllArgsConstructor
-public class RoleService extends AbstractEntityService<RoleEntity>
+public class RoleService extends AbstractEntityService<RoleModel, RoleEntity>
 		implements IRoleService {
 
 	/** Сервис работы с пользователями */
@@ -27,9 +29,17 @@ public class RoleService extends AbstractEntityService<RoleEntity>
 
 	private JmsTemplate broker;
 
-	@Override
-	protected AbstractRepository<RoleEntity> createRepository() {
-		return new RoleRepository();
+	private RoleEntityConverter converter;
+
+	private RoleRepository repository;
+
+	public RoleService(IUserService userService, JmsTemplate broker, RoleEntityConverter converter,
+					   RoleRepository repository) {
+		super(repository, converter, broker);
+		this.userService = userService;
+		this.broker = broker;
+		this.converter = converter;
+		this.repository = repository;
 	}
 
 	@Override
@@ -38,14 +48,9 @@ public class RoleService extends AbstractEntityService<RoleEntity>
 	}
 
 	@Override
-	protected JmsTemplate getBroker() {
-		return broker;
-	}
-
-	@Override
-	public RoleEntity getRoleByUserRolesEnum(UserRoles aUserRole, Long aUserSuid) {
-		RoleEntity result = null;
-		for (RoleEntity role : getAll(aUserSuid)) {
+	public RoleModel getRoleByUserRolesEnum(UserRoles aUserRole, Long aUserSuid) {
+		RoleModel result = null;
+		for (RoleModel role : getAll(aUserSuid)) {
 			if (aUserRole.getName().equals(role.getName())) {
 				result = role;
 			}
@@ -56,9 +61,9 @@ public class RoleService extends AbstractEntityService<RoleEntity>
 	@Override
 	public boolean checkUserPrivilege(UserRoles aRole, Long aUserSuid) {
 		boolean result = false;
-		UserEntity user = userService.get(aUserSuid);
+		UserModel user = userService.get(aUserSuid);
 		if (null != user) {
-			Long roleSuid = user.getIdrole();
+			Long roleSuid = user.getIdRole();
 			UserRoles userRole = UserRoles.getUserRoleByName(get(roleSuid).getName());
 			result = (userRole.getPositionIndex() > aRole.getPositionIndex());
 		}

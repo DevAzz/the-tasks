@@ -1,9 +1,11 @@
 package ru.devazz.repository;
 
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
 import ru.devazz.entity.DefaultTaskEntity;
 import ru.devazz.entity.DefaultTaskEntity_;
 
+import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -16,6 +18,12 @@ import java.util.List;
  */
 @Repository
 public class DefaultTaskRepository extends AbstractRepository<DefaultTaskEntity> {
+
+	private EntityManager em;
+
+	public DefaultTaskRepository(EntityManager em) {
+		super(em);
+	}
 
 	/**
 	 * Получение типовых задач по SUID должности

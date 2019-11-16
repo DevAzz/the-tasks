@@ -1,6 +1,7 @@
 package ru.devazz.entity;
 
 import lombok.Data;
+import ru.devazz.server.api.model.IEntity;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -17,7 +18,7 @@ public class EventEntity implements Serializable, IEntity {
 	/** Идентификатор события */
 	@Id
 	@Column(name = "idevents")
-	private Long idEvents;
+	private Long suid;
 
 	/** Наименование события */
 	@Column(name = "name", nullable = false, columnDefinition = "text")
@@ -42,8 +43,4 @@ public class EventEntity implements Serializable, IEntity {
 	/** Идентификатор задачи */
 	@Column(name = "tasks_task_suid", columnDefinition = "bigint")
 	private Long taskSuid;
-
-	public Long getSuid() {
-		return getIdEvents();
-	}
 }

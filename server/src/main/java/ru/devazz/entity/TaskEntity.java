@@ -2,10 +2,11 @@ package ru.devazz.entity;
 
 import lombok.Builder;
 import lombok.Data;
-import ru.devazz.utils.CycleTypeTask;
-import ru.devazz.utils.TaskPriority;
-import ru.devazz.utils.TaskStatus;
-import ru.devazz.utils.TaskType;
+import ru.devazz.server.api.model.IEntity;
+import ru.devazz.server.api.model.enums.CycleTypeTask;
+import ru.devazz.server.api.model.enums.TaskPriority;
+import ru.devazz.server.api.model.enums.TaskStatus;
+import ru.devazz.server.api.model.enums.TaskType;
 
 import javax.persistence.*;
 import java.io.Serializable;

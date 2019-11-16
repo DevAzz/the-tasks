@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TreeView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="666.0" prefWidth="1010.0" styleClass="anchor-pane" stylesheets="@main.css" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.mainformcontroller">
+   <children>
+      <SplitPane dividerPositions="0.2286282306163022" layoutY="24.0" prefHeight="625.0" prefWidth="1010.0" AnchorPane.bottomAnchor="17.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="24.0">
+        <items>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="621.0" prefWidth="214.0">
+               <children>
+                  <TreeView fx:id="subordinationTree" prefHeight="621.0" prefWidth="227.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+               </children>
+            </AnchorPane>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="408.0" prefWidth="298.0">
+               <children>
+                  <SplitPane dividerPositions="0.754863813229572" layoutY="32.0" prefHeight="640.0" prefWidth="779.0" AnchorPane.bottomAnchor="-32.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="-8.0" AnchorPane.topAnchor="32.0">
+                    <items>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="617.0" prefWidth="593.0" />
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" />
+                    </items>
+                  </SplitPane>
+                  <TextField accessibleText="search" focusTraversable="false" layoutX="18.0" layoutY="4.0" prefHeight="25.0" prefWidth="717.0" promptText="search" styleClass="search-field" AnchorPane.leftAnchor="18.0" AnchorPane.rightAnchor="36.0" AnchorPane.topAnchor="4.0" />
+                  <Button layoutX="712.0" layoutY="4.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="23.0" styleClass="extended_search_button" AnchorPane.rightAnchor="36.0" AnchorPane.topAnchor="4.0" />
+               </children>
+            </AnchorPane>
+        </items>
+      </SplitPane>
+      <MenuBar prefHeight="15.0" prefWidth="1010.0">
+        <menus>
+          <Menu mnemonicParsing="false" text="Файл">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Выход" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Редактирование" />
+            <Menu mnemonicParsing="false" text="Журнал Событий" />
+          <Menu mnemonicParsing="false" text="Помощь">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Справка" />
+                  <MenuItem mnemonicParsing="false" text="О программе" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+   </children>
+</AnchorPane>

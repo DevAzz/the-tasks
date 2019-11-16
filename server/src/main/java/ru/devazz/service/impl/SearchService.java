@@ -3,7 +3,8 @@ package ru.devazz.service.impl;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.devazz.entity.*;
-import ru.devazz.service.*;
+import ru.devazz.server.api.*;
+import ru.devazz.server.api.model.*;
 import ru.devazz.utils.Utils;
 
 import java.io.UnsupportedEncodingException;
@@ -36,10 +37,10 @@ public class SearchService implements ISearchService {
 	private IEventService eventService;
 
 	@Override
-	public List<UserEntity> searchUsersByName(String aName, Long aUserSuid) {
-		IUserService service = getService(UserEntity.class);
-		List<UserEntity> result = new ArrayList<>();
-		for (UserEntity entity : service.getAll(aUserSuid)) {
+	public List<UserModel> searchUsersByName(String aName, Long aUserSuid) {
+		IUserService service = getService(UserModel.class);
+		List<UserModel> result = new ArrayList<>();
+		for (UserModel entity : service.getAll(aUserSuid)) {
 			if ((null != entity.getName()) && (entity.getName().contains(aName))) {
 				result.add(entity);
 			}
@@ -48,10 +49,10 @@ public class SearchService implements ISearchService {
 	}
 
 	@Override
-	public List<UserEntity> searchUsersByPosition(String aPosition, Long aUserSuid) {
-		IUserService service = getService(UserEntity.class);
-		List<UserEntity> result = new ArrayList<>();
-		for (UserEntity entity : service.getAll(aUserSuid)) {
+	public List<UserModel> searchUsersByPosition(String aPosition, Long aUserSuid) {
+		IUserService service = getService(UserModel.class);
+		List<UserModel> result = new ArrayList<>();
+		for (UserModel entity : service.getAll(aUserSuid)) {
 			if ((null != entity.getPosition()) && (entity.getPosition().contains(aPosition))) {
 				result.add(entity);
 			}
@@ -60,10 +61,10 @@ public class SearchService implements ISearchService {
 	}
 
 	@Override
-	public List<SubordinationElementEntity> searchSubElsByName(String aName, Long aUserSuid) {
-		ISubordinationElementService service = getService(SubordinationElementEntity.class);
-		List<SubordinationElementEntity> result = new ArrayList<>();
-		for (SubordinationElementEntity entity : service.getAll(aUserSuid)) {
+	public List<SubordinationElementModel> searchSubElsByName(String aName, Long aUserSuid) {
+		ISubordinationElementService service = getService(SubordinationElementModel.class);
+		List<SubordinationElementModel> result = new ArrayList<>();
+		for (SubordinationElementModel entity : service.getAll(aUserSuid)) {
 			result.addAll(findSubEls(entity, aName));
 		}
 		return result;
@@ -72,17 +73,17 @@ public class SearchService implements ISearchService {
 	/**
 	 * Рекурсивная функция поиска по элементам подчиненности
 	 *
-	 * @param aEntity элемент подчиненности
+	 * @param aModel элемент подчиненности
 	 * @param aName наименование искомого элемента
 	 * @return список соответствий
 	 */
-	private Set<SubordinationElementEntity> findSubEls(SubordinationElementEntity aEntity,
+	private Set<SubordinationElementModel> findSubEls(SubordinationElementModel aModel,
 			String aName) {
-		Set<SubordinationElementEntity> result = new HashSet<>();
-		if (aEntity.getName().contains(aName)) {
-			result.add(aEntity);
+		Set<SubordinationElementModel> result = new HashSet<>();
+		if (aModel.getName().contains(aName)) {
+			result.add(aModel);
 		}
-		for (SubordinationElementEntity entity : aEntity.getSubordinates()) {
+		for (SubordinationElementModel entity : aModel.getSubordinates()) {
 			if (entity.getName().contains(aName)) {
 				result.add(entity);
 			}
@@ -92,10 +93,10 @@ public class SearchService implements ISearchService {
 	}
 
 	@Override
-	public List<TaskEntity> searchTasksByName(String aName, Long aUserSuid) {
-		ITaskService service = getService(TaskEntity.class);
-		List<TaskEntity> result = new ArrayList<>();
-		for (TaskEntity entity : service.getAll()) {
+	public List<TaskModel> searchTasksByName(String aName, Long aUserSuid) {
+		ITaskService service = getService(TaskModel.class);
+		List<TaskModel> result = new ArrayList<>();
+		for (TaskModel entity : service.getAll()) {
 			String taskName = Utils.getInstance().fromBase64(entity.getName());
 			try {
 				String taskNameUTF8 = new String(taskName.getBytes(), StandardCharsets.UTF_8);
@@ -112,14 +113,14 @@ public class SearchService implements ISearchService {
 	}
 
 	@Override
-	public List<TaskEntity> searchTasksByAuthor(Long aAuthorSubElSuid) {
-		ITaskService taskService = getService(TaskEntity.class);
+	public List<TaskModel> searchTasksByAuthor(Long aAuthorSubElSuid) {
+		ITaskService taskService = getService(TaskModel.class);
 		return taskService.getAllTasksByAuthor(aAuthorSubElSuid);
 	}
 
 	@Override
-	public List<TaskEntity> searchTasksByExecutor(Long aExecutorSubElSuid) {
-		ITaskService taskService = getService(TaskEntity.class);
+	public List<TaskModel> searchTasksByExecutor(Long aExecutorSubElSuid) {
+		ITaskService taskService = getService(TaskModel.class);
 		return taskService.getAllTasksByExecutor(aExecutorSubElSuid);
 	}
 
@@ -134,15 +135,15 @@ public class SearchService implements ISearchService {
 			Class<? extends IEntity> aTypeEntity) {
 		T service = null;
 
-		if (aTypeEntity.equals(UserEntity.class)) {
+		if (aTypeEntity.equals(UserModel.class)) {
 			service = (T) userService;
-		} else if (aTypeEntity.equals(RoleEntity.class)) {
+		} else if (aTypeEntity.equals(RoleModel.class)) {
 			service = (T) roleService;
-		} else if (aTypeEntity.equals(SubordinationElementEntity.class)) {
+		} else if (aTypeEntity.equals(SubordinationElementModel.class)) {
 			service = (T) subElService;
-		} else if (aTypeEntity.equals(TaskEntity.class)) {
+		} else if (aTypeEntity.equals(TaskModel.class)) {
 			service = (T) tasksService;
-		} else if (aTypeEntity.equals(EventEntity.class)) {
+		} else if (aTypeEntity.equals(EventModel.class)) {
 			service = (T) eventService;
 		}
 		return service;

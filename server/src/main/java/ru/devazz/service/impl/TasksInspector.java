@@ -1,19 +1,16 @@
 package ru.devazz.service.impl;
 
-import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import ru.devazz.entity.DefaultTaskEntity;
-import ru.devazz.entity.SubordinationElementEntity;
-import ru.devazz.entity.TaskEntity;
-import ru.devazz.entity.TaskHistoryEntity;
-import ru.devazz.event.TaskEvent;
-import ru.devazz.service.ISubordinationElementService;
-import ru.devazz.service.ITaskHistoryService;
-import ru.devazz.service.ITaskService;
-import ru.devazz.utils.*;
+import ru.devazz.server.api.ISubordinationElementService;
+import ru.devazz.server.api.ITaskHistoryService;
+import ru.devazz.server.api.ITaskService;
+import ru.devazz.server.api.model.DefaultTaskModel;
+import ru.devazz.server.api.model.SubordinationElementModel;
+import ru.devazz.server.api.model.TaskHistoryModel;
+import ru.devazz.server.api.model.TaskModel;
+import ru.devazz.server.api.model.enums.*;
+import ru.devazz.utils.Utils;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -144,8 +141,8 @@ public class TasksInspector {
 			try {
 				Thread.sleep(30000L);
 				while (true) {
-					List<TaskEntity> taskList = taskService.getAll(null);
-					for (TaskEntity entity : taskList) {
+					List<TaskModel> taskList = taskService.getAll(null);
+					for (TaskModel entity : taskList) {
 						boolean nonArchiveTask = !(TaskStatus.DONE.equals(entity.getStatus()))
 								&& !(TaskStatus.CLOSED.equals(entity.getStatus()))
 								&& !(TaskStatus.FAILD.equals(entity.getStatus()));
@@ -169,19 +166,19 @@ public class TasksInspector {
 									.getEventByEntity(SystemEventType.OVERDUE, entity));
 
 							//	@formatter:off
-							TaskHistoryEntity historyEntity = TaskHistoryEntity.builder()
+							TaskHistoryModel historyModel = TaskHistoryModel.builder()
 									.taskSuid(entity.getSuid())
 									.date(new Date())
 									.build();
 							//	@formatter:on
-							historyEntity.setActorSuid(entity.getAuthorSuid());
-							historyEntity.setHistoryType(TaskHistoryType.TASK_OVERDUE);
-							SubordinationElementEntity subEl = subelService
+							historyModel.setActorSuid(entity.getAuthorSuid());
+							historyModel.setHistoryType(TaskHistoryType.TASK_OVERDUE);
+							SubordinationElementModel subEl = subelService
 									.get(entity.getExecutorSuid());
-							historyEntity.setText(
+							historyModel.setText(
 									"Пользователь " + subEl.getName() + " просрочил задачу");
-							historyEntity.setTitle("Задача просрочена");
-							historyService.add(historyEntity, true);
+							historyModel.setTitle("Задача просрочена");
+							historyService.add(historyModel, true);
 							Thread.sleep(100L);
 						}
 
@@ -221,7 +218,7 @@ public class TasksInspector {
 	 * @param aEntity сущность задачи
 	 * @param aNonArchiveTask не архивная задача
 	 */
-	private void cycleRemappingTask(TaskEntity aEntity, boolean aNonArchiveTask) {
+	private void cycleRemappingTask(TaskModel aEntity, boolean aNonArchiveTask) {
 		if ((null != aEntity) && aNonArchiveTask) {
 
 			Date startDate = aEntity.getStartDate();
@@ -249,7 +246,7 @@ public class TasksInspector {
 				}
 
 				if (TaskType.DEFAULT.equals(aEntity.getTaskType())) {
-					DefaultTaskEntity defaultTask = taskService
+					DefaultTaskModel defaultTask = taskService
 							.getDefaultTaskBySUID(aEntity.getSuid());
 					if ((null != defaultTask) && defaultTask.getNextDay()) {
 						calendarStart.add(Calendar.DAY_OF_MONTH, 1);
@@ -265,9 +262,9 @@ public class TasksInspector {
 		}
 	}
 
-	private void createHistoryEntry(TaskEntity aEntity) {
+	private void createHistoryEntry(TaskModel aEntity) {
 		//	@formatter:off
-		TaskHistoryEntity historyEntity = TaskHistoryEntity.builder()
+		TaskHistoryModel historyEntity = TaskHistoryModel.builder()
 				.taskSuid(aEntity.getSuid())
 				.date(new Date())
 				.build();
@@ -695,8 +692,8 @@ public class TasksInspector {
 	 * @param aEntity типовая задача
 	 * @return обыкновенная задача
 	 */
-	private TaskEntity convertDefaultTask(DefaultTaskEntity aEntity) {
-		TaskEntity result = null;
+	private TaskModel convertDefaultTask(DefaultTaskModel aEntity) {
+		TaskModel result = null;
 		try {
 			SimpleDateFormat parser = new SimpleDateFormat("HH:mm");
 
@@ -728,8 +725,8 @@ public class TasksInspector {
 			}
 
 			//	@formatter:off
-			result = TaskEntity.builder()
-					.taskSuid(aEntity.getSuid())
+			result = TaskModel.builder()
+					.suid(aEntity.getSuid())
 					.authorSuid(aEntity.getAuthorSuid())
 					.name(Utils.getInstance().toBase64(aEntity.getName()))
 					.note(Utils.getInstance().toBase64(aEntity.getNote()))
@@ -755,11 +752,11 @@ public class TasksInspector {
 	 * Отслеживает состояние типовых задач
 	 */
 	private void inspectDefaultTask()  {
-		for (DefaultTaskEntity defaultTask : taskService.getDefaultTaskAll()) {
-			TaskEntity oldEntity = taskService.get(defaultTask.getSuid());
+		for (DefaultTaskModel defaultTask : taskService.getDefaultTaskAll()) {
+			TaskModel oldEntity = taskService.get(defaultTask.getSuid());
 			boolean needCreateTask = (null == oldEntity);
 			if (needCreateTask) {
-				TaskEntity entity = convertDefaultTask(defaultTask);
+				TaskModel entity = convertDefaultTask(defaultTask);
 				taskService.add(entity, false);
 			}
 		}
@@ -772,7 +769,7 @@ public class TasksInspector {
 	 * @return {@code true} - если если текущее время не вышло за пределы 90% от
 	 *         отпущенного на задачу
 	 */
-	private boolean isTimeAfter(TaskEntity task) {
+	private boolean isTimeAfter(TaskModel task) {
 		double timeLeftOver = 0;
 		double currentTime = 0;
 		Date date = new Date();

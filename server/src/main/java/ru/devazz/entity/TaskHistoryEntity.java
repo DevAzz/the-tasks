@@ -2,7 +2,8 @@ package ru.devazz.entity;
 
 import lombok.Builder;
 import lombok.Data;
-import ru.devazz.utils.TaskHistoryType;
+import ru.devazz.server.api.model.IEntity;
+import ru.devazz.server.api.model.enums.TaskHistoryType;
 
 import javax.persistence.*;
 import java.io.Serializable;

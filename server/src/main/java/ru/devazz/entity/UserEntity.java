@@ -2,6 +2,7 @@ package ru.devazz.entity;
 
 import lombok.Data;
 import org.hibernate.annotations.Type;
+import ru.devazz.server.api.model.IEntity;
 
 import javax.persistence.*;
 import java.io.Serializable;
