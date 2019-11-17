@@ -1,6 +1,3 @@
-/**
- *
- */
 package ru.devazz.widgets;
 
 import javafx.application.Platform;
@@ -12,8 +9,8 @@ import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.util.StringConverter;
-import ru.siencesquad.hqtasks.ui.model.PageSettingsModel;
-import ru.siencesquad.hqtasks.ui.view.AbstractView;
+import ru.devazz.model.PageSettingsModel;
+import ru.devazz.view.AbstractView;
 
 import java.util.Map;
 
@@ -66,9 +63,6 @@ public class PageSettingsView extends AbstractView<PageSettingsModel> {
 	/** Действие сохранения настроек паджинации */
 	private Runnable saveRunnable;
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#initialize()
-	 */
 	@Override
 	public void initialize() {
 	}
@@ -199,9 +193,6 @@ public class PageSettingsView extends AbstractView<PageSettingsModel> {
 		}
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#createPresentaionModel()
-	 */
 	@Override
 	protected PageSettingsModel createPresentaionModel() {
 		return new PageSettingsModel();

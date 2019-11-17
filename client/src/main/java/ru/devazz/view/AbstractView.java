@@ -9,6 +9,9 @@ import ru.devazz.interfaces.CloseListener;
 import ru.devazz.interfaces.SelectableObject;
 import ru.devazz.interfaces.SelectionListener;
 import ru.devazz.interfaces.UpdateListener;
+import ru.devazz.model.PresentationModel;
+import ru.devazz.server.api.ICommonService;
+import ru.devazz.server.api.model.IEntity;
 
 import java.util.ArrayList;
 import java.util.List;

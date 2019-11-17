@@ -14,10 +14,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
-import ru.siencesquad.hqtasks.ui.entities.Task;
-import ru.siencesquad.hqtasks.ui.model.SummaryPanelViewModel;
-import ru.siencesquad.hqtasks.ui.utils.Utils;
-import ru.siencesquad.hqtasks.ui.view.RootView.OpenTaskInSummaryHandler;
+import ru.devazz.entities.Task;
+import ru.devazz.model.SummaryPanelViewModel;
+import ru.devazz.utils.Utils;
 
 import java.io.IOException;
 
@@ -90,11 +89,8 @@ public class SummaryPanelView extends AbstractView<SummaryPanelViewModel> {
 	private Point2D clickMouseLocation;
 
 	/** Обработчик открытия задачи */
-	private OpenTaskInSummaryHandler openTaskHandler;
+	private RootView.OpenTaskInSummaryHandler openTaskHandler;
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#initialize()
-	 */
 	@Override
 	public void initialize() {
 		Bindings.bindBidirectional(subElLabel.textProperty(), model.getSubElLabelProperty());
@@ -167,7 +163,7 @@ public class SummaryPanelView extends AbstractView<SummaryPanelViewModel> {
 	 *
 	 * @param openTaskHandler значение поля
 	 */
-	public void setOpenTaskHandler(OpenTaskInSummaryHandler openTaskHandler) {
+	public void setOpenTaskHandler(RootView.OpenTaskInSummaryHandler openTaskHandler) {
 		this.openTaskHandler = openTaskHandler;
 	}
 
@@ -222,9 +218,6 @@ public class SummaryPanelView extends AbstractView<SummaryPanelViewModel> {
 		return rootAnchorPane;
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#createPresentaionModel()
-	 */
 	@Override
 	protected SummaryPanelViewModel createPresentaionModel() {
 		return new SummaryPanelViewModel();

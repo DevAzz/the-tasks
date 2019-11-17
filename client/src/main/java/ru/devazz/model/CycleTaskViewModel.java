@@ -4,16 +4,19 @@ import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
 import javafx.util.converter.LocalTimeStringConverter;
 import ru.devazz.entities.Task;
+import ru.devazz.server.api.ICommonService;
+import ru.devazz.server.api.model.IEntity;
+import ru.devazz.server.api.model.enums.CycleTypeTask;
+import ru.devazz.server.api.model.enums.DayOfWeek;
 import ru.devazz.utils.CycleEnums;
 
 import java.text.SimpleDateFormat;
-import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.Map.Entry;
-import
+import ru.devazz.utils.CycleEnums.*;
 
 /**
  * Модель представления управления цикличным назначением задач
@@ -470,7 +473,6 @@ public class CycleTaskViewModel extends PresentationModel<ICommonService, IEntit
 	/**
 	 * Возвращает список свойств по типу данных значения свойства
 	 *
-	 * @param aType тип данных значения свойства
 	 * @return список свойств
 	 */
 	@SuppressWarnings("unchecked")
@@ -521,7 +523,6 @@ public class CycleTaskViewModel extends PresentationModel<ICommonService, IEntit
 	 * Возвращает список свойств по типу данных значения свойства
 	 *
 	 * @param aType тип данных значения свойства
-	 * @param aValueType тип значения
 	 * @param aExcludedElementType исключенные типы
 	 * @return список свойств
 	 *
@@ -570,7 +571,6 @@ public class CycleTaskViewModel extends PresentationModel<ICommonService, IEntit
 	 * Создает свойство
 	 *
 	 * @param aNodeType тип свойства
-	 * @param aPropertyTypeClass тип значения свойства
 	 * @return созданное свойство
 	 */
 	@SuppressWarnings("unchecked")
@@ -980,9 +980,6 @@ public class CycleTaskViewModel extends PresentationModel<ICommonService, IEntit
 		this.month = month;
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.model.PresentationModel#getTypeService()
-	 */
 	@Override
 	public Class<ICommonService> getTypeService() {
 		return null;

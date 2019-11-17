@@ -5,9 +5,9 @@ package ru.devazz.model;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import ru.sciencesquad.hqtasks.server.bean.ICommonService;
-import ru.sciencesquad.hqtasks.server.datamodel.IEntity;
-import ru.siencesquad.hqtasks.ui.widgets.PageSettingsView;
+import ru.devazz.server.api.ICommonService;
+import ru.devazz.server.api.model.IEntity;
+import ru.devazz.widgets.PageSettingsView;
 
 import java.util.Map;
 
@@ -22,9 +22,6 @@ public class PageSettingsModel extends PresentationModel<ICommonService, IEntity
 	/** Свойство значения выбора количества страниц в блоке */
 	private ObjectProperty<Integer> countPagesProperty;
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.model.PresentationModel#initModel()
-	 */
 	@Override
 	protected void initModel() {
 		countPageEntriesProperty = new SimpleObjectProperty<>(this, "countPageEntriesProperty", 0);
@@ -62,9 +59,6 @@ public class PageSettingsModel extends PresentationModel<ICommonService, IEntity
 		return countPagesProperty;
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.model.PresentationModel#getTypeService()
-	 */
 	@Override
 	public Class<ICommonService> getTypeService() {
 		// TODO Auto-generated method stub

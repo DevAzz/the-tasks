@@ -6,8 +6,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
-import ru.siencesquad.hqtasks.ui.model.SummaryTaskViewModel;
-import ru.siencesquad.hqtasks.ui.view.RootView.OpenTaskInSummaryHandler;
+import ru.devazz.model.SummaryTaskViewModel;
 
 /**
  * Представление панели задачи сводки по задачам
@@ -30,9 +29,6 @@ public class SummaryTaskView extends AbstractView<SummaryTaskViewModel> {
 	@FXML
 	private ImageView statusImage;
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#initialize()
-	 */
 	@Override
 	public void initialize() {
 		Bindings.bindBidirectional(priorityImage.imageProperty(), model.getPriorityImageProperty());
@@ -45,9 +41,9 @@ public class SummaryTaskView extends AbstractView<SummaryTaskViewModel> {
 	 *
 	 * @param aOpenTaskhandler
 	 */
-	public void addOpenTaskListener(OpenTaskInSummaryHandler aOpenTaskhandler) {
+	public void addOpenTaskListener(RootView.OpenTaskInSummaryHandler aOpenTaskhandler) {
 		if (null != rootPanel) {
-			OpenTaskInSummaryHandler handler = aOpenTaskhandler.copy();
+			RootView.OpenTaskInSummaryHandler handler = aOpenTaskhandler.copy();
 			handler.setTaskSuid(model.getTaskSuid());
 			rootPanel.addEventHandler(MouseEvent.MOUSE_CLICKED, handler);
 		}
@@ -62,9 +58,6 @@ public class SummaryTaskView extends AbstractView<SummaryTaskViewModel> {
 		return rootPanel;
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#createPresentaionModel()
-	 */
 	@Override
 	protected SummaryTaskViewModel createPresentaionModel() {
 		return new SummaryTaskViewModel();

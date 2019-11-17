@@ -4,7 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TabPane;
-import ru.siencesquad.hqtasks.ui.model.LegendOfIconsViewModel;
+import ru.devazz.model.LegendOfIconsViewModel;
 
 public class LegendOfIconsView extends AbstractView<LegendOfIconsViewModel> {
 	/** Вкладка с легендой */

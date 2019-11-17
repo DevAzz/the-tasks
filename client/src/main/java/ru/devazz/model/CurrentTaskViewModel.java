@@ -4,22 +4,22 @@ import javafx.application.Platform;
 import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.control.Alert.AlertType;
-import org.apache.activemq.artemis.jms.client.ActiveMQMessage;
+import org.apache.activemq.command.ActiveMQMessage;
+import org.apache.activemq.command.ActiveMQObjectMessage;
+import ru.devazz.entities.DefaultTask;
+import ru.devazz.entities.SubordinationElement;
 import ru.devazz.entities.Task;
-import ru.sciencesquad.hqtasks.server.bean.tasks.TaskServiceRemote;
-import ru.sciencesquad.hqtasks.server.datamodel.IEntity;
-import ru.sciencesquad.hqtasks.server.datamodel.TaskEntity;
-import ru.sciencesquad.hqtasks.server.events.ObjectEvent;
-import ru.sciencesquad.hqtasks.server.utils.TaskPriority;
-import ru.sciencesquad.hqtasks.server.utils.TaskStatus;
-import ru.sciencesquad.hqtasks.server.utils.TaskType;
-import ru.siencesquad.hqtasks.ui.entities.DefaultTask;
-import ru.siencesquad.hqtasks.ui.entities.SubordinationElement;
-import ru.siencesquad.hqtasks.ui.entities.Task;
-import ru.siencesquad.hqtasks.ui.server.EJBProxyFactory;
-import ru.siencesquad.hqtasks.ui.utils.EntityConverter;
-import ru.siencesquad.hqtasks.ui.utils.Utils;
-import ru.siencesquad.hqtasks.ui.utils.dialogs.DialogUtils;
+import ru.devazz.server.EJBProxyFactory;
+import ru.devazz.server.api.ITaskService;
+import ru.devazz.server.api.event.ObjectEvent;
+import ru.devazz.server.api.model.IEntity;
+import ru.devazz.server.api.model.TaskModel;
+import ru.devazz.server.api.model.enums.TaskPriority;
+import ru.devazz.server.api.model.enums.TaskStatus;
+import ru.devazz.server.api.model.enums.TaskType;
+import ru.devazz.utils.EntityConverter;
+import ru.devazz.utils.Utils;
+import ru.devazz.utils.dialogs.DialogUtils;
 
 import javax.jms.JMSException;
 import javax.naming.NamingException;
@@ -36,7 +36,7 @@ import java.util.List;
 /**
  * Модель представления конкретной задачи
  */
-public class CurrentTaskViewModel extends PresentationModel<TaskServiceRemote, TaskEntity> {
+public class CurrentTaskViewModel extends PresentationModel<ITaskService, TaskModel> {
 
 	/** Модель данных панели задачи */
 	private Task task;
@@ -134,9 +134,6 @@ public class CurrentTaskViewModel extends PresentationModel<TaskServiceRemote, T
 
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.model.PresentationModel#initModel()
-	 */
 	@Override
 	protected void initModel() {
 		titleLabelProperty = new SimpleStringProperty(this, "titleLabelProperty");
@@ -295,12 +292,12 @@ public class CurrentTaskViewModel extends PresentationModel<TaskServiceRemote, T
 	 */
 	public void revertChanges() {
 		Thread thread = new Thread(() -> {
-			TaskEntity entity;
+			TaskModel entity;
 			try {
-				entity = EJBProxyFactory.getInstance().getService(TaskServiceRemote.class)
+				entity = EJBProxyFactory.getInstance().getService(ITaskService.class)
 						.get(task.getSuid());
 				Task originalTask = EntityConverter.getInstatnce()
-						.convertTaskEntityToClientWrapTask(entity);
+						.convertTaskModelToClientWrapTask(entity);
 				setTask(originalTask);
 			} catch (Exception e) {
 				// TODO Логирование
@@ -341,12 +338,7 @@ public class CurrentTaskViewModel extends PresentationModel<TaskServiceRemote, T
 	public void initTaskModel() {
 		if (null != task) {
 			SubordinationElement currentUserSubEl = null;
-			try {
-				currentUserSubEl = Utils.getInstance().getCurrentUserSubEl();
-			} catch (NamingException e) {
-				// TODO Логирование
-				e.printStackTrace();
-			}
+			currentUserSubEl = Utils.getInstance().getCurrentUserSubEl();
 
 			String title = (null != task.getName()) ? task.getName() : "";
 			String note = (null != task.getNote()) ? task.getNote() : "";
@@ -636,12 +628,9 @@ public class CurrentTaskViewModel extends PresentationModel<TaskServiceRemote, T
 		this.executorStringProperty = executorStringProperty;
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.model.PresentationModel#getTypeService()
-	 */
 	@Override
-	public Class<TaskServiceRemote> getTypeService() {
-		return TaskServiceRemote.class;
+	public Class<ITaskService> getTypeService() {
+		return ITaskService.class;
 	}
 
 	/**
@@ -656,7 +645,7 @@ public class CurrentTaskViewModel extends PresentationModel<TaskServiceRemote, T
 	/**
 	 * Устанавливает значение полю {@link#documentStringProperty}
 	 *
-	 * @param documentStringProperty значение поля
+	 * @param documentString значение поля
 	 */
 	public void setDocumentStringPropertyValue(String documentString) {
 		this.documentStringProperty.set(documentString);
@@ -704,21 +693,16 @@ public class CurrentTaskViewModel extends PresentationModel<TaskServiceRemote, T
 	 * @param subElExecutor значение поля
 	 */
 	public void setSubElExecutor(SubordinationElement subElExecutor) {
-		try {
-			if ((Utils.getInstance().getCurrentUserSubEl().getRoleSuid() >= subElExecutor
-					.getRoleSuid())
-					&& !isSubordinate(Utils.getInstance().getCurrentUserSubEl(), subElExecutor)) {
-				DialogUtils.getInstance().showAlertDialog("Невозможно задать исполнителя",
-						"Невозможно назначить исполнителем задачи выбранное должностное лицо",
-						AlertType.WARNING);
-			} else {
-				this.subElExecutor = subElExecutor;
-				getExecutorStringProperty().set(subElExecutor.getName());
-				task.setExecutor(subElExecutor);
-			}
-		} catch (NamingException e) {
-			// TODO Логирование
-			e.printStackTrace();
+		if ((Utils.getInstance().getCurrentUserSubEl().getRoleSuid() >= subElExecutor
+				.getRoleSuid())
+				&& !isSubordinate(Utils.getInstance().getCurrentUserSubEl(), subElExecutor)) {
+			DialogUtils.getInstance().showAlertDialog("Невозможно задать исполнителя",
+													  "Невозможно назначить исполнителем задачи выбранное должностное лицо",
+													  AlertType.WARNING);
+		} else {
+			this.subElExecutor = subElExecutor;
+			getExecutorStringProperty().set(subElExecutor.getName());
+			task.setExecutor(subElExecutor);
 		}
 	}
 
@@ -755,14 +739,15 @@ public class CurrentTaskViewModel extends PresentationModel<TaskServiceRemote, T
 				try {
 					if (message instanceof ActiveMQMessage) {
 						ActiveMQMessage objectMessage = (ActiveMQMessage) message;
-						if (objectMessage.isBodyAssignableTo(ObjectEvent.class)) {
-							ObjectEvent event = objectMessage.getBody(ObjectEvent.class);
+						if (objectMessage instanceof ActiveMQObjectMessage) {
+							ObjectEvent event =
+									(ObjectEvent) ((ActiveMQObjectMessage) objectMessage).getObject();
 
 							IEntity entity = event.getEntity();
-							if (entity instanceof TaskEntity) {
-								TaskEntity taskEntity = (TaskEntity) entity;
+							if (entity instanceof TaskModel) {
+								TaskModel taskEntity = (TaskModel) entity;
 								Task task = EntityConverter.getInstatnce()
-										.convertTaskEntityToClientWrapTask(taskEntity);
+										.convertTaskModelToClientWrapTask(taskEntity);
 								if (task.getSuid().equals(this.task.getSuid())
 										&& getOpenViewFlag().get()) {
 									switch (event.getType()) {
@@ -811,17 +796,12 @@ public class CurrentTaskViewModel extends PresentationModel<TaskServiceRemote, T
 		 */
 		@Override
 		public void run() {
-			try {
-				TaskEntity entity = EJBProxyFactory.getInstance()
-						.getService(TaskServiceRemote.class).get(task.getSuid());
-				Task originalTask = EntityConverter.getInstatnce()
-						.convertTaskEntityToClientWrapTask(entity);
-				if (null != originalTask) {
-					setChangeExistValue(!originalTask.equals(task));
-				}
-			} catch (NamingException e) {
-				// TODO Логирование
-				e.printStackTrace();
+			TaskModel entity = EJBProxyFactory.getInstance()
+					.getService(ITaskService.class).get(task.getSuid());
+			Task originalTask = EntityConverter.getInstatnce()
+					.convertTaskModelToClientWrapTask(entity);
+			if (null != originalTask) {
+				setChangeExistValue(!originalTask.equals(task));
 			}
 
 		}

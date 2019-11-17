@@ -2,10 +2,10 @@ package ru.devazz.model;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import ru.sciencesquad.hqtasks.server.bean.tasks.TaskServiceRemote;
-import ru.sciencesquad.hqtasks.server.datamodel.TaskEntity;
-import ru.sciencesquad.hqtasks.server.utils.TaskStatus;
-import ru.siencesquad.hqtasks.ui.entities.Task;
+import ru.devazz.entities.Task;
+import ru.devazz.server.api.ITaskService;
+import ru.devazz.server.api.model.TaskModel;
+import ru.devazz.server.api.model.enums.TaskStatus;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -13,7 +13,7 @@ import java.text.SimpleDateFormat;
 /**
  * Модель представления панели задачи
  */
-public class TaskPanelViewModel extends PresentationModel<TaskServiceRemote, TaskEntity> {
+public class TaskPanelViewModel extends PresentationModel<ITaskService, TaskModel> {
 
 	/** Модель данных панели задачи */
 	private Task task;
@@ -33,9 +33,6 @@ public class TaskPanelViewModel extends PresentationModel<TaskServiceRemote, Tas
 	/** Статус задачи */
 	private TaskStatus taskStatus;
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.model.PresentationModel#initModel()
-	 */
 	@Override
 	protected void initModel() {
 		titleLabelProperty = new SimpleStringProperty(this, "titleLabelProperty", "Заголовок");
@@ -144,12 +141,9 @@ public class TaskPanelViewModel extends PresentationModel<TaskServiceRemote, Tas
 		this.dateLabelProperty.set(dateLabelPropertyValue);
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.model.PresentationModel#getTypeService()
-	 */
 	@Override
-	public Class<TaskServiceRemote> getTypeService() {
-		return TaskServiceRemote.class;
+	public Class<ITaskService> getTypeService() {
+		return ITaskService.class;
 	}
 
 	/**

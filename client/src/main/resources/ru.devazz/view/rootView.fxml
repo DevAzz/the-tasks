@@ -79,7 +79,7 @@
                <items>
                   <RadioMenuItem fx:id="workbenchMenuItem" mnemonicParsing="false" onAction="#showWorkbenchView" selected="true" text="Рабочий стол" />
                   <RadioMenuItem fx:id="positionBookMenuItem" mnemonicParsing="false" onAction="#showPositionBookView" text="Книга должностных лиц" />
-                  <RadioMenuItem fx:id="subInfoMenuItem" mnemonicParsing="false" onAction="#showSubInfo" selected="true" text="Информация о боевом посте" />
+                  <RadioMenuItem fx:id="subInfoMenuItem" mnemonicParsing="false" onAction="#showSubInfo" selected="true" text="Информация о должности" />
                   <RadioMenuItem fx:id="subTreeMenuItem" mnemonicParsing="false" onAction="#showSubTree" selected="true" text="Дерево подчиненности" />
                   <RadioMenuItem fx:id="eventViewMenuItem" mnemonicParsing="false" onAction="#showEventIndicator" selected="true" text="Индикатор событий" />
                   <RadioMenuItem fx:id="eventJournalViewMenuItem" mnemonicParsing="false" onAction="#showEventJournalView" text="Журнал событий" />

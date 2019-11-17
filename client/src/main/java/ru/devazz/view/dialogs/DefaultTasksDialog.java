@@ -3,11 +3,11 @@ package ru.devazz.view.dialogs;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.scene.control.Dialog;
+import javafx.scene.control.ListView;
 import javafx.scene.layout.AnchorPane;
-import jfxtras.scene.control.ListView;
-import ru.siencesquad.hqtasks.ui.entities.DefaultTask;
-import ru.siencesquad.hqtasks.ui.model.dialogmodel.DefaultTaskDialogModel;
-import ru.siencesquad.hqtasks.ui.view.AbstractView;
+import ru.devazz.entities.DefaultTask;
+import ru.devazz.model.dialogmodel.DefaultTaskDialogModel;
+import ru.devazz.view.AbstractView;
 
 public class DefaultTasksDialog extends AbstractView<DefaultTaskDialogModel> {
 	/** Подложка диалога */
@@ -21,16 +21,13 @@ public class DefaultTasksDialog extends AbstractView<DefaultTaskDialogModel> {
 	/** Переменная для хранения текущего объекта Dialog */
 	private Dialog<DefaultTask> dialog;
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#initialize()
-	 */
 	@Override
 	@FXML
 	public void initialize() {
 		// Биндинг списка типовых задач
 		Bindings.bindBidirectional(listTasks.itemsProperty(), model.getDefaultTaskListProperity());
 		listTasks.setOnMouseClicked(e -> {
-			model.setSelectedDefaultTask(listTasks.getSelectedItem());
+			model.setSelectedDefaultTask(listTasks.getSelectionModel().getSelectedItem());
 			if (e.getClickCount() == 2) {
 				dialog.setResult(model.getSelectedDefaultTask());
 				dialog.close();
@@ -48,9 +45,6 @@ public class DefaultTasksDialog extends AbstractView<DefaultTaskDialogModel> {
 		return rootPaneDialog;
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#createPresentaionModel()
-	 */
 	@Override
 	protected DefaultTaskDialogModel createPresentaionModel() {
 		return new DefaultTaskDialogModel();

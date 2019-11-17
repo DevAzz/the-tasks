@@ -19,15 +19,14 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
-import ru.sciencesquad.hqtasks.server.utils.TaskType;
-import ru.sciencesquad.hqtasks.server.utils.TasksViewType;
-import ru.siencesquad.hqtasks.ui.entities.Task;
-import ru.siencesquad.hqtasks.ui.model.TasksViewModel;
-import ru.siencesquad.hqtasks.ui.model.TasksViewModel.TaskBackGroundColor;
-import ru.siencesquad.hqtasks.ui.utils.Utils;
-import ru.siencesquad.hqtasks.ui.utils.dialogs.DialogUtils;
-import ru.siencesquad.hqtasks.ui.widgets.CustomTimeIntervalView;
-import ru.siencesquad.hqtasks.ui.widgets.PageSettingsView;
+import ru.devazz.entities.Task;
+import ru.devazz.model.TasksViewModel;
+import ru.devazz.server.api.model.enums.TaskType;
+import ru.devazz.server.api.model.enums.TasksViewType;
+import ru.devazz.utils.Utils;
+import ru.devazz.utils.dialogs.DialogUtils;
+import ru.devazz.widgets.CustomTimeIntervalView;
+import ru.devazz.widgets.PageSettingsView;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -143,9 +142,6 @@ public class TasksView extends AbstractView<TasksViewModel> {
 	/** Номер страницы удаленной записи */
 	private int deletedTaskPageNumber;
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#initialize()
-	 */
 	@Override
 	public void initialize() {
 		Bindings.bindBidirectional(pagination.pageCountProperty(), model.getPageCountProperty());
@@ -392,9 +388,6 @@ public class TasksView extends AbstractView<TasksViewModel> {
 		thread.start();
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#createPresentaionModel()
-	 */
 	@Override
 	protected TasksViewModel createPresentaionModel() {
 		return new TasksViewModel();
@@ -402,8 +395,6 @@ public class TasksView extends AbstractView<TasksViewModel> {
 
 	/**
 	 * Обработка изменения видимого списка задач
-	 *
-	 * @param pageToGo номер страницы к которой нужно перейти
 	 * @param aChange изменение
 	 */
 	private void changeTasks(Change<? extends Task> aChange) {
@@ -489,7 +480,7 @@ public class TasksView extends AbstractView<TasksViewModel> {
 				}
 				VBox.setMargin(taskRoot, new Insets(3));
 				model.createColorProperty(taskRoot.getId()).addListener(
-						(ChangeListener<TaskBackGroundColor>) (observable, oldValue, newValue) -> {
+						(ChangeListener<TasksViewModel.TaskBackGroundColor>) (observable, oldValue, newValue) -> {
 							switch (newValue) {
 							case RED:
 								taskRoot.setStyle("-fx-border-color: #DD2A2A");
@@ -519,10 +510,8 @@ public class TasksView extends AbstractView<TasksViewModel> {
 					}
 				});
 
-				if (null != view) {
-					view.getModel().setTask(task);
-					applyTitledPaneStyle(taskRoot, task);
-				}
+				view.getModel().setTask(task);
+				applyTitledPaneStyle(taskRoot, task);
 
 				// Добавление задачи в общий композит
 				int numberPage = model.getNumberPageByTask(task);
@@ -543,9 +532,7 @@ public class TasksView extends AbstractView<TasksViewModel> {
 							}
 						}
 					}
-					if (flag) {
-						box.getChildren().add(taskRoot);
-					}
+					box.getChildren().add(taskRoot);
 				}
 			} catch (Exception e) {
 				// TODO Логирование

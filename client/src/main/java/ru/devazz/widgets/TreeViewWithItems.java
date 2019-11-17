@@ -10,7 +10,7 @@ import javafx.collections.ObservableList;
 import javafx.collections.WeakListChangeListener;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
-import ru.siencesquad.hqtasks.ui.interfaces.HierarchyData;
+import ru.devazz.interfaces.HierarchyData;
 
 import java.util.HashMap;
 import java.util.Map;

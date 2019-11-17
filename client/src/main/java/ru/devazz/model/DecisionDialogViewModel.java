@@ -5,12 +5,12 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
-import ru.sciencesquad.hqtasks.server.bean.tasks.TaskServiceRemote;
-import ru.sciencesquad.hqtasks.server.datamodel.TaskEntity;
-import ru.sciencesquad.hqtasks.server.utils.TaskStatus;
-import ru.sciencesquad.hqtasks.server.utils.TaskType;
-import ru.siencesquad.hqtasks.ui.entities.Task;
-import ru.siencesquad.hqtasks.ui.utils.EntityConverter;
+import ru.devazz.entities.Task;
+import ru.devazz.server.api.ITaskService;
+import ru.devazz.server.api.model.TaskModel;
+import ru.devazz.server.api.model.enums.TaskStatus;
+import ru.devazz.server.api.model.enums.TaskType;
+import ru.devazz.utils.EntityConverter;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -19,7 +19,7 @@ import java.util.Date;
 /**
  * Модель представления диалога принятия решения
  */
-public class DecisionDialogViewModel extends PresentationModel<TaskServiceRemote, TaskEntity> {
+public class DecisionDialogViewModel extends PresentationModel<ITaskService, TaskModel> {
 
 	/** Свойство текста поля наименование задачи */
 	private StringProperty nameLabelProperty;
@@ -36,9 +36,6 @@ public class DecisionDialogViewModel extends PresentationModel<TaskServiceRemote
 	/** Задача */
 	private Task task;
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.model.PresentationModel#initModel()
-	 */
 	@Override
 	protected void initModel() {
 		nameLabelProperty = new SimpleStringProperty(this, "nameLabelProperty", "");
@@ -133,18 +130,15 @@ public class DecisionDialogViewModel extends PresentationModel<TaskServiceRemote
 	/**
 	 * Устанавливает значение полю {@link#documentStringProperty}
 	 *
-	 * @param documentStringProperty значение поля
+	 * @param documentString значение поля
 	 */
 	public void setDocumentStringPropertyValue(String documentString) {
 		this.documentStringProperty.set(documentString);
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.model.PresentationModel#getTypeService()
-	 */
 	@Override
-	public Class<TaskServiceRemote> getTypeService() {
-		return TaskServiceRemote.class;
+	public Class<ITaskService> getTypeService() {
+		return ITaskService.class;
 	}
 
 	/**

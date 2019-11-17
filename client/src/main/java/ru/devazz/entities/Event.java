@@ -1,6 +1,6 @@
 package ru.devazz.entities;
 
-import ru.siencesquad.hqtasks.ui.utils.EventType;
+import ru.devazz.utils.EventType;
 
 import java.util.Date;
 
@@ -24,10 +24,10 @@ public class Event {
 	/** Тип события для фильтра по типу события */
 	private EventType eventType;
 
-	/** Наименование боевого, связанного с событием */
+	/** Наименование элемента подчиненности, связанного с событием */
 	private SubordinationElement author;
 
-	/** Наименование боевого, связанного с событием */
+	/** Наименование элемента подчиненности, связанного с событием */
 	private SubordinationElement executor;
 
 	/**
@@ -42,7 +42,6 @@ public class Event {
 	 *
 	 * @param name наименование события
 	 * @param aDate дата
-	 * @param aPosition должностное лицо
 	 */
 	public Event(Long aSuid, String name, Date aDate, Long aTaskSuid, EventType aEventType,
 			SubordinationElement aAuthor, SubordinationElement aExecutor) {

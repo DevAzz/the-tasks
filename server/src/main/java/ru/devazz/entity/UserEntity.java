@@ -32,17 +32,13 @@ public class UserEntity implements Serializable, IEntity {
 	@Column(name = "idrole")
 	private Long idrole;
 
-	/** Идентификатор элемнета поддчиненности */
+	/** Идентификатор элемнета подчиненности */
 	@Column(name = "sub_element_suid")
 	private Long positionSuid;
 
 	/** ФИО пользователя */
 	@Column(name = "name", nullable = false, columnDefinition = "varchar")
 	private String name;
-
-	/** Звание */
-	@Column(name = "military_rank", nullable = false, columnDefinition = "varchar")
-	private String militaryRank;
 
 	/** Должность пользователя */
 	@Column(name = "position", nullable = false, columnDefinition = "varchar")
@@ -65,20 +61,19 @@ public class UserEntity implements Serializable, IEntity {
 		super();
 	}
 
-	public UserEntity(Long iduser, Long idrole, Long positionSuid, String name, String militaryRank,
+	public UserEntity(Long iduser, Long idrole, Long positionSuid, String name,
 			String position, boolean online) {
 		super();
 		this.iduser = iduser;
 		this.idrole = idrole;
 		this.positionSuid = positionSuid;
 		this.name = name;
-		this.militaryRank = militaryRank;
 		this.position = position;
 		this.online = online;
 	}
 
 	public UserEntity(Long iduser, String login, String password, Long idrole, Long positionSuid,
-			String name, String militaryRank, String position, Boolean online) {
+			String name, String position, Boolean online) {
 		super();
 		this.iduser = iduser;
 		this.login = login;
@@ -86,7 +81,6 @@ public class UserEntity implements Serializable, IEntity {
 		this.idrole = idrole;
 		this.positionSuid = positionSuid;
 		this.name = name;
-		this.militaryRank = militaryRank;
 		this.position = position;
 		this.online = online;
 	}

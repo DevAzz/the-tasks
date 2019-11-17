@@ -5,23 +5,23 @@ import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import ru.sciencesquad.hqtasks.server.bean.events.EventServiceRemote;
-import ru.sciencesquad.hqtasks.server.datamodel.EventEntity;
-import ru.sciencesquad.hqtasks.server.events.EventOccurEvent;
-import ru.sciencesquad.hqtasks.server.events.ObjectEvent;
-import ru.siencesquad.hqtasks.ui.entities.Event;
-import ru.siencesquad.hqtasks.ui.server.EJBProxyFactory;
-import ru.siencesquad.hqtasks.ui.utils.EntityConverter;
+import org.apache.activemq.command.ActiveMQMessage;
+import org.apache.activemq.command.ActiveMQObjectMessage;
+import ru.devazz.entities.Event;
+import ru.devazz.server.EJBProxyFactory;
+import ru.devazz.server.api.IEventService;
+import ru.devazz.server.api.event.EventOccurEvent;
+import ru.devazz.server.api.event.ObjectEvent;
+import ru.devazz.server.api.model.EventModel;
+import ru.devazz.utils.EntityConverter;
 
 import javax.jms.JMSException;
-import javax.jms.ObjectMessage;
-import javax.naming.NamingException;
 import java.util.List;
 
 /**
  * Модель представления индикатора сбытий
  */
-public class EventIndicatorViewModel extends PresentationModel<EventServiceRemote, EventEntity> {
+public class EventIndicatorViewModel extends PresentationModel<IEventService, EventModel> {
 
 	/** Свойства списка событий */
 	private ListProperty<Event> listProperty;
@@ -41,20 +41,16 @@ public class EventIndicatorViewModel extends PresentationModel<EventServiceRemot
 	public void connectToJMSService() {
 		EJBProxyFactory.getInstance().addMessageListener(message -> {
 			try {
-				if (message instanceof ObjectMessage) {
-					ObjectMessage objectMessage = (ObjectMessage) message;
-					if (objectMessage.isBodyAssignableTo(ObjectEvent.class)) {
-						ObjectEvent event = objectMessage.getBody(ObjectEvent.class);
+				if (message instanceof ActiveMQMessage) {
+					ActiveMQMessage objectMessage = (ActiveMQMessage) message;
+					if (objectMessage instanceof ActiveMQObjectMessage) {
+						ObjectEvent event =
+								(ObjectEvent) ((ActiveMQObjectMessage) objectMessage).getObject();
 						if (event instanceof EventOccurEvent) {
-							EventEntity entity = (EventEntity) event.getEntity();
+							EventModel entity = (EventModel) event.getEntity();
 							Platform.runLater(() -> {
-								try {
-									listEvents.add(EntityConverter.getInstatnce()
-											.convertEventEntityToClientWrapEvent(entity));
-								} catch (NamingException e) {
-									// TODO Логирование
-									e.printStackTrace();
-								}
+								listEvents.add(EntityConverter.getInstatnce()
+										.convertEventModelToClientWrapEvent(entity));
 							});
 
 						}
@@ -112,12 +108,9 @@ public class EventIndicatorViewModel extends PresentationModel<EventServiceRemot
 		this.listEvents = listEvents;
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.model.PresentationModel#getTypeService()
-	 */
 	@Override
-	public Class<EventServiceRemote> getTypeService() {
-		return EventServiceRemote.class;
+	public Class<IEventService> getTypeService() {
+		return IEventService.class;
 	}
 
 }

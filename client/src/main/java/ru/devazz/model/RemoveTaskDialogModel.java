@@ -1,20 +1,18 @@
-/**
- *
- */
+
 package ru.devazz.model;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import ru.sciencesquad.hqtasks.server.bean.tasks.TaskServiceRemote;
-import ru.sciencesquad.hqtasks.server.datamodel.TaskEntity;
-import ru.siencesquad.hqtasks.ui.entities.Task;
+import ru.devazz.entities.Task;
+import ru.devazz.server.api.ITaskService;
+import ru.devazz.server.api.model.TaskModel;
 
 import javax.jms.JMSException;
 
 /**
  * Модель представления диалога удаления задачи
  */
-public class RemoveTaskDialogModel extends PresentationModel<TaskServiceRemote, TaskEntity> {
+public class RemoveTaskDialogModel extends PresentationModel<ITaskService, TaskModel> {
 
 	/** Удаляемая задча */
 	private Task task;
@@ -22,9 +20,6 @@ public class RemoveTaskDialogModel extends PresentationModel<TaskServiceRemote, 
 	/** Текстовое свойство наименования задачи */
 	private StringProperty nameTask;
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.model.PresentationModel#initModel()
-	 */
 	@Override
 	protected void initModel() {
 		nameTask = new SimpleStringProperty(this, "nameTask", "");
@@ -76,12 +71,9 @@ public class RemoveTaskDialogModel extends PresentationModel<TaskServiceRemote, 
 		service.delete(task.getSuid(), true);
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.model.PresentationModel#getTypeService()
-	 */
 	@Override
-	public Class<TaskServiceRemote> getTypeService() {
-		return TaskServiceRemote.class;
+	public Class<ITaskService> getTypeService() {
+		return ITaskService.class;
 	}
 
 }

@@ -19,27 +19,26 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import ru.sciencesquad.hqtasks.server.bean.subel.SubordinatioElementServiceRemote;
-import ru.sciencesquad.hqtasks.server.bean.tasks.TaskServiceRemote;
-import ru.sciencesquad.hqtasks.server.datamodel.IEntity;
-import ru.sciencesquad.hqtasks.server.datamodel.SubordinationElementEntity;
-import ru.sciencesquad.hqtasks.server.datamodel.TaskEntity;
-import ru.sciencesquad.hqtasks.server.datamodel.UserEntity;
-import ru.sciencesquad.hqtasks.server.utils.TaskPriority;
-import ru.sciencesquad.hqtasks.server.utils.TaskStatus;
-import ru.sciencesquad.hqtasks.server.utils.UserRoles;
-import ru.siencesquad.hqtasks.ui.entities.Event;
-import ru.siencesquad.hqtasks.ui.entities.ExtSearchRes;
-import ru.siencesquad.hqtasks.ui.entities.SubordinationElement;
-import ru.siencesquad.hqtasks.ui.entities.Task;
-import ru.siencesquad.hqtasks.ui.model.RootViewPresentationModel;
-import ru.siencesquad.hqtasks.ui.server.EJBProxyFactory;
-import ru.siencesquad.hqtasks.ui.utils.EntityConverter;
-import ru.siencesquad.hqtasks.ui.utils.SplitViewEnum;
-import ru.siencesquad.hqtasks.ui.utils.Utils;
-import ru.siencesquad.hqtasks.ui.utils.dialogs.DialogUtils;
+import ru.devazz.entities.ExtSearchRes;
+import ru.devazz.entities.SubordinationElement;
+import ru.devazz.entities.Task;
+import ru.devazz.model.RootViewPresentationModel;
+import ru.devazz.server.EJBProxyFactory;
+import ru.devazz.server.api.ISubordinationElementService;
+import ru.devazz.server.api.ITaskService;
+import ru.devazz.server.api.model.IEntity;
+import ru.devazz.server.api.model.SubordinationElementModel;
+import ru.devazz.server.api.model.TaskModel;
+import ru.devazz.server.api.model.UserModel;
+import ru.devazz.server.api.model.enums.TaskPriority;
+import ru.devazz.server.api.model.enums.TaskStatus;
+import ru.devazz.server.api.model.enums.UserRoles;
+import ru.devazz.utils.EntityConverter;
+import ru.devazz.utils.EventType;
+import ru.devazz.utils.SplitViewEnum;
+import ru.devazz.utils.Utils;
+import ru.devazz.utils.dialogs.DialogUtils;
 
-import javax.naming.NamingException;
 import java.awt.*;
 import java.io.IOException;
 import java.util.HashMap;
@@ -218,9 +217,6 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 		windowPointY = stage.getY();
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#createPresentaionModel()
-	 */
 	@Override
 	protected RootViewPresentationModel createPresentaionModel() {
 		return new RootViewPresentationModel();
@@ -234,12 +230,6 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 		System.out.println(model.getSearchBoxTextProperty().get());
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#initialize()
-	 */
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#initialize()
-	 */
 	@Override
 	public void initialize() {
 		try {
@@ -353,8 +343,8 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 				fileMenu.getItems().remove(createTask);
 			}
 
-			UserEntity user = Utils.getInstance().getCurrentUser();
-			userNameLabel.setText(user.getMilitaryRank() + " " + user.getName());
+			UserModel user = Utils.getInstance().getCurrentUser();
+			userNameLabel.setText(user.getPosition() + " " + user.getName());
 			SplitPane sPane = (SplitPane) rightSplitPane.getItems().get(1);
 			sPane.getDividers().get(0).setPosition(.73);
 			// Инициализация представлений
@@ -461,9 +451,8 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 
 			workbenchView.setOpenTaskHandler(event -> {
 				try {
-					Boolean doneFlag = (null != workbenchView.getSelectedTask())
-							? TaskStatus.DONE.equals(workbenchView.getSelectedTask().getStatus())
-							: false;
+					Boolean doneFlag = (null != workbenchView.getSelectedTask()) && TaskStatus.DONE
+							.equals(workbenchView.getSelectedTask().getStatus());
 					showCurrentTaskView(workbenchView.getSelectedTask(), false, doneFlag);
 				} catch (Exception e) {
 					// TODO Логирование
@@ -481,13 +470,8 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 			});
 
 			workbenchView.setCustomTimeIntervalModeHandler(event -> {
-				try {
-					if (Utils.getInstance().checkUserAccess(UserRoles.ASSISTENT)) {
-						rightSplitPane.getDividers().get(0).setPosition(0.7);
-					}
-				} catch (NamingException e) {
-					// TODO Логирование
-					e.printStackTrace();
+				if (Utils.getInstance().checkUserAccess(UserRoles.ASSISTENT)) {
+					rightSplitPane.getDividers().get(0).setPosition(0.7);
 				}
 				commonSplitPane.getDividers().get(0).setPosition(0.2);
 			});
@@ -517,19 +501,19 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 			extendedSearchView.setDoubleClickHandler(event -> {
 				ExtSearchRes res = extendedSearchView.getModel().getSelectedResult();
 				IEntity entity = res.getEntity();
-				if (entity instanceof TaskEntity) {
+				if (entity instanceof TaskModel) {
 					try {
-						TaskEntity task = EJBProxyFactory.getInstance()
-								.getService(TaskServiceRemote.class).get(entity.getSuid());
+						TaskModel task = EJBProxyFactory.getInstance()
+								.getService(ITaskService.class).get(entity.getSuid());
 						showCurrentTaskView(EntityConverter.getInstatnce()
-								.convertTaskEntityToClientWrapTask(task), false, false);
+								.convertTaskModelToClientWrapTask(task), false, false);
 					} catch (Exception e) {
 						// TODO Логирование
 						e.printStackTrace();
 					}
-				} else if (entity instanceof UserEntity) {
+				} else if (entity instanceof UserModel) {
 					showPositionBookWithSelection(entity.getSuid());
-				} else if (entity instanceof SubordinationElementEntity) {
+				} else if (entity instanceof SubordinationElementModel) {
 					showPositionBookWithSelectionSubEl(entity.getSuid());
 				}
 
@@ -638,7 +622,7 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 			}
 		} else {
 			DialogUtils.getInstance().showAlertDialog("Невозможно открыть задачу",
-					"Задача удалена или недоступна", AlertType.INFORMATION);
+													  "Задача удалена или недоступна", AlertType.INFORMATION);
 		}
 
 	}
@@ -697,7 +681,7 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 
 					subTreeView.setCreateTaskHandler(event -> {
 						Task task = new Task(0L, "", "", "Описание", null, TaskPriority.CRITICAL,
-								new Double(0), null, null);
+											 (double) 0, null, null);
 						task.setExecutor(subInfoView.getModel().getSelectionSub());
 						try {
 							showCurrentTaskView(task, true, false);
@@ -736,7 +720,7 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 						disableSplitDivider(SplitViewEnum.LEFT_HORIZONTAL_SPLIT_PANEL, true);
 
 						mapSplitPanePosition.put(SplitViewEnum.LEFT_HORIZONTAL_SPLIT_PANEL,
-								new Double(1));
+												 1d);
 						disableSplitDivider(SplitViewEnum.COMMON_SPLIT_PANEL, false);
 					} else {
 						// Поднимаем сплит при открытии view
@@ -746,7 +730,7 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 
 					// Устанавливаем общую сплит-панель в открытое положение
 					commonSplitPane.getDividers().get(0).setPosition(0.3);
-					mapSplitPanePosition.put(SplitViewEnum.COMMON_SPLIT_PANEL, new Double(0.3));
+					mapSplitPanePosition.put(SplitViewEnum.COMMON_SPLIT_PANEL, 0.3);
 					subTreeView.getModel().setOpenFlagValue(true);
 				}
 			} else if (null != subTreeView) {
@@ -787,8 +771,8 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 				pane.getChildren().add(subInfoView.getTabPane());
 			}
 
-			SubordinatioElementServiceRemote subelService = EJBProxyFactory.getInstance()
-					.getService(SubordinatioElementServiceRemote.class);
+			ISubordinationElementService subelService = EJBProxyFactory.getInstance()
+					.getService(ISubordinationElementService.class);
 			SubordinationElement element = (null != subTreeView.getSelection())
 					? subTreeView.getSelection()
 					: EntityConverter.getInstatnce().convertSubElEntityToClientWrap(subelService
@@ -918,20 +902,16 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 				// Добавляем слушателей для пунктов контекстного меню
 				eventIndicatorView.setTaskItemClickHandler(event -> {
 					try {
-						Event eventValue = eventIndicatorView.getSelection();
+						ru.devazz.entities.Event eventValue = eventIndicatorView.getSelection();
 						Task task = EntityConverter.getInstatnce()
-								.convertTaskEntityToClientWrapTask(EJBProxyFactory.getInstance()
-										.getService(TaskServiceRemote.class)
+								.convertTaskModelToClientWrapTask(EJBProxyFactory.getInstance()
+										.getService(ITaskService.class)
 										.get(eventValue.getTaskId()));
 						if (null != eventValue.getEventType()) {
-							switch (eventValue.getEventType()) {
-							case DONE:
+							if (eventValue.getEventType() == EventType.DONE) {
 								showCurrentTaskView(task, false, true);
-								break;
-							default:
+							} else {
 								showCurrentTaskView(task, false, false);
-								break;
-
 							}
 						}
 					} catch (Exception e) {
@@ -1031,7 +1011,7 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 	 *
 	 * @param aEvent событие
 	 */
-	private void showEventJournalWithSelection(Event aEvent) {
+	private void showEventJournalWithSelection(ru.devazz.entities.Event aEvent) {
 		if (eventJournalView.isViewOpen()) {
 			eventJournalView.setSelectedEvent(aEvent);
 			commonCentralTabPane.getSelectionModel().select(eventJournalView.getTab());
@@ -1084,9 +1064,9 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 	}
 
 	/**
-	 * Отображает представление отчета по задачам с установленным боевым постом
+	 * Отображает представление отчета по задачам с установленной должностью
 	 *
-	 * @param aElement боевой пост
+	 * @param aElement должность
 	 */
 	private void showReportViewWithSubEls(SubordinationElement aElement) {
 		if (null != aElement) {
@@ -1172,9 +1152,6 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 		}
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#setMaximized()
-	 */
 	@Override
 	@FXML
 	protected void setMaximized() {
@@ -1545,14 +1522,14 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 			if ((2 == event.getClickCount()) && (null != taskSuid)) {
 				Thread thread = new Thread(() -> {
 					try {
-						TaskEntity entity = EJBProxyFactory.getInstance()
-								.getService(TaskServiceRemote.class).get(taskSuid);
+						TaskModel entity = EJBProxyFactory.getInstance()
+								.getService(ITaskService.class).get(taskSuid);
 						Platform.runLater(() -> {
 							if (null != entity) {
 								try {
 									showCurrentTaskView(
 											EntityConverter.getInstatnce()
-													.convertTaskEntityToClientWrapTask(entity),
+													.convertTaskModelToClientWrapTask(entity),
 											false, false);
 								} catch (Exception e) {
 									// TODO Логирование

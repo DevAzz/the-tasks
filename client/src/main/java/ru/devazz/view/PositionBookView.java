@@ -10,13 +10,12 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
-import ru.sciencesquad.hqtasks.server.bean.subel.SubordinatioElementServiceRemote;
-import ru.sciencesquad.hqtasks.server.datamodel.SubordinationElementEntity;
-import ru.siencesquad.hqtasks.ui.entities.User;
-import ru.siencesquad.hqtasks.ui.model.PositionBookViewModel;
-import ru.siencesquad.hqtasks.ui.server.EJBProxyFactory;
+import ru.devazz.entities.User;
+import ru.devazz.model.PositionBookViewModel;
+import ru.devazz.server.EJBProxyFactory;
+import ru.devazz.server.api.ISubordinationElementService;
+import ru.devazz.server.api.model.SubordinationElementModel;
 
-import javax.naming.NamingException;
 import java.util.List;
 
 /**
@@ -40,21 +39,14 @@ public class PositionBookView extends AbstractView<PositionBookViewModel> {
 	@FXML
 	private TableColumn<User, String> positionColumn;
 
-	/** Столбец боевой пост пользователя */
+	/** Столбец должность пользователя */
 	@FXML
 	private TableColumn<User, String> subElColumn;
-
-	/** Столбец звание пользователя */
-	@FXML
-	private TableColumn<User, String> rankColumn;
 
 	/** Столбец портрет пользователя */
 	@FXML
 	private TableColumn<User, TitledPane> imageColumn;
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#initialize()
-	 */
 	@Override
 	@FXML
 	public void initialize() {
@@ -63,23 +55,17 @@ public class PositionBookView extends AbstractView<PositionBookViewModel> {
 
 		// устанавливаем тип и значение которое должно хранится в колонке
 		fioColumn.setCellValueFactory(new PropertyValueFactory<User, String>("name"));
-		rankColumn.setCellValueFactory(new PropertyValueFactory<User, String>("militaryRank"));
 		positionColumn.setCellValueFactory(new PropertyValueFactory<User, String>("position"));
 
 		subElColumn.setCellValueFactory(user -> {
 			SimpleStringProperty property = new SimpleStringProperty();
 			Long subElSuid = user.getValue().getSubElementSuid();
 			if (null != subElSuid) {
-				try {
-					SubordinatioElementServiceRemote subElService = EJBProxyFactory.getInstance()
-							.getService(SubordinatioElementServiceRemote.class);
-					SubordinationElementEntity subEl = subElService.get(subElSuid);
-					if (null != subEl) {
-						property.set(subEl.getName());
-					}
-				} catch (NamingException e) {
-					// TODO Логирование
-					e.printStackTrace();
+				ISubordinationElementService subElService = EJBProxyFactory.getInstance()
+						.getService(ISubordinationElementService.class);
+				SubordinationElementModel subEl = subElService.get(subElSuid);
+				if (null != subEl) {
+					property.set(subEl.getName());
 				}
 			}
 			return property;
@@ -116,25 +102,16 @@ public class PositionBookView extends AbstractView<PositionBookViewModel> {
 		personsTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#createPresentaionModel()
-	 */
 	@Override
 	protected PositionBookViewModel createPresentaionModel() {
 		return new PositionBookViewModel();
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#getTabPane()
-	 */
 	@Override
 	public TabPane getTabPane() {
 		return positionBookTabPane;
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#getTab()
-	 */
 	@Override
 	public Tab getTab() {
 		Tab tab = (!positionBookTabPane.getTabs().isEmpty()) ? positionBookTabPane.getTabs().get(0)

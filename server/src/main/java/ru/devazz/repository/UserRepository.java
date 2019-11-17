@@ -54,7 +54,7 @@ public class UserRepository extends AbstractRepository<UserEntity> {
 	public List<UserEntity> getUserWithoutImage(Long aSuid) {
 		em.clear();
 		Query namedQuery = em.createQuery("SELECT NEW ru.devazz.entity.UserEntity(c.iduser,c" +
-										  ".login, c.password, c.idrole, c.positionSuid, c.name, c.militaryRank, c.position, c.online) FROM UserEntity c WHERE c.iduser = :iduser")
+										  ".login, c.password, c.idrole, c.positionSuid, c.name, c.position, c.online) FROM UserEntity c WHERE c.iduser = :iduser")
 				.setParameter("iduser", aSuid);
 		return namedQuery.getResultList();
 	}
@@ -62,7 +62,7 @@ public class UserRepository extends AbstractRepository<UserEntity> {
 	/**
 	 * Возвращает пользователя по идентификатору
 	 *
-	 * @param aSuid идентификатор боевого поста
+	 * @param aSuid идентификатор элемента подчиненности
 	 * @return сущность польщователя
 	 */
 	public List<UserEntity> getUserBySubElSuid(Long aSuid) {
@@ -76,8 +76,7 @@ public class UserRepository extends AbstractRepository<UserEntity> {
 	public List<UserEntity> getServiceUserList() {
 		TypedQuery<UserEntity> namedQuery = em.createQuery("SELECT NEW ru.devazz.entity.UserEntity(c" +
 														   ".iduser,c.login, c.password, c" +
-														   ".idrole, c.positionSuid, c.name, c" +
-														   ".militaryRank, c.position, c.online) " +
+														   ".idrole, c.positionSuid, c.name, c.position, c.online) " +
 														   "FROM UserEntity c", UserEntity.class);
 		return namedQuery.getResultList();
 	}

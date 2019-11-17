@@ -2,20 +2,21 @@ package ru.devazz.model;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import org.apache.activemq.artemis.jms.client.ActiveMQMessage;
-import ru.sciencesquad.hqtasks.server.bean.tasks.TaskServiceRemote;
-import ru.sciencesquad.hqtasks.server.datamodel.IEntity;
-import ru.sciencesquad.hqtasks.server.datamodel.TaskEntity;
-import ru.sciencesquad.hqtasks.server.datamodel.UserEntity;
-import ru.sciencesquad.hqtasks.server.events.ObjectEvent;
-import ru.sciencesquad.hqtasks.server.utils.TasksViewType;
-import ru.siencesquad.hqtasks.ui.entities.Task;
-import ru.siencesquad.hqtasks.ui.server.EJBProxyFactory;
-import ru.siencesquad.hqtasks.ui.utils.EntityConverter;
-import ru.siencesquad.hqtasks.ui.utils.PushUpTypes;
-import ru.siencesquad.hqtasks.ui.utils.Utils;
-import ru.siencesquad.hqtasks.ui.utils.dialogs.DialogUtils;
-import ru.siencesquad.hqtasks.ui.view.RootView.GoOverTaskListener;
+import org.apache.activemq.command.ActiveMQMessage;
+import org.apache.activemq.command.ActiveMQObjectMessage;
+import ru.devazz.entities.Task;
+import ru.devazz.server.EJBProxyFactory;
+import ru.devazz.server.api.ITaskService;
+import ru.devazz.server.api.event.ObjectEvent;
+import ru.devazz.server.api.model.IEntity;
+import ru.devazz.server.api.model.TaskModel;
+import ru.devazz.server.api.model.UserModel;
+import ru.devazz.server.api.model.enums.TasksViewType;
+import ru.devazz.utils.EntityConverter;
+import ru.devazz.utils.PushUpTypes;
+import ru.devazz.utils.Utils;
+import ru.devazz.utils.dialogs.DialogUtils;
+import ru.devazz.view.RootView;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,13 +25,13 @@ import java.util.Map.Entry;
 /**
  * Модель представления рабочего стола
  */
-public class WorkbenchViewModel extends PresentationModel<TaskServiceRemote, TaskEntity> {
+public class WorkbenchViewModel extends PresentationModel<ITaskService, TaskModel> {
 
 	/** Свойство текста заголовка */
 	private StringProperty titleProperty;
 
 	/** Слушатель перехода к задаче */
-	private GoOverTaskListener goOverTaskListener;
+	private RootView.GoOverTaskListener goOverTaskListener;
 
 	/** Идентификатор должности, выбранной в дереве подчиненности */
 	private Long positionSuid;
@@ -40,9 +41,6 @@ public class WorkbenchViewModel extends PresentationModel<TaskServiceRemote, Tas
 	 */
 	private Map<TasksViewType, TasksViewModel> modelsMap = new HashMap<>();
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.model.PresentationModel#initModel()
-	 */
 	@Override
 	protected void initModel() {
 		titleProperty = new SimpleStringProperty(this, "titleProperty", "Задачи: ");
@@ -65,12 +63,9 @@ public class WorkbenchViewModel extends PresentationModel<TaskServiceRemote, Tas
 		titleProperty.set(aValue);
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.model.PresentationModel#getTypeService()
-	 */
 	@Override
-	public Class<TaskServiceRemote> getTypeService() {
-		return TaskServiceRemote.class;
+	public Class<ITaskService> getTypeService() {
+		return ITaskService.class;
 	}
 
 	/**
@@ -88,7 +83,7 @@ public class WorkbenchViewModel extends PresentationModel<TaskServiceRemote, Tas
 	 *
 	 * @param aViewTypes типы панелей задач
 	 */
-	public void refreshView(String aEventType, TaskEntity aTask, TasksViewType... aViewTypes) {
+	public void refreshView(String aEventType, TaskModel aTask, TasksViewType... aViewTypes) {
 		for (TasksViewType viewType : aViewTypes) {
 			TasksViewModel viewModel = modelsMap.get(viewType);
 			if (null != viewModel) {
@@ -103,7 +98,7 @@ public class WorkbenchViewModel extends PresentationModel<TaskServiceRemote, Tas
 	 *
 	 * @param goOverTaskListener значение поля
 	 */
-	public void setGoOverTaskListener(GoOverTaskListener goOverTaskListener) {
+	public void setGoOverTaskListener(RootView.GoOverTaskListener goOverTaskListener) {
 		this.goOverTaskListener = goOverTaskListener;
 	}
 
@@ -114,15 +109,16 @@ public class WorkbenchViewModel extends PresentationModel<TaskServiceRemote, Tas
 		EJBProxyFactory.getInstance().addMessageListener(message -> {
 			try {
 				if (message instanceof ActiveMQMessage) {
-					UserEntity user = Utils.getInstance().getCurrentUser();
+					UserModel user = Utils.getInstance().getCurrentUser();
 					ActiveMQMessage objectMessage = (ActiveMQMessage) message;
-					if (objectMessage.isBodyAssignableTo(ObjectEvent.class)) {
-						ObjectEvent event = objectMessage.getBody(ObjectEvent.class);
+					if (objectMessage instanceof ActiveMQObjectMessage) {
+						ObjectEvent event =
+								(ObjectEvent) ((ActiveMQObjectMessage) objectMessage).getObject();
 						IEntity entity = event.getEntity();
-						if (entity instanceof TaskEntity) {
-							TaskEntity taskEntity = (TaskEntity) entity;
+						if (entity instanceof TaskModel) {
+							TaskModel taskEntity = (TaskModel) entity;
 							Task task = EntityConverter.getInstatnce()
-									.convertTaskEntityToClientWrapTask(taskEntity);
+									.convertTaskModelToClientWrapTask(taskEntity);
 
 							refreshView(event.getType(), taskEntity, TasksViewType.values());
 							switch (event.getType()) {
@@ -131,7 +127,7 @@ public class WorkbenchViewModel extends PresentationModel<TaskServiceRemote, Tas
 									goOverTaskListener.setTask(task);
 									DialogUtils.getInstance().showPushUp("Назначение задачи",
 											"Вам назначена новая задача: " + task.getName(),
-											PushUpTypes.NEW_PUSH, goOverTaskListener);
+																		 PushUpTypes.NEW_PUSH, goOverTaskListener);
 								}
 
 								break;

@@ -1,11 +1,11 @@
 package ru.devazz.entities;
 
-import ru.sciencesquad.hqtasks.server.utils.CycleTypeTask;
-import ru.sciencesquad.hqtasks.server.utils.TaskPriority;
-import ru.sciencesquad.hqtasks.server.utils.TaskStatus;
-import ru.sciencesquad.hqtasks.server.utils.TaskType;
-import ru.siencesquad.hqtasks.ui.interfaces.SelectableObject;
-import ru.siencesquad.hqtasks.ui.utils.Utils;
+import ru.devazz.interfaces.SelectableObject;
+import ru.devazz.server.api.model.enums.CycleTypeTask;
+import ru.devazz.server.api.model.enums.TaskPriority;
+import ru.devazz.server.api.model.enums.TaskStatus;
+import ru.devazz.server.api.model.enums.TaskType;
+import ru.devazz.utils.Utils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -72,7 +72,7 @@ public class Task implements SelectableObject {
 	 * @param status Статус задачи
 	 */
 	public Task(Long aSuid, String name, String note, String aDescription, TaskStatus status,
-			TaskPriority aPriority, Double aPercent, Date startDateTime, Date endDateTime) {
+				TaskPriority aPriority, Double aPercent, Date startDateTime, Date endDateTime) {
 		super();
 		this.name = name;
 		this.note = note;

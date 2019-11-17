@@ -21,9 +21,8 @@
                               <TableView fx:id="personsTable" minHeight="300.0" minWidth="600.0">
                                 <columns>
                                   <TableColumn id="column1" fx:id="fioColumn" prefWidth="238.0" text="ФИО" />
-                                    <TableColumn fx:id="rankColumn" prefWidth="287.0" text="Воинское звание" />
                                   <TableColumn id="column2" fx:id="positionColumn" minWidth="12.0" prefWidth="167.0" text="Должность" />
-                                    <TableColumn fx:id="subElColumn" prefWidth="114.0" text="Боевой пост" />
+                                    <TableColumn fx:id="subElColumn" prefWidth="114.0" text="Должность" />
                                     <TableColumn fx:id="imageColumn" prefWidth="75.0" text="Портрет" />
                                 </columns>
                                  <columnResizePolicy>

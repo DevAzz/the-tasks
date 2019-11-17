@@ -8,8 +8,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
-import ru.siencesquad.hqtasks.ui.model.RemoveTaskDialogModel;
-import ru.siencesquad.hqtasks.ui.view.AbstractView;
+import ru.devazz.model.RemoveTaskDialogModel;
+import ru.devazz.view.AbstractView;
 
 import javax.jms.JMSException;
 
@@ -29,9 +29,6 @@ public class RemoveTaskDialogView extends AbstractView<RemoveTaskDialogModel> {
 	/** Экземпляр диалога */
 	private Dialog<Boolean> dialog;
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#initialize()
-	 */
 	@Override
 	public void initialize() {
 		Bindings.bindBidirectional(taskNameTextField.textProperty(), model.getNameTaskProperty());
@@ -98,9 +95,6 @@ public class RemoveTaskDialogView extends AbstractView<RemoveTaskDialogModel> {
 		this.dialog = dialog;
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#createPresentaionModel()
-	 */
 	@Override
 	protected RemoveTaskDialogModel createPresentaionModel() {
 		return new RemoveTaskDialogModel();

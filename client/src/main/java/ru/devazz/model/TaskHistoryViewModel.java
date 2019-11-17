@@ -6,14 +6,19 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import org.apache.activemq.artemis.jms.client.ActiveMQMessage;
-import ru.sciencesquad.hqtasks.server.bean.history.TaskHistoryServiceRemote;
-import ru.sciencesquad.hqtasks.server.datamodel.IEntity;
-import ru.sciencesquad.hqtasks.server.datamodel.TaskHistoryEntity;
-import ru.sciencesquad.hqtasks.server.events.ObjectEvent;
-import ru.sciencesquad.hqtasks.server.utils.*;
-import ru.siencesquad.hqtasks.ui.entities.Task;
-import ru.siencesquad.hqtasks.ui.server.EJBProxyFactory;
+import org.apache.activemq.command.ActiveMQMessage;
+import org.apache.activemq.command.ActiveMQObjectMessage;
+import ru.devazz.entities.Task;
+import ru.devazz.server.EJBProxyFactory;
+import ru.devazz.server.api.ITaskHistoryService;
+import ru.devazz.server.api.event.ObjectEvent;
+import ru.devazz.server.api.model.Filter;
+import ru.devazz.server.api.model.IEntity;
+import ru.devazz.server.api.model.TaskHistoryModel;
+import ru.devazz.server.api.model.enums.FilterType;
+import ru.devazz.server.api.model.enums.SortType;
+import ru.devazz.server.api.model.enums.TaskHistoryType;
+import ru.devazz.server.api.model.enums.TaskTimeInterval;
 
 import javax.jms.JMSException;
 import java.text.ParseException;
@@ -26,8 +31,8 @@ import java.util.Map;
 /**
  * Модель представления формы истории задачи
  */
-public class TaskHistoryModel
-		extends PresentationModel<TaskHistoryServiceRemote, TaskHistoryEntity> {
+public class TaskHistoryViewModel
+		extends PresentationModel<ITaskHistoryService, TaskHistoryModel> {
 
 	/** Свойство количества страниц */
 	private IntegerProperty pageCountProperty;
@@ -36,7 +41,7 @@ public class TaskHistoryModel
 	private Integer countPageEntries = 5;
 
 	/** Видимые исторические записи */
-	private ObservableList<TaskHistoryEntity> visibleEntries;
+	private ObservableList<TaskHistoryModel> visibleEntries;
 
 	/** Модель виджета выбора временного промежутка */
 	private CustomTimeIntervalModel customTimeIntervalModel;
@@ -72,9 +77,6 @@ public class TaskHistoryModel
 	private ObservableList<String> nameActiveFiltersList = FXCollections
 			.synchronizedObservableList(FXCollections.observableArrayList());
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.model.PresentationModel#initModel()
-	 */
 	@Override
 	protected void initModel() {
 		if (null == visibleEntries) {
@@ -347,12 +349,9 @@ public class TaskHistoryModel
 		loadPageEntries(0);
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.model.PresentationModel#getTypeService()
-	 */
 	@Override
-	public Class<TaskHistoryServiceRemote> getTypeService() {
-		return TaskHistoryServiceRemote.class;
+	public Class<ITaskHistoryService> getTypeService() {
+		return ITaskHistoryService.class;
 	}
 
 	/**
@@ -459,7 +458,7 @@ public class TaskHistoryModel
 	 *
 	 * @return the {@link#visibleEntries}
 	 */
-	public ObservableList<TaskHistoryEntity> getVisibleEntries() {
+	public ObservableList<TaskHistoryModel> getVisibleEntries() {
 		return visibleEntries;
 	}
 
@@ -475,7 +474,7 @@ public class TaskHistoryModel
 				visibleEntries.clear();
 				listDataModelEntities.addAll(service.getTaskHistoryWithPagination(task.getSuid(),
 						countPageEntries, countPageEntries * aPageNumber, filter));
-				for (TaskHistoryEntity entity : new ArrayList<>(listDataModelEntities)) {
+				for (TaskHistoryModel entity : new ArrayList<>(listDataModelEntities)) {
 					Thread.sleep(70L);
 					visibleEntries.add(entity);
 				}
@@ -513,7 +512,7 @@ public class TaskHistoryModel
 	 * @param aEntry историческая запись
 	 * @return номер страницы исторической записи
 	 */
-	public Integer getNumberPageByTask(TaskHistoryEntity aEntry) {
+	public Integer getNumberPageByTask(TaskHistoryModel aEntry) {
 		return service.getNumberPageByTask(aEntry, task.getSuid(), countPageEntries, filter);
 	}
 
@@ -532,9 +531,9 @@ public class TaskHistoryModel
 	 * @param aSuid идентификатор задачи
 	 * @return историческая запись
 	 */
-	public TaskHistoryEntity getHistoryEntryBySuid(Long aSuid) {
-		TaskHistoryEntity result = null;
-		for (TaskHistoryEntity entity : listDataModelEntities) {
+	public TaskHistoryModel getHistoryEntryBySuid(Long aSuid) {
+		TaskHistoryModel result = null;
+		for (TaskHistoryModel entity : listDataModelEntities) {
 			if (entity.getSuid().equals(aSuid)) {
 				result = entity;
 			}
@@ -550,11 +549,12 @@ public class TaskHistoryModel
 			try {
 				if (message instanceof ActiveMQMessage) {
 					ActiveMQMessage objectMessage = (ActiveMQMessage) message;
-					if (objectMessage.isBodyAssignableTo(ObjectEvent.class)) {
-						ObjectEvent event = objectMessage.getBody(ObjectEvent.class);
+					if (objectMessage instanceof ActiveMQObjectMessage) {
+						ObjectEvent event =
+								(ObjectEvent) ((ActiveMQObjectMessage) objectMessage).getObject();
 						IEntity entity = event.getEntity();
-						if (entity instanceof TaskHistoryEntity) {
-							TaskHistoryEntity historyEntity = (TaskHistoryEntity) entity;
+						if (entity instanceof TaskHistoryModel) {
+							TaskHistoryModel historyEntity = (TaskHistoryModel) entity;
 							if (historyEntity.getTaskSuid().equals(task.getSuid())) {
 								visibleEntries.add(historyEntity);
 							}

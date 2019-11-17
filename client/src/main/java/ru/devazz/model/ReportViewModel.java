@@ -9,9 +9,9 @@ import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.xml.JRXmlLoader;
-import ru.sciencesquad.hqtasks.server.bean.report.ReportServiceRemote;
-import ru.sciencesquad.hqtasks.server.datamodel.ReportEntity;
-import ru.siencesquad.hqtasks.ui.utils.Utils;
+import ru.devazz.server.api.IReportService;
+import ru.devazz.server.api.model.ReportModel;
+import ru.devazz.utils.Utils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -24,7 +24,7 @@ import java.util.Map;
 /**
  * Модель представления отчетов
  */
-public class ReportViewModel extends PresentationModel<ReportServiceRemote, ReportEntity> {
+public class ReportViewModel extends PresentationModel<IReportService, ReportModel> {
 
 	/** Текстовое свойство наименования боевого поста */
 	private StringProperty battleNameTextProperty;
@@ -74,9 +74,6 @@ public class ReportViewModel extends PresentationModel<ReportServiceRemote, Repo
 	/** Сгенерированный отчет */
 	private JasperPrint jasperPrintReport;
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.model.PresentationModel#initModel()
-	 */
 	@Override
 	protected void initModel() {
 		battleNameTextProperty = new SimpleStringProperty(this, "battleNameTextProperty");
@@ -339,7 +336,7 @@ public class ReportViewModel extends PresentationModel<ReportServiceRemote, Repo
 	public void generateReport() {
 		SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 		try {
-			ReportEntity entity = getService().createReportEntity(positionSuid,
+			ReportModel entity = getService().createReportEntity(positionSuid,
 					formatter.parse(startDateTextProperty.get()),
 					formatter.parse(endDateTextProperty.get()));
 			if (null != entity) {
@@ -407,8 +404,8 @@ public class ReportViewModel extends PresentationModel<ReportServiceRemote, Repo
 	 * @return отчет
 	 * @throws JRException в случае ошибки
 	 */
-	private JasperPrint generateReportByEntity(ReportEntity aEntity) throws JRException {
-		ArrayList<ReportEntity> dataArr = new ArrayList<>();
+	private JasperPrint generateReportByEntity(ReportModel aEntity) throws JRException {
+		ArrayList<ReportModel> dataArr = new ArrayList<>();
 		dataArr.add(aEntity);
 		JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource(dataArr);
 		Map<String, Object> parameters = new HashMap<>();
@@ -426,14 +423,14 @@ public class ReportViewModel extends PresentationModel<ReportServiceRemote, Repo
 	 * @return отчет в формате PDF
 	 * @throws JRException в случае ошибки
 	 */
-	public File getPDF(JasperPrint aReport, ReportEntity aEntity) throws JRException {
+	public File getPDF(JasperPrint aReport, ReportModel aEntity) throws JRException {
 		File file = null;
 		try (FileOutputStream outputStream = new FileOutputStream(
-				Utils.getInstance().getTempDir() + aEntity.getBattlePostName() + ".pdf")) {
+				Utils.getInstance().getTempDir() + aEntity.getPostName() + ".pdf")) {
 			outputStream.write(JasperExportManager.exportReportToPdf(aReport));
 
 			file = new File(
-					Utils.getInstance().getTempDir() + aEntity.getBattlePostName() + ".pdf");
+					Utils.getInstance().getTempDir() + aEntity.getPostName() + ".pdf");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -449,9 +446,9 @@ public class ReportViewModel extends PresentationModel<ReportServiceRemote, Repo
 	 * @return отчет в формате HTML
 	 * @throws JRException в случае ошибки
 	 */
-	public File getHTML(JasperPrint aReport, ReportEntity aEntity) throws JRException {
+	public File getHTML(JasperPrint aReport, ReportModel aEntity) throws JRException {
 		File file = new File(
-				Utils.getInstance().getTempDir() + aEntity.getBattlePostName() + ".html");
+				Utils.getInstance().getTempDir() + aEntity.getPostName() + ".html");
 		JasperExportManager.exportReportToHtmlFile(aReport, file.getAbsolutePath());
 		return file;
 	}
@@ -474,12 +471,9 @@ public class ReportViewModel extends PresentationModel<ReportServiceRemote, Repo
 		return pdfFileReport;
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.model.PresentationModel#getTypeService()
-	 */
 	@Override
-	public Class<ReportServiceRemote> getTypeService() {
-		return ReportServiceRemote.class;
+	public Class<IReportService> getTypeService() {
+		return IReportService.class;
 	}
 
 }

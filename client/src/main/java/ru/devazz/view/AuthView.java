@@ -14,11 +14,10 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import ru.sciencesquad.hqtasks.server.exceptions.AuthorizeUserOnlineException;
-import ru.siencesquad.hqtasks.ui.model.AuthPresentationModel;
-import ru.siencesquad.hqtasks.ui.utils.LoadAnimation;
-import ru.siencesquad.hqtasks.ui.utils.Utils;
-import ru.siencesquad.hqtasks.ui.utils.dialogs.DialogUtils;
+import ru.devazz.model.AuthPresentationModel;
+import ru.devazz.utils.LoadAnimation;
+import ru.devazz.utils.Utils;
+import ru.devazz.utils.dialogs.DialogUtils;
 
 /**
  * Контроллер диалога авторизации
@@ -78,12 +77,8 @@ public class AuthView extends AbstractView<AuthPresentationModel> {
 			} catch (Exception e) {
 				// TODO Логирование
 				e.printStackTrace();
-				if (e instanceof AuthorizeUserOnlineException) {
-					cauthError("Ошибка подключения", e.getMessage(), AlertType.ERROR);
-				} else {
-					cauthError("Ошибка подключения", "Невозможно подключиться к серверу",
-							AlertType.ERROR);
-				}
+				cauthError("Ошибка подключения", "Невозможно подключиться к серверу",
+						   AlertType.ERROR);
 
 				loadAnimation.stop();
 				try {
@@ -116,17 +111,11 @@ public class AuthView extends AbstractView<AuthPresentationModel> {
 		});
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#createPresentaionModel()
-	 */
 	@Override
 	protected AuthPresentationModel createPresentaionModel() {
 		return new AuthPresentationModel();
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#initialize()
-	 */
 	@Override
 	public void initialize() {
 		Bindings.bindBidirectional(login.textProperty(), model.loginProperty());
@@ -182,9 +171,6 @@ public class AuthView extends AbstractView<AuthPresentationModel> {
 		}
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#setStage(javafx.stage.Stage)
-	 */
 	@Override
 	public void setStage(Stage aStage) {
 		super.setStage(aStage);

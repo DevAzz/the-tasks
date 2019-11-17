@@ -17,7 +17,7 @@ public class DefaultTask {
 	/** Время конца задачи */
 	private String endTime;
 
-	/** идентификатор боевого поста (исполнитель задачи) */
+	/** идентификатор должности (исполнитель задачи) */
 	private Long subordinationSUID;
 
 	/**
@@ -138,7 +138,7 @@ public class DefaultTask {
 	}
 
 	/**
-	 * Возвращяет индентификатор боевого поста {link#subordinationSUID}
+	 * Возвращяет индентификатор должности {link#subordinationSUID}
 	 *
 	 * @return the {link#subordinationSUID}
 	 */
@@ -147,7 +147,7 @@ public class DefaultTask {
 	}
 
 	/**
-	 * Устанавливает индентификатор боевого поста {link#subordinationSUID}
+	 * Устанавливает индентификатор должности {link#subordinationSUID}
 	 *
 	 * @param subordinationSUID значение поля
 	 */

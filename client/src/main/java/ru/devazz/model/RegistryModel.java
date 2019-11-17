@@ -5,17 +5,28 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import ru.devazz.server.EJBProxyFactory;
+import ru.devazz.server.api.ISubordinationElementService;
+import ru.devazz.server.api.IUserService;
+import ru.devazz.server.api.model.SubordinationElementModel;
+import ru.devazz.server.api.model.UserModel;
+import ru.devazz.utils.PushUpTypes;
 import ru.devazz.utils.SubElType;
+import ru.devazz.utils.Utils;
+import ru.devazz.utils.dialogs.DialogUtils;
+
+import javax.jms.JMSException;
 
 /**
  * Модель регистрации пользователей
  */
-public class RegistryModel extends PresentationModel<UserServiceRemote, UserEntity> {
+public class RegistryModel extends PresentationModel<IUserService, UserModel> {
 	/** Список пользователей */
-	private ObservableList<UserEntity> data;
+	private ObservableList<UserModel> data;
 
 	/** Список измененных пользователей */
-	private ObservableList<UserEntity> changedUsers;
+	private ObservableList<UserModel> changedUsers;
 
 	/** Логин */
 	private StringProperty login;
@@ -35,10 +46,7 @@ public class RegistryModel extends PresentationModel<UserServiceRemote, UserEnti
 	/** Должность */
 	private StringProperty position;
 
-	/** Воинское звание */
-	private StringProperty militaryRank;
-
-	/** Свойство текста подразделения */
+	/** Свойство текста элемента подчиненности' */
 	private StringProperty subElsProperty;
 
 	/** Выбранный элемент подчиненности */
@@ -58,7 +66,6 @@ public class RegistryModel extends PresentationModel<UserServiceRemote, UserEnti
 		surname = new SimpleStringProperty(this, "surname", "");
 		patronymic = new SimpleStringProperty(this, "patronymic", "");
 		position = new SimpleStringProperty(this, "position", "");
-		militaryRank = new SimpleStringProperty(this, "militaryRank", "");
 		subElsProperty = new SimpleStringProperty(this, "subElsProperty", "");
 		changeExistProperty = new SimpleBooleanProperty(this, "changeExistProperty", false);
 		loadUsers();
@@ -181,24 +188,6 @@ public class RegistryModel extends PresentationModel<UserServiceRemote, UserEnti
 	}
 
 	/**
-	 * Возвращает {@link#militaryRank}
-	 *
-	 * @return the militaryRank
-	 */
-	public StringProperty getMilitaryRank() {
-		return militaryRank;
-	}
-
-	/**
-	 * Устанавливает значение полю militaryRank
-	 *
-	 * @param militaryRankValue значение поле
-	 */
-	public void setMilitaryRankValue(String militaryRankValue) {
-		this.militaryRank.set(militaryRankValue);
-	}
-
-	/**
 	 * Возвращает {@link#subElsProperty}
 	 *
 	 * @return the {@link#subElsProperty}
@@ -239,7 +228,7 @@ public class RegistryModel extends PresentationModel<UserServiceRemote, UserEnti
 	 *
 	 * @return the {@link#data}
 	 */
-	public ObservableList<UserEntity> getData() {
+	public ObservableList<UserModel> getData() {
 		return data;
 	}
 
@@ -248,7 +237,7 @@ public class RegistryModel extends PresentationModel<UserServiceRemote, UserEnti
 	 *
 	 * @param data значение поля
 	 */
-	public void setData(ObservableList<UserEntity> data) {
+	public void setData(ObservableList<UserModel> data) {
 		this.data = data;
 	}
 
@@ -257,7 +246,7 @@ public class RegistryModel extends PresentationModel<UserServiceRemote, UserEnti
 	 *
 	 * @return the changedUsers
 	 */
-	public ObservableList<UserEntity> changedUsers() {
+	public ObservableList<UserModel> changedUsers() {
 		return changedUsers;
 	}
 
@@ -273,7 +262,7 @@ public class RegistryModel extends PresentationModel<UserServiceRemote, UserEnti
 	/**
 	 * Устанавливает значение {@link#changeExistProperty}
 	 *
-	 * @param changeExistProperty the changeExistProperty to set
+	 * @param exists the changeExistProperty to set
 	 */
 	public void setChangeExistProperty(boolean exists) {
 		this.changeExistProperty.set(exists);
@@ -284,12 +273,12 @@ public class RegistryModel extends PresentationModel<UserServiceRemote, UserEnti
 	 *
 	 * @param user сущность UserEntity
 	 */
-	public void changeOnline(UserEntity user) {
+	public void changeOnline(UserModel user) {
 		if (null != user) {
 			user.setOnline(!user.getOnline());
 			DialogUtils.getInstance().showPushUp("Панель администратора",
 					"Изменен статус у пользователя " + user.getName(), PushUpTypes.HELLO_PUSH,
-					null);
+												 null);
 			try {
 				if (null == user.getImage()) {
 					user.setImage(service.get(user.getSuid()).getImage());
@@ -309,21 +298,16 @@ public class RegistryModel extends PresentationModel<UserServiceRemote, UserEnti
 	 *
 	 * @param user - Сущность пользователя
 	 */
-	public void deleteUser(UserEntity user) {
+	public void deleteUser(UserModel user) {
 		if (null != user) {
-			try {
-				service.delete(user.getSuid(), true);
-				data.remove(user);
-				DialogUtils.getInstance().showPushUp("Панель администратора",
-						"Удален пользователь " + user.getName(), PushUpTypes.HELLO_PUSH, null);
-			} catch (JMSException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			service.delete(user.getSuid(), true);
+			data.remove(user);
+			DialogUtils.getInstance().showPushUp("Панель администратора",
+					"Удален пользователь " + user.getName(), PushUpTypes.HELLO_PUSH, null);
 		}
 	}
 
-	public void addChangedUser(UserEntity user) {
+	public void addChangedUser(UserModel user) {
 		changedUsers.add(user);
 		setChangeExistProperty(true);
 	}
@@ -334,20 +318,19 @@ public class RegistryModel extends PresentationModel<UserServiceRemote, UserEnti
 	 * @throws Exception в случае ошибки
 	 */
 	public void loadInDB(byte[] image) throws Exception {
-		SubordinatioElementServiceRemote subElService = EJBProxyFactory.getInstance()
-				.getService(SubordinatioElementServiceRemote.class);
-		SubordinationElementEntity subordinationElementEntity = subElService
+		ISubordinationElementService subElService = EJBProxyFactory.getInstance()
+				.getService(ISubordinationElementService.class);
+		SubordinationElementModel subordinationElementEntity = subElService
 				.get(selectedSubElType.getSubElSuid());
-		UserEntity entity = new UserEntity();
+		UserModel entity = new UserModel();
 		Long suid = (long) (Math.random() * 10000000L) + 1000000L;
-		entity.setIduser(suid);
+		entity.setSuid(suid);
 		entity.setLogin(getLogin().get());
 		entity.setPassword(Utils.getInstance().sha(getPassword().get()));
-		entity.setIdrole(subordinationElementEntity.getRoleSuid());
+		entity.setIdRole(subordinationElementEntity.getRoleSuid());
 		entity.setPositionSuid(subordinationElementEntity.getSuid());
 		entity.setName(getSurname().get() + " " + getName().get().charAt(0) + ". "
 				+ getPatronymic().get().charAt(0) + ".");
-		entity.setMilitaryRank(getMilitaryRank().get());
 		entity.setPosition(getPosition().get());
 		entity.setImage(image);
 		entity.setOnline(false);
@@ -362,7 +345,7 @@ public class RegistryModel extends PresentationModel<UserServiceRemote, UserEnti
 	 */
 	public void loadUsersUpdates() {
 		Thread thread = new Thread(() -> {
-			for (UserEntity user : changedUsers) {
+			for (UserModel user : changedUsers) {
 				try {
 					if (null == user.getImage()) {
 						user.setImage(service.getUserImage(user.getSuid()));
@@ -387,8 +370,8 @@ public class RegistryModel extends PresentationModel<UserServiceRemote, UserEnti
 	}
 
 	@Override
-	public Class<UserServiceRemote> getTypeService() {
-		return UserServiceRemote.class;
+	public Class<IUserService> getTypeService() {
+		return IUserService.class;
 	}
 
 }

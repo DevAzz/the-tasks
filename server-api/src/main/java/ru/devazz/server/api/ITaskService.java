@@ -31,7 +31,7 @@ public interface ITaskService extends IEntityService<TaskModel> {
 	/**
 	 * Получение типовых задач по SUID поевого поста
 	 *
-	 * @param aPositionSuid боевой пост
+	 * @param aPositionSuid идентификатор должности
 	 * @return список типовых задач
 	 */
 	List<DefaultTaskModel> getDefaultTaskBySub(Long aPositionSuid);
@@ -219,9 +219,9 @@ public interface ITaskService extends IEntityService<TaskModel> {
 	List<TaskModel> getCycleTasks();
 
 	/**
-	 * Возвращает список всех задач боевого поста по фильтру
+	 * Возвращает список всех задач должности по фильтру
 	 *
-	 * @param aPositionSuid идентификатор боевого поста
+	 * @param aPositionSuid идентификатор должности
 	 * @param aFilter фильтр
 	 * @return список задач
 	 */

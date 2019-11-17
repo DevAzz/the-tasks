@@ -30,9 +30,9 @@ public interface ISearchService extends ICommonService {
 	List<UserModel> searchUsersByPosition(String aPosition, Long aUserSuid);
 
 	/**
-	 * Осуществляет поиск боевых постов
+	 * Осуществляет поиск должностей
 	 *
-	 * @param aName наименование боевого поста
+	 * @param aName наименование должности
 	 * @param aUserSuid идентификатор пользователя. (Временно)
 	 * @return список соответствий
 	 */

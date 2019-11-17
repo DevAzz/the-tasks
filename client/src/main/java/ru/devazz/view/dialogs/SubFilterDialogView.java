@@ -8,16 +8,15 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import ru.siencesquad.hqtasks.ui.entities.SubordinationElement;
-import ru.siencesquad.hqtasks.ui.model.dialogmodel.SubFilterDialogModel;
-import ru.siencesquad.hqtasks.ui.view.AbstractView;
+import ru.devazz.entities.SubordinationElement;
+import ru.devazz.model.dialogmodel.SubFilterDialogModel;
+import ru.devazz.view.AbstractView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Представление диалога выбора подразделений фильтра журнала событий по боевым
- * постам
+ * Представление диалога выбора подразделений фильтра журнала событий по должности
  */
 public class SubFilterDialogView extends AbstractView<SubFilterDialogModel> {
 
@@ -35,9 +34,6 @@ public class SubFilterDialogView extends AbstractView<SubFilterDialogModel> {
 	/** Выбранные чек-боксы */
 	private List<CheckBox> selectedCheckBoxes = new ArrayList<>();
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#initialize()
-	 */
 	@Override
 	public void initialize() {
 	}
@@ -112,9 +108,6 @@ public class SubFilterDialogView extends AbstractView<SubFilterDialogModel> {
 		return box;
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#createPresentaionModel()
-	 */
 	@Override
 	protected SubFilterDialogModel createPresentaionModel() {
 		return new SubFilterDialogModel();

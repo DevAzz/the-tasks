@@ -15,23 +15,21 @@ import javafx.scene.web.HTMLEditor;
 import javafx.stage.FileChooser;
 import javafx.util.StringConverter;
 import jfxtras.scene.control.LocalDateTimeTextField;
-import ru.sciencesquad.hqtasks.server.bean.subel.SubordinatioElementServiceRemote;
-import ru.sciencesquad.hqtasks.server.datamodel.SubordinationElementEntity;
-import ru.sciencesquad.hqtasks.server.utils.SortType;
-import ru.sciencesquad.hqtasks.server.utils.TaskPriority;
-import ru.sciencesquad.hqtasks.server.utils.TaskStatus;
-import ru.siencesquad.hqtasks.ui.entities.DefaultTask;
-import ru.siencesquad.hqtasks.ui.entities.SubordinationElement;
-import ru.siencesquad.hqtasks.ui.entities.Task;
-import ru.siencesquad.hqtasks.ui.model.CurrentTaskViewModel;
-import ru.siencesquad.hqtasks.ui.model.CurrentTaskViewModel.PropegressBarColor;
-import ru.siencesquad.hqtasks.ui.server.EJBProxyFactory;
-import ru.siencesquad.hqtasks.ui.utils.DesktopOpen;
-import ru.siencesquad.hqtasks.ui.utils.EntityConverter;
-import ru.siencesquad.hqtasks.ui.utils.Utils;
-import ru.siencesquad.hqtasks.ui.utils.dialogs.DialogUtils;
+import ru.devazz.entities.DefaultTask;
+import ru.devazz.entities.SubordinationElement;
+import ru.devazz.entities.Task;
+import ru.devazz.model.CurrentTaskViewModel;
+import ru.devazz.server.EJBProxyFactory;
+import ru.devazz.server.api.ISubordinationElementService;
+import ru.devazz.server.api.model.SubordinationElementModel;
+import ru.devazz.server.api.model.enums.SortType;
+import ru.devazz.server.api.model.enums.TaskPriority;
+import ru.devazz.server.api.model.enums.TaskStatus;
+import ru.devazz.utils.DesktopOpen;
+import ru.devazz.utils.EntityConverter;
+import ru.devazz.utils.Utils;
+import ru.devazz.utils.dialogs.DialogUtils;
 
-import javax.naming.NamingException;
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
@@ -169,9 +167,6 @@ public class CurrentTaskView extends AbstractView<CurrentTaskViewModel> {
 	@FXML
 	private Label timeLeftTaskLabel;
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#initialize()
-	 */
 	@Override
 	public void initialize() {
 		bind();
@@ -473,7 +468,7 @@ public class CurrentTaskView extends AbstractView<CurrentTaskViewModel> {
 		});
 
 		model.getOpenViewFlag()
-				.addListener((ChangeListener<Boolean>) (observable, oldValue, newValue) -> {
+				.addListener((observable, oldValue, newValue) -> {
 					if (!newValue && isViewOpen()) {
 						closeTabView();
 					}
@@ -481,7 +476,7 @@ public class CurrentTaskView extends AbstractView<CurrentTaskViewModel> {
 
 		// добавляет признак того, что содержание представления было изменено
 		model.getChangeExistProperty()
-				.addListener((ChangeListener<Boolean>) (observable, oldValue, newValue) -> {
+				.addListener((observable, oldValue, newValue) -> {
 					Platform.runLater(() -> {
 						if (null != getTab()) {
 							if (newValue) {
@@ -494,7 +489,7 @@ public class CurrentTaskView extends AbstractView<CurrentTaskViewModel> {
 
 				});
 		model.getColorProgressBarTextProperty().addListener(
-				(ChangeListener<PropegressBarColor>) (observable, oldValue, newValue) -> {
+				(observable, oldValue, newValue) -> {
 					switch (newValue) {
 					case RED:
 						progressBar.getStyleClass().remove("progressBarGreen");
@@ -516,9 +511,6 @@ public class CurrentTaskView extends AbstractView<CurrentTaskViewModel> {
 				});
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#getTabPane()
-	 */
 	@Override
 	public TabPane getTabPane() {
 		return currentTaskTabPane;
@@ -536,9 +528,6 @@ public class CurrentTaskView extends AbstractView<CurrentTaskViewModel> {
 		return tab;
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#createPresentaionModel()
-	 */
 	@Override
 	protected CurrentTaskViewModel createPresentaionModel() {
 		return new CurrentTaskViewModel();
@@ -742,9 +731,6 @@ public class CurrentTaskView extends AbstractView<CurrentTaskViewModel> {
 		this.commonTabPane = commonTabPane;
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#closeTabView()
-	 */
 	@Override
 	@FXML
 	protected void closeTabView() {
@@ -782,31 +768,26 @@ public class CurrentTaskView extends AbstractView<CurrentTaskViewModel> {
 	 */
 	@FXML
 	public void selectExecutor() {
-		SubordinatioElementServiceRemote subElsService;
-		try {
-			subElsService = EJBProxyFactory.getInstance()
-					.getService(SubordinatioElementServiceRemote.class);
+		ISubordinationElementService subElsService;
+		subElsService = EJBProxyFactory.getInstance()
+				.getService(ISubordinationElementService.class);
 
-			ObservableList<SubordinationElement> listSubEls = FXCollections.observableArrayList();
+		ObservableList<SubordinationElement> listSubEls = FXCollections.observableArrayList();
 
-			Consumer<? super List<SubordinationElement>> consumer = t -> {
-				SubordinationElement element = t.get(0);
-				if (null != element) {
-					model.setSubElExecutor(element);
-				}
-			};
-
-			for (SubordinationElementEntity entity : subElsService
-					.getAll(Utils.getInstance().getCurrentUser().getIduser())) {
-				listSubEls
-						.add(EntityConverter.getInstatnce().convertSubElEntityToClientWrap(entity));
+		Consumer<? super List<SubordinationElement>> consumer = t -> {
+			SubordinationElement element = t.get(0);
+			if (null != element) {
+				model.setSubElExecutor(element);
 			}
+		};
 
-			DialogUtils.getInstance().showSelectSubElsDialog(getStage(), consumer, false, false);
-		} catch (NamingException e) {
-			// TODO Логирование
-			e.printStackTrace();
+		for (SubordinationElementModel entity : subElsService
+				.getAll(Utils.getInstance().getCurrentUser().getSuid())) {
+			listSubEls
+					.add(EntityConverter.getInstatnce().convertSubElEntityToClientWrap(entity));
 		}
+
+		DialogUtils.getInstance().showSelectSubElsDialog(getStage(), consumer, false, false);
 	}
 
 	/**

@@ -1,12 +1,12 @@
 package ru.devazz.utils;
 
-import ru.sciencesquad.hqtasks.server.bean.ICommonService;
-import ru.sciencesquad.hqtasks.server.datamodel.IEntity;
-import ru.siencesquad.hqtasks.ui.model.PresentationModel;
-import ru.siencesquad.hqtasks.ui.view.*;
-import ru.siencesquad.hqtasks.ui.view.dialogs.*;
-import ru.siencesquad.hqtasks.ui.widgets.CustomTimeIntervalView;
-import ru.siencesquad.hqtasks.ui.widgets.PageSettingsView;
+import ru.devazz.model.PresentationModel;
+import ru.devazz.server.api.ICommonService;
+import ru.devazz.server.api.model.IEntity;
+import ru.devazz.view.*;
+import ru.devazz.view.dialogs.*;
+import ru.devazz.widgets.CustomTimeIntervalView;
+import ru.devazz.widgets.PageSettingsView;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,7 +20,8 @@ public class ViewType {
 	private static ViewType instance;
 
 	/** Карта типов представлений */
-	private Map<Class<? extends AbstractView<? extends PresentationModel<? extends ICommonService, ? extends IEntity>>>, String> typeMap = new HashMap<>();
+	private Map<Class<? extends AbstractView<? extends PresentationModel<? extends ICommonService, ? extends IEntity>>>, String>
+			typeMap = new HashMap<>();
 
 	/**
 	 * Конструктор

@@ -5,39 +5,9 @@ package ru.devazz.utils;
  */
 public enum SubElType {
 
-	RCU_HEAD("НАЧ. РЦУ", 1L, -1L),
+	HEAD("НАЧ. ОРГ.", 1L, -1L),
 
-	OPO_HEAD("НАЧ. ОПО", 3L, 2L),
-
-	BU_HEAD("ЗНЦ-НО БУ", 4L, 2L),
-
-	OUPD_HEAD("НАЧ. ЦУПД", 6L, 1L),
-
-	TSICS_HEAD("ТСИКС", 5L, 1L),
-
-	DUTY_OFFICIER("ОД", 2L, 1L),
-
-	SPOD_BU("СПОД по  БУ", 17L, 19L),
-
-	SPOD_PVO("СПОД по ПВО и А", 7L, 19L),
-
-	SPOD_PD("СПОД по ПД", 8L, 4L),
-
-	POD_PD("ПОД по ПД", 9L, 9L),
-
-	POD_FOIV("ПОД по ФОИВ", 10L, 9L),
-
-	POD_SV_BVS("ПОД по СВ и БВС", 11L, 9L),
-
-	PO_MTO("ПОД по МТО", 12L, 9L),
-
-	SPOD_PPR("СПОД по ППР", 13L, 6L),
-
-	POD_SV("ПОД по СВ", 14L, 14L),
-
-	POD_RZ_RK("ПОД по РЗ и РЭК", 15L, 14L),
-
-	ODSO_OFFICIER("Оф. ОДСО", 16L, 5L);
+	SUB_HEAD("ЗАМ. НАЧ. ОРГ", 3L, 2L);
 
 	/** Наименование элемента подчиненности */
 	private String name;
@@ -87,12 +57,6 @@ public enum SubElType {
 		return subElSuid;
 	}
 
-	/**
-	 * Получение SubordinationElement Type по SUID
-	 *
-	 * @param aSuid SUID боевого поста
-	 * @return subElementType
-	 */
 	public static SubElType getSubElbySUID(Long aSuid) {
 		SubElType subElType = null;
 		for (SubElType value : SubElType.values()) {

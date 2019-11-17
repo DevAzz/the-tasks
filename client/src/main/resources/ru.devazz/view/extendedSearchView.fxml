@@ -85,7 +85,7 @@
                                                    <content>
                                                       <AnchorPane>
                                                          <children>
-                                                            <Label layoutX="20.0" layoutY="102.0" text="по наименованию боевого поста" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="90.0" />
+                                                            <Label layoutX="20.0" layoutY="102.0" text="по наименованию должности" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="90.0" />
                                                             <Label layoutX="49.0" layoutY="23.0" text="по ФИО" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" />
                                                             <Label layoutX="39.0" layoutY="53.0" text="по должности" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="50.0" />
                                                             <TextField fx:id="personNameTextField" layoutX="278.0" layoutY="51.0" maxHeight="-Infinity" prefHeight="25.0" prefWidth="377.0" AnchorPane.leftAnchor="280.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" />

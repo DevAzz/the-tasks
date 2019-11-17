@@ -4,11 +4,11 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import ru.sciencesquad.hqtasks.server.bean.search.SearchServiceRemote;
-import ru.sciencesquad.hqtasks.server.datamodel.IEntity;
-import ru.siencesquad.hqtasks.ui.entities.ExtSearchRes;
-import ru.siencesquad.hqtasks.ui.entities.SubordinationElement;
-import ru.siencesquad.hqtasks.ui.utils.Utils;
+import ru.devazz.entities.ExtSearchRes;
+import ru.devazz.entities.SubordinationElement;
+import ru.devazz.server.api.ISearchService;
+import ru.devazz.server.api.model.IEntity;
+import ru.devazz.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * Модель представления вкладки расширенного поиска
  */
-public class ExtendedSearchViewModel extends PresentationModel<SearchServiceRemote, IEntity> {
+public class ExtendedSearchViewModel extends PresentationModel<ISearchService, IEntity> {
 
 	/** Список результатов поиска по задачам */
 	private ObservableList<ExtSearchRes> tasksData;
@@ -31,7 +31,7 @@ public class ExtendedSearchViewModel extends PresentationModel<SearchServiceRemo
 	private SimpleStringProperty taskNameProperty;
 
 	/**
-	 * Свойство текста поля ввода наименования боевого поста, к которому привязана
+	 * Свойство текста поля ввода наименования должности, к которому привязана
 	 * задача
 	 */
 	private SimpleStringProperty executorProperty;
@@ -48,15 +48,12 @@ public class ExtendedSearchViewModel extends PresentationModel<SearchServiceRemo
 	/** Свойство текста поля ввода наименования должности ДЛ */
 	private SimpleStringProperty positionSubElProperty;
 
-	/** Свойство текста поля ввода наименования боевого поста */
+	/** Свойство текста поля ввода наименования должности */
 	private SimpleStringProperty subElNameProperty;
 
 	/** Выделенный результат */
 	private ExtSearchRes selectedResult = null;
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.model.PresentationModel#initModel()
-	 */
 	@Override
 	protected void initModel() {
 		tasksData = FXCollections.observableArrayList();
@@ -152,12 +149,9 @@ public class ExtendedSearchViewModel extends PresentationModel<SearchServiceRemo
 		this.personsData = personsData;
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.model.PresentationModel#getTypeService()
-	 */
 	@Override
-	public Class<SearchServiceRemote> getTypeService() {
-		return SearchServiceRemote.class;
+	public Class<ISearchService> getTypeService() {
+		return ISearchService.class;
 	}
 
 	/**
@@ -345,13 +339,13 @@ public class ExtendedSearchViewModel extends PresentationModel<SearchServiceRemo
 
 		if (userCredentials) {
 			listEntity.addAll(getService().searchUsersByName(personNameProperty.get(),
-					Utils.getInstance().getCurrentUser().getIduser()));
+															 Utils.getInstance().getCurrentUser().getSuid()));
 		} else if (position) {
 			listEntity.addAll(getService().searchUsersByPosition(positionSubElProperty.get(),
-					Utils.getInstance().getCurrentUser().getIduser()));
+					Utils.getInstance().getCurrentUser().getSuid()));
 		} else if (subElName) {
 			listEntity.addAll(getService().searchSubElsByName(subElNameProperty.get(),
-					Utils.getInstance().getCurrentUser().getIduser()));
+					Utils.getInstance().getCurrentUser().getSuid()));
 		}
 
 		for (IEntity entity : listEntity) {

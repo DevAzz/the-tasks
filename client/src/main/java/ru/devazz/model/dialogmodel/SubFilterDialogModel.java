@@ -2,22 +2,21 @@ package ru.devazz.model.dialogmodel;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import ru.sciencesquad.hqtasks.server.bean.subel.SubordinatioElementServiceRemote;
-import ru.sciencesquad.hqtasks.server.datamodel.SubordinationElementEntity;
-import ru.siencesquad.hqtasks.ui.entities.SubordinationElement;
-import ru.siencesquad.hqtasks.ui.model.PresentationModel;
-import ru.siencesquad.hqtasks.ui.utils.EntityConverter;
-import ru.siencesquad.hqtasks.ui.utils.Utils;
+import ru.devazz.entities.SubordinationElement;
+import ru.devazz.model.PresentationModel;
+import ru.devazz.server.api.ISubordinationElementService;
+import ru.devazz.server.api.model.SubordinationElementModel;
+import ru.devazz.utils.EntityConverter;
+import ru.devazz.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
 
 /**
- * Модель представления диалога выбора подразделений фильтра журнала событий по
- * боевым постам
+ * Модель представления диалога выбора подразделений фильтра журнала событий по должностям
  */
 public class SubFilterDialogModel
-		extends PresentationModel<SubordinatioElementServiceRemote, SubordinationElementEntity> {
+		extends PresentationModel<ISubordinationElementService, SubordinationElementModel> {
 
 	/** Список, содержащий подразделения, подлежащие выбору */
 	private ObservableList<SubordinationElement> allSubList;
@@ -28,18 +27,12 @@ public class SubFilterDialogModel
 	/** Флаг использования диалога в форме поиска */
 	private Boolean searchFlag = false;
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.model.PresentationModel#initModel()
-	 */
 	@Override
 	protected void initModel() {
 		allSubList = FXCollections.observableArrayList();
 		selectedSubList = FXCollections.observableArrayList();
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.model.PresentationModel#loadEntities()
-	 */
 	@Override
 	public void loadEntities() {
 		if (!searchFlag) {
@@ -48,7 +41,7 @@ public class SubFilterDialogModel
 							service.getAll(Utils.getInstance().getCurrentUser().getSuid())).get(0));
 			addAllSubEls(root);
 		} else {
-			for (SubordinationElementEntity entity : service.getTotalSubElList()) {
+			for (SubordinationElementModel entity : service.getTotalSubElList()) {
 				allSubList
 						.add(EntityConverter.getInstatnce().convertSubElEntityToClientWrap(entity));
 			}
@@ -142,12 +135,9 @@ public class SubFilterDialogModel
 		this.searchFlag = searchFlag;
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.model.PresentationModel#getTypeService()
-	 */
 	@Override
-	public Class<SubordinatioElementServiceRemote> getTypeService() {
-		return SubordinatioElementServiceRemote.class;
+	public Class<ISubordinationElementService> getTypeService() {
+		return ISubordinationElementService.class;
 	}
 
 }

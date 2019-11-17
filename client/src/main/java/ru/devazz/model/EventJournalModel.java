@@ -4,22 +4,21 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import ru.sciencesquad.hqtasks.server.bean.events.EventServiceRemote;
-import ru.sciencesquad.hqtasks.server.datamodel.EventEntity;
-import ru.siencesquad.hqtasks.ui.entities.Event;
-import ru.siencesquad.hqtasks.ui.entities.SubordinationElement;
-import ru.siencesquad.hqtasks.ui.server.EJBProxyFactory;
-import ru.siencesquad.hqtasks.ui.utils.EntityConverter;
-import ru.siencesquad.hqtasks.ui.utils.EventType;
-import ru.siencesquad.hqtasks.ui.utils.Utils;
+import ru.devazz.entities.Event;
+import ru.devazz.entities.SubordinationElement;
+import ru.devazz.server.EJBProxyFactory;
+import ru.devazz.server.api.IEventService;
+import ru.devazz.server.api.model.EventModel;
+import ru.devazz.utils.EntityConverter;
+import ru.devazz.utils.EventType;
+import ru.devazz.utils.Utils;
 
-import javax.naming.NamingException;
 import java.util.*;
 
 /**
  * Модель представления журнала событий
  */
-public class EventJournalModel extends PresentationModel<EventServiceRemote, EventEntity> {
+public class EventJournalModel extends PresentationModel<IEventService, EventModel> {
 
 	/** Список событий */
 	private ObservableList<Event> etalonData;
@@ -53,9 +52,6 @@ public class EventJournalModel extends PresentationModel<EventServiceRemote, Eve
 		initModel();
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.model.PresentationModel#initModel()
-	 */
 	@Override
 	protected void initModel() {
 		etalonData = FXCollections.observableArrayList();
@@ -79,16 +75,11 @@ public class EventJournalModel extends PresentationModel<EventServiceRemote, Eve
 		Thread thread = new Thread(() -> {
 			try {
 				super.loadEntities();
-				for (EventEntity entity : new ArrayList<>(listDataModelEntities)) {
-					try {
-						Event event = EntityConverter.getInstatnce()
-								.convertEventEntityToClientWrapEvent(entity);
-						if (!etalonData.contains(event)) {
-							etalonData.add(event);
-						}
-					} catch (NamingException e) {
-						// TODO логирование
-						e.printStackTrace();
+				for (EventModel entity : new ArrayList<>(listDataModelEntities)) {
+					Event event = EntityConverter.getInstatnce()
+							.convertEventModelToClientWrapEvent(entity);
+					if (!etalonData.contains(event)) {
+						etalonData.add(event);
 					}
 				}
 			} catch (Exception e) {
@@ -135,19 +126,14 @@ public class EventJournalModel extends PresentationModel<EventServiceRemote, Eve
 		case "dayFilterItem":
 			Date dateStartDay = Utils.getInstance().getStartDateForFilterDate();
 			Date dateEndDay = Utils.getInstance().getEndDateForFilterDate();
-			for (EventEntity event : listDataModelEntities) {
+			for (EventModel event : listDataModelEntities) {
 				Date eventDate = event.getDate();
 				long eventDateLong = eventDate.getTime();
 
 				if ((eventDateLong >= dateStartDay.getTime())
 						&& ((eventDateLong <= dateEndDay.getTime()))) {
-					try {
-						tempData.add(EntityConverter.getInstatnce()
-								.convertEventEntityToClientWrapEvent(event));
-					} catch (NamingException e) {
-						// TODO Логирование
-						e.printStackTrace();
-					}
+					tempData.add(EntityConverter.getInstatnce()
+							.convertEventModelToClientWrapEvent(event));
 				}
 			}
 
@@ -156,19 +142,14 @@ public class EventJournalModel extends PresentationModel<EventServiceRemote, Eve
 		case "weekFilterItem":
 			Date dateStartWeek = Utils.getInstance().getStartDateForFilterWeek();
 			Date dateEndWeek = Utils.getInstance().getEndDateForFilterWeek();
-			for (EventEntity event : listDataModelEntities) {
+			for (EventModel event : listDataModelEntities) {
 				Date eventDate = event.getDate();
 				long eventDateLong = eventDate.getTime();
 
 				if ((eventDateLong >= dateStartWeek.getTime())
 						&& ((eventDateLong <= dateEndWeek.getTime()))) {
-					try {
-						tempData.add(EntityConverter.getInstatnce()
-								.convertEventEntityToClientWrapEvent(event));
-					} catch (NamingException e) {
-						// TODO Логирование
-						e.printStackTrace();
-					}
+					tempData.add(EntityConverter.getInstatnce()
+							.convertEventModelToClientWrapEvent(event));
 				}
 			}
 			break;
@@ -176,33 +157,23 @@ public class EventJournalModel extends PresentationModel<EventServiceRemote, Eve
 		case "monthFilterItem":
 			Date dateStartMonth = Utils.getInstance().getStartDateForFilterMonth();
 			Date dateEndMonth = Utils.getInstance().getEndDateForFilterMonth();
-			for (EventEntity event : listDataModelEntities) {
+			for (EventModel event : listDataModelEntities) {
 				Date eventDate = event.getDate();
 				long eventDateLong = eventDate.getTime();
 
 				if ((eventDateLong >= dateStartMonth.getTime())
 						&& ((eventDateLong <= dateEndMonth.getTime()))) {
-					try {
-						tempData.add(EntityConverter.getInstatnce()
-								.convertEventEntityToClientWrapEvent(event));
-					} catch (NamingException e) {
-						// TODO Логирование
-						e.printStackTrace();
-					}
+					tempData.add(EntityConverter.getInstatnce()
+							.convertEventModelToClientWrapEvent(event));
 				}
 			}
 			break;
 
 		case "allTimeFilterItem":
 			tempData.clear();
-			for (EventEntity event : listDataModelEntities) {
-				try {
-					tempData.add(EntityConverter.getInstatnce()
-							.convertEventEntityToClientWrapEvent(event));
-				} catch (NamingException e) {
-					// TODO логирование
-					e.printStackTrace();
-				}
+			for (EventModel event : listDataModelEntities) {
+				tempData.add(EntityConverter.getInstatnce()
+						.convertEventModelToClientWrapEvent(event));
 			}
 
 		default:
@@ -221,18 +192,13 @@ public class EventJournalModel extends PresentationModel<EventServiceRemote, Eve
 	public ObservableList<Event> changedDataByEventType(List<String> aList) {
 		ObservableList<Event> tempData = FXCollections.observableArrayList();
 		for (String note : aList) {
-			for (EventEntity event : listDataModelEntities) {
-				try {
-					Event eventWrap = EntityConverter.getInstatnce()
-							.convertEventEntityToClientWrapEvent(event);
-					EventType type = eventWrap.getEventType();
-					if ((null != note) && (null != type)
-							&& note.equals(eventWrap.getEventType().getSuid())) {
-						tempData.add(eventWrap);
-					}
-				} catch (NamingException e) {
-					// TODO логирование
-					e.printStackTrace();
+			for (EventModel event : listDataModelEntities) {
+				Event eventWrap = EntityConverter.getInstatnce()
+						.convertEventModelToClientWrapEvent(event);
+				EventType type = eventWrap.getEventType();
+				if ((null != note) && (null != type)
+						&& note.equals(eventWrap.getEventType().getSuid())) {
+					tempData.add(eventWrap);
 				}
 			}
 		}
@@ -241,23 +207,18 @@ public class EventJournalModel extends PresentationModel<EventServiceRemote, Eve
 	}
 
 	/**
-	 * Фильтрует записи по боевым постам
+	 * Фильтрует записи по должности
 	 *
-	 * @param aList список выбранных боевых постов
+	 * @param aList список выбранных должностей
 	 * @return ObservableList<Event> отфильтрованный список событий
 	 */
 	public ObservableList<Event> changedDataByAuthors(List<SubordinationElement> aList) {
 		ObservableList<Event> tempData = FXCollections.observableArrayList();
-		for (EventEntity event : listDataModelEntities) {
+		for (EventModel event : listDataModelEntities) {
 			for (SubordinationElement element : aList) {
 				if (event.getAuthorSuid().equals(element.getSuid())) {
-					try {
-						tempData.add(EntityConverter.getInstatnce()
-								.convertEventEntityToClientWrapEvent(event));
-					} catch (NamingException e) {
-						// TODO Логирование
-						e.printStackTrace();
-					}
+					tempData.add(EntityConverter.getInstatnce()
+							.convertEventModelToClientWrapEvent(event));
 					break;
 				}
 			}
@@ -267,23 +228,18 @@ public class EventJournalModel extends PresentationModel<EventServiceRemote, Eve
 	}
 
 	/**
-	 * Фильтрует записи по боевым постам
+	 * Фильтрует записи по должности
 	 *
-	 * @param aList список выбранных боевых постов
+	 * @param aList список выбранных должностей
 	 * @return ObservableList<Event> отфильтрованный список событий
 	 */
 	public ObservableList<Event> changedDataByExecutors(List<SubordinationElement> aList) {
 		ObservableList<Event> tempData = FXCollections.observableArrayList();
-		for (EventEntity event : listDataModelEntities) {
+		for (EventModel event : listDataModelEntities) {
 			for (SubordinationElement element : aList) {
 				if (event.getExecutorSuid().equals(element.getSuid())) {
-					try {
-						tempData.add((EntityConverter.getInstatnce()
-								.convertEventEntityToClientWrapEvent(event)));
-					} catch (NamingException e) {
-						// TODO Логирование
-						e.printStackTrace();
-					}
+					tempData.add((EntityConverter.getInstatnce()
+							.convertEventModelToClientWrapEvent(event)));
 					break;
 				}
 			}
@@ -340,12 +296,9 @@ public class EventJournalModel extends PresentationModel<EventServiceRemote, Eve
 		this.dataProperty.set(dataPropertyValue);
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.model.PresentationModel#getTypeService()
-	 */
 	@Override
-	public Class<EventServiceRemote> getTypeService() {
-		return EventServiceRemote.class;
+	public Class<IEventService> getTypeService() {
+		return IEventService.class;
 	}
 
 	/**
@@ -355,15 +308,10 @@ public class EventJournalModel extends PresentationModel<EventServiceRemote, Eve
 	 */
 	public ObservableList<Event> getAllEntries() {
 		ObservableList<Event> result = FXCollections.observableArrayList();
-		for (EventEntity entity : listDataModelEntities) {
-			try {
-				Event wrap = EntityConverter.getInstatnce()
-						.convertEventEntityToClientWrapEvent(entity);
-				result.add(wrap);
-			} catch (NamingException e) {
-				// TODO Логирование
-				e.printStackTrace();
-			}
+		for (EventModel entity : listDataModelEntities) {
+			Event wrap = EntityConverter.getInstatnce()
+					.convertEventModelToClientWrapEvent(entity);
+			result.add(wrap);
 		}
 		return result;
 	}

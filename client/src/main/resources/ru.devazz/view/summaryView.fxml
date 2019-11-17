@@ -53,9 +53,9 @@
                                           </Menu>
                                     </items>
                                   </Menu>
-                                  <Menu mnemonicParsing="false" text="Выбор боевых постов">
+                                  <Menu mnemonicParsing="false" text="Выбор должностей">
                                        <items>
-                                          <MenuItem mnemonicParsing="false" onAction="#selectSubEls" text="Выбрать боевые посты" />
+                                          <MenuItem mnemonicParsing="false" onAction="#selectSubEls" text="Выбрать должности" />
                                        </items>
                                   </Menu>
                                 </menus>

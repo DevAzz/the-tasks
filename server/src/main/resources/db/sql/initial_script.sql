@@ -139,7 +139,6 @@ CREATE TABLE IF NOT EXISTS `tasksdb`.`user` (
   `idrole` BIGINT(20) NOT NULL,
   `sub_element_suid` BIGINT(20) NOT NULL,
   `name` VARCHAR(300) NULL DEFAULT NULL,
-  `military_rank` VARCHAR(300) NULL DEFAULT NULL,
   `position` VARCHAR(300) NULL DEFAULT NULL,
   `image` LONGBLOB NULL DEFAULT NULL,
   `online` INT(1) NOT NULL DEFAULT '0',

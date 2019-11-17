@@ -26,10 +26,10 @@ public class EventModel implements IEntity {
     /** Тип события */
     private String eventType;
 
-    /** Идентификатор боевого поста */
+    /** Идентификатор должности автора */
     private Long authorSuid;
 
-    /** Идентификатор боевого поста */
+    /** Идентификатор должности исполнителя */
     private Long executorSuid;
 
     /** Идентификатор задачи */

@@ -2,11 +2,11 @@ package ru.devazz.model;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import ru.sciencesquad.hqtasks.server.bean.tasks.TaskServiceRemote;
-import ru.sciencesquad.hqtasks.server.datamodel.TaskEntity;
-import ru.sciencesquad.hqtasks.server.utils.TaskStatus;
-import ru.siencesquad.hqtasks.ui.entities.Task;
-import ru.siencesquad.hqtasks.ui.utils.EntityConverter;
+import ru.devazz.entities.Task;
+import ru.devazz.server.api.ITaskService;
+import ru.devazz.server.api.model.TaskModel;
+import ru.devazz.server.api.model.enums.TaskStatus;
+import ru.devazz.utils.EntityConverter;
 
 import java.io.File;
 
@@ -14,7 +14,7 @@ import java.io.File;
  * Модель представления диалога завершения задачи
  */
 public class TaskCompletionDialogViewModel
-		extends PresentationModel<TaskServiceRemote, TaskEntity> {
+		extends PresentationModel<ITaskService, TaskModel> {
 
 	/** Свойство текста поля наименование задачи */
 	private StringProperty nameLabelProperty;
@@ -25,9 +25,6 @@ public class TaskCompletionDialogViewModel
 	/** Задача */
 	private Task task;
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.model.PresentationModel#initModel()
-	 */
 	@Override
 	protected void initModel() {
 		nameLabelProperty = new SimpleStringProperty(this, "nameLabelProperty", "");
@@ -65,7 +62,7 @@ public class TaskCompletionDialogViewModel
 	/**
 	 * Устанавливает значение полю {@link#documentStringProperty}
 	 *
-	 * @param documentStringProperty значение поля
+	 * @param documentString значение поля
 	 */
 	public void setDocumentStringPropertyValue(String documentString) {
 		this.documentStringProperty.set(documentString);
@@ -110,15 +107,12 @@ public class TaskCompletionDialogViewModel
 	public void completeTask() throws Exception {
 		task.setStatus(TaskStatus.DONE);
 		getService().update(EntityConverter.getInstatnce().convertClientWrapTaskToTaskEntity(task),
-				true);
+							true);
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.model.PresentationModel#getTypeService()
-	 */
 	@Override
-	public Class<TaskServiceRemote> getTypeService() {
-		return TaskServiceRemote.class;
+	public Class<ITaskService> getTypeService() {
+		return ITaskService.class;
 	}
 
 }

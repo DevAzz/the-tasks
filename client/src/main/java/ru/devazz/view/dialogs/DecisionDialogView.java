@@ -8,11 +8,11 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import jfxtras.scene.control.LocalDateTimeTextField;
-import ru.siencesquad.hqtasks.ui.entities.Task;
-import ru.siencesquad.hqtasks.ui.model.DecisionDialogViewModel;
-import ru.siencesquad.hqtasks.ui.utils.DesktopOpen;
-import ru.siencesquad.hqtasks.ui.utils.dialogs.DialogUtils;
-import ru.siencesquad.hqtasks.ui.view.AbstractView;
+import ru.devazz.entities.Task;
+import ru.devazz.model.DecisionDialogViewModel;
+import ru.devazz.utils.DesktopOpen;
+import ru.devazz.utils.dialogs.DialogUtils;
+import ru.devazz.view.AbstractView;
 
 /**
  * Представление диалога принятия решения
@@ -42,9 +42,6 @@ public class DecisionDialogView extends AbstractView<DecisionDialogViewModel> {
 	/** Экземпляр диалога */
 	private Dialog<Task> dialog;
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#initialize()
-	 */
 	@Override
 	public void initialize() {
 		bindView();
@@ -80,7 +77,7 @@ public class DecisionDialogView extends AbstractView<DecisionDialogViewModel> {
 			new DesktopOpen("file:///" + model.getTask().getDocument().getAbsolutePath());
 		} else {
 			DialogUtils.getInstance().showAlertDialog("Невозможно открыть документ",
-					"Документ не был прикреплен", AlertType.ERROR);
+													  "Документ не был прикреплен", AlertType.ERROR);
 		}
 	}
 
@@ -130,9 +127,6 @@ public class DecisionDialogView extends AbstractView<DecisionDialogViewModel> {
 		}
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#createPresentaionModel()
-	 */
 	@Override
 	protected DecisionDialogViewModel createPresentaionModel() {
 		return new DecisionDialogViewModel();

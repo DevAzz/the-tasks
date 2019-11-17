@@ -5,9 +5,8 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.image.Image;
-import ru.sciencesquad.hqtasks.server.bean.ICommonService;
-import ru.sciencesquad.hqtasks.server.datamodel.IEntity;
-import ru.sciencesquad.hqtasks.server.datamodel.TaskHistoryEntity;
+import ru.devazz.server.api.ICommonService;
+import ru.devazz.server.api.model.IEntity;
 
 import java.text.SimpleDateFormat;
 
@@ -29,11 +28,8 @@ public class TaskHistoryEntryPanelModel extends PresentationModel<ICommonService
 	private ObjectProperty<Image> imageProperty;
 
 	/** Историческая запись */
-	private TaskHistoryEntity entity;
+	private ru.devazz.server.api.model.TaskHistoryModel entity;
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.model.PresentationModel#initModel()
-	 */
 	@Override
 	protected void initModel() {
 		titleLabelProperty = new SimpleStringProperty(this, "titleLabelProperty", "Заголовок");
@@ -48,7 +44,7 @@ public class TaskHistoryEntryPanelModel extends PresentationModel<ICommonService
 	 *
 	 * @return the {@link#entity}
 	 */
-	public TaskHistoryEntity getEntity() {
+	public ru.devazz.server.api.model.TaskHistoryModel getEntity() {
 		return entity;
 	}
 
@@ -57,7 +53,7 @@ public class TaskHistoryEntryPanelModel extends PresentationModel<ICommonService
 	 *
 	 * @param aEntity значение поля
 	 */
-	public void setEntity(TaskHistoryEntity aEntity) {
+	public void setEntity(ru.devazz.server.api.model.TaskHistoryModel aEntity) {
 		this.entity = aEntity;
 
 		setTextLabelProperty(aEntity.getText());
@@ -177,9 +173,6 @@ public class TaskHistoryEntryPanelModel extends PresentationModel<ICommonService
 		this.dateLabelProperty.set(dateLabelPropertyValue);
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.model.PresentationModel#getTypeService()
-	 */
 	@Override
 	public Class<ICommonService> getTypeService() {
 		return null;

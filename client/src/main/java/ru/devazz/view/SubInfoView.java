@@ -8,7 +8,7 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-import ru.siencesquad.hqtasks.ui.model.SubInfoViewModel;
+import ru.devazz.model.SubInfoViewModel;
 
 /**
  * Представление информации о подразделении
@@ -39,23 +39,15 @@ public class SubInfoView extends AbstractView<SubInfoViewModel> {
 	@FXML
 	private Label positionLabel;
 
-	/** Воинское звание */
-	@FXML
-	private Label rankLabel;
-
 	/** Лейбл отображения состояния пользователя в системе */
 	@FXML
 	private Label onlineLabel;
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#initialize()
-	 */
 	@Override
 	public void initialize() {
 		Bindings.bindBidirectional(labelTitle.textProperty(), model.getTitleProperty());
 		Bindings.bindBidirectional(fioLabel.textProperty(), model.getFioProperty());
 		Bindings.bindBidirectional(positionLabel.textProperty(), model.getPositionProperty());
-		Bindings.bindBidirectional(rankLabel.textProperty(), model.getRankProperty());
 		Bindings.bindBidirectional(subElementImage.imageProperty(), model.getImageProperty());
 		Bindings.bindBidirectional(onlineLabel.textProperty(), model.getOnlineProperty());
 
@@ -100,24 +92,6 @@ public class SubInfoView extends AbstractView<SubInfoViewModel> {
 	}
 
 	/**
-	 * Возвращает {@link#rankLabel}
-	 *
-	 * @return the rankLabel
-	 */
-	public Label getRankLabel() {
-		return rankLabel;
-	}
-
-	/**
-	 * Устанавливает значение полю rankLabel
-	 *
-	 * @param rankLabel значение поле
-	 */
-	public void setRankLabel(Label rankLabel) {
-		this.rankLabel = rankLabel;
-	}
-
-	/**
 	 * Возвращает {@link#fioLabel}
 	 *
 	 * @return the fioLabel
@@ -153,17 +127,11 @@ public class SubInfoView extends AbstractView<SubInfoViewModel> {
 		this.positionLabel = positionLabel;
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#createPresentaionModel()
-	 */
 	@Override
 	protected SubInfoViewModel createPresentaionModel() {
 		return new SubInfoViewModel();
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#getTabPane()
-	 */
 	@Override
 	public TabPane getTabPane() {
 		return subInfoTabPane;

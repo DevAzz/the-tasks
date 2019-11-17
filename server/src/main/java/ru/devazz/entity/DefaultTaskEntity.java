@@ -60,7 +60,7 @@ public class DefaultTaskEntity implements Serializable, IEntity {
 	 * @param note Примечание
 	 * @param startTime Время начала задачи
 	 * @param endTime Время конца задачи
-	 * @param subordinationSUID идентификатор боевого поста (исполнитель задачи)
+	 * @param subordinationSUID идентификатор исполнителя задачи
 	 */
 	public DefaultTaskEntity(long defaultTaskID, String name, String note, String startTime,
 			String endTime, long subordinationSUID) {

@@ -11,13 +11,12 @@ import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import jfxtras.scene.control.LocalDateTextField;
-import ru.sciencesquad.hqtasks.server.datamodel.ReportEntity;
-import ru.siencesquad.hqtasks.ui.entities.SubordinationElement;
-import ru.siencesquad.hqtasks.ui.model.SummaryViewModel;
-import ru.siencesquad.hqtasks.ui.utils.Utils;
-import ru.siencesquad.hqtasks.ui.utils.dialogs.DialogUtils;
-import ru.siencesquad.hqtasks.ui.view.RootView.OpenTaskInSummaryHandler;
-import ru.siencesquad.hqtasks.ui.widgets.CustomTimeIntervalView;
+import ru.devazz.entities.SubordinationElement;
+import ru.devazz.model.SummaryViewModel;
+import ru.devazz.server.api.model.ReportModel;
+import ru.devazz.utils.Utils;
+import ru.devazz.utils.dialogs.DialogUtils;
+import ru.devazz.widgets.CustomTimeIntervalView;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -62,11 +61,8 @@ public class SummaryView extends AbstractView<SummaryViewModel> {
 	private AnchorPane loadAnchorPane;
 
 	/** Обработчик открытия задачи */
-	private OpenTaskInSummaryHandler openTaskHandler;
+	private RootView.OpenTaskInSummaryHandler openTaskHandler;
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#initialize()
-	 */
 	@Override
 	public void initialize() {
 		Bindings.bindBidirectional(dateLabel.textProperty(), model.getDateLabelProperty());
@@ -89,10 +85,10 @@ public class SummaryView extends AbstractView<SummaryViewModel> {
 					model.selectCustomDay(newValue);
 				});
 
-		model.getPanelsList().addListener((ListChangeListener<ReportEntity>) c -> {
+		model.getPanelsList().addListener((ListChangeListener<ReportModel>) c -> {
 			while (c.next()) {
 				if (c.wasAdded()) {
-					for (ReportEntity entity : c.getAddedSubList()) {
+					for (ReportModel entity : c.getAddedSubList()) {
 						createSummaryPanel(entity);
 					}
 				} else if (c.wasRemoved()) {
@@ -130,7 +126,7 @@ public class SummaryView extends AbstractView<SummaryViewModel> {
 	}
 
 	/**
-	 * Выбор боевых постов
+	 * Выбор должностей
 	 */
 	@FXML
 	private void selectSubEls() {
@@ -138,16 +134,16 @@ public class SummaryView extends AbstractView<SummaryViewModel> {
 			model.setSubElSuidList(FXCollections.observableArrayList(t));
 		};
 		DialogUtils.getInstance().showSelectSubElsDialogWithSelectedSubs(getStage(),
-				model.getSubElSuidList(), consumer, true, false);
+																		 model.getSubElSuidList(), consumer, true, false);
 	}
 
 	/**
-	 * Создает панель сводки для боевого поста
+	 * Создает панель сводки для должности
 	 *
-	 * @param entity сущность отчета по боевому посту
+	 * @param entity сущность отчета по должности
 	 * @throws IOException в случае ошибки загрузки преставления панели сводки
 	 */
-	private void createSummaryPanel(ReportEntity entity) {
+	private void createSummaryPanel(ReportModel entity) {
 		Platform.runLater(() -> {
 			try {
 				SummaryPanelView view = Utils.getInstance().loadView(SummaryPanelView.class);
@@ -183,9 +179,6 @@ public class SummaryView extends AbstractView<SummaryViewModel> {
 		return summaryTabPane;
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#createPresentaionModel()
-	 */
 	@Override
 	protected SummaryViewModel createPresentaionModel() {
 		return new SummaryViewModel();
@@ -196,7 +189,7 @@ public class SummaryView extends AbstractView<SummaryViewModel> {
 	 *
 	 * @param openTaskHandler значение поля
 	 */
-	public void setOpenTaskHandler(OpenTaskInSummaryHandler openTaskHandler) {
+	public void setOpenTaskHandler(RootView.OpenTaskInSummaryHandler openTaskHandler) {
 		this.openTaskHandler = openTaskHandler;
 	}
 

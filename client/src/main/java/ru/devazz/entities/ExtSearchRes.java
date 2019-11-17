@@ -1,6 +1,6 @@
 package ru.devazz.entities;
 
-import ru.sciencesquad.hqtasks.server.datamodel.IEntity;
+import ru.devazz.server.api.model.IEntity;
 
 /**
  * Сущность результат поиска

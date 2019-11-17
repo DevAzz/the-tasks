@@ -11,11 +11,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Screen;
 import javafx.util.Duration;
-import ru.siencesquad.hqtasks.ui.model.PushUpMessageViewModel;
-import ru.siencesquad.hqtasks.ui.utils.PushUpTypes;
-import ru.siencesquad.hqtasks.ui.utils.dialogs.DialogUtils;
-import ru.siencesquad.hqtasks.ui.view.AbstractView;
-import ru.siencesquad.hqtasks.ui.view.RootView.GoOverTaskListener;
+import ru.devazz.model.PushUpMessageViewModel;
+import ru.devazz.utils.PushUpTypes;
+import ru.devazz.utils.dialogs.DialogUtils;
+import ru.devazz.view.AbstractView;
+import ru.devazz.view.RootView;
 
 public class PushUpMessageView extends AbstractView<PushUpMessageViewModel> {
 
@@ -37,7 +37,7 @@ public class PushUpMessageView extends AbstractView<PushUpMessageViewModel> {
 	private Button pushUpButton;
 
 	/** Слушатель перехода на вновь созданную задачу */
-	private GoOverTaskListener goOverTaskListener;
+	private RootView.GoOverTaskListener goOverTaskListener;
 
 	/** Инициализация */
 	@Override
@@ -60,7 +60,7 @@ public class PushUpMessageView extends AbstractView<PushUpMessageViewModel> {
 	 *
 	 * @param goOverTaskListener значение поля
 	 */
-	public void setGoOverTaskListener(GoOverTaskListener goOverTaskListener) {
+	public void setGoOverTaskListener(RootView.GoOverTaskListener goOverTaskListener) {
 		this.goOverTaskListener = goOverTaskListener;
 	}
 

@@ -1,7 +1,7 @@
 package ru.devazz.model;
 
-import ru.sciencesquad.hqtasks.server.bean.ICommonService;
-import ru.sciencesquad.hqtasks.server.datamodel.IEntity;
+import ru.devazz.server.api.ICommonService;
+import ru.devazz.server.api.model.IEntity;
 
 public class LegendOfIconsViewModel extends PresentationModel<ICommonService, IEntity> {
 

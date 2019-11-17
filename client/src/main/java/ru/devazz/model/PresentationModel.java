@@ -4,14 +4,12 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import ru.devazz.server.EJBProxyFactory;
 import ru.devazz.server.api.ICommonService;
+import ru.devazz.server.api.IEntityService;
 import ru.devazz.server.api.model.IEntity;
-import ru.sciencesquad.hqtasks.server.bean.ICommonService;
-import ru.sciencesquad.hqtasks.server.bean.IEntityService;
-import ru.sciencesquad.hqtasks.server.datamodel.IEntity;
-import ru.sciencesquad.hqtasks.server.datamodel.UserEntity;
-import ru.siencesquad.hqtasks.ui.server.EJBProxyFactory;
-import ru.siencesquad.hqtasks.ui.utils.Utils;
+import ru.devazz.server.api.model.UserModel;
+import ru.devazz.utils.Utils;
 
 import java.util.List;
 
@@ -118,7 +116,7 @@ public abstract class PresentationModel<T extends ICommonService, E extends IEnt
 	public void loadEntities() {
 		@SuppressWarnings("unchecked")
 		IEntityService<E> enttiyService = (IEntityService<E>) service;
-		UserEntity user = Utils.getInstance().getCurrentUser();
+		UserModel user = Utils.getInstance().getCurrentUser();
 		List<E> list = (null != service)
 				? enttiyService.getAll((null != user) ? user.getSuid() : null)
 				: null;

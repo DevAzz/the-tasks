@@ -22,12 +22,11 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.util.StringConverter;
-import ru.sciencesquad.hqtasks.server.datamodel.UserEntity;
-import ru.siencesquad.hqtasks.ui.model.RegistryModel;
-import ru.siencesquad.hqtasks.ui.utils.LoadAnimation;
-import ru.siencesquad.hqtasks.ui.utils.MilitaryRank;
-import ru.siencesquad.hqtasks.ui.utils.SubElType;
-import ru.siencesquad.hqtasks.ui.utils.Utils;
+import ru.devazz.model.RegistryModel;
+import ru.devazz.server.api.model.UserModel;
+import ru.devazz.utils.LoadAnimation;
+import ru.devazz.utils.SubElType;
+import ru.devazz.utils.Utils;
 
 import java.awt.*;
 import java.io.File;
@@ -107,11 +106,7 @@ public class RegistryView extends AbstractView<RegistryModel> {
 	@FXML
 	private TextField positionField;
 
-	/** Комбо-бокс выбора звания */
-	@FXML
-	private ComboBox<MilitaryRank> militaryRankBox;
-
-	/** Комбо-бокс выбора боевого поста */
+	/** Комбо-бокс выбора должности */
 	@FXML
 	private ComboBox<SubElType> subElBox;
 
@@ -125,35 +120,31 @@ public class RegistryView extends AbstractView<RegistryModel> {
 
 	/** Таблица со списком пользователей */
 	@FXML
-	private TableView<UserEntity> usersTable;
+	private TableView<UserModel> usersTable;
 
 	/** Колонка логина */
 	@FXML
-	private TableColumn<UserEntity, AnchorPane> loginColumn;
+	private TableColumn<UserModel, AnchorPane> loginColumn;
 
 	/** Колонка пароля */
 	@FXML
-	private TableColumn<UserEntity, AnchorPane> passwordColumn;
+	private TableColumn<UserModel, AnchorPane> passwordColumn;
 
 	/** Колонка ФИО */
 	@FXML
-	private TableColumn<UserEntity, AnchorPane> fioColumn;
+	private TableColumn<UserModel, AnchorPane> fioColumn;
 
 	/** Колонка должности */
 	@FXML
-	private TableColumn<UserEntity, AnchorPane> positionColumn;
+	private TableColumn<UserModel, AnchorPane> positionColumn;
 
-	/** Колонка звания */
+	/** Колонка должнолсти */
 	@FXML
-	private TableColumn<UserEntity, AnchorPane> rankColumn;
-
-	/** Колонка боевого поста */
-	@FXML
-	private TableColumn<UserEntity, AnchorPane> subordinationColumn;
+	private TableColumn<UserModel, AnchorPane> subordinationColumn;
 
 	/** Колонка в сети */
 	@FXML
-	private TableColumn<UserEntity, AnchorPane> onlineColumn;
+	private TableColumn<UserModel, AnchorPane> onlineColumn;
 
 	/** Кнопка перехода к вкладке добавления пользователей */
 	@FXML
@@ -205,33 +196,6 @@ public class RegistryView extends AbstractView<RegistryModel> {
 		Bindings.bindBidirectional(patronymicField.textProperty(), model.getPatronymic());
 		Bindings.bindBidirectional(positionField.textProperty(), model.getPosition());
 
-		// Инициализация комбо-боксов
-		ObservableList<MilitaryRank> ranks = FXCollections.observableArrayList();
-		ranks.addAll(MilitaryRank.values());
-		militaryRankBox.setItems(ranks);
-		militaryRankBox.setConverter(new StringConverter<MilitaryRank>() {
-
-			/**
-			 * @see javafx.util.StringConverter#toString(Object)
-			 */
-			@Override
-			public String toString(MilitaryRank object) {
-				return object.getName();
-			}
-
-			/**
-			 * @see javafx.util.StringConverter#fromString(String)
-			 */
-			@Override
-			public MilitaryRank fromString(String string) {
-				return null;
-			}
-		});
-		militaryRankBox.setOnAction(event -> {
-			model.setMilitaryRankValue(
-					militaryRankBox.getSelectionModel().getSelectedItem().getName());
-		});
-
 		subEls = FXCollections.observableArrayList();
 		subEls.addAll(SubElType.values());
 		subElBox.setItems(subEls);
@@ -265,7 +229,6 @@ public class RegistryView extends AbstractView<RegistryModel> {
 		surnameField.getStyleClass().add("textFieldErr");
 		patronymicField.getStyleClass().add("textFieldErr");
 		positionField.getStyleClass().add("textFieldErr");
-		militaryRankBox.getStyleClass().add("textFieldErr");
 		subElBox.getStyleClass().add("textFieldErr");
 		applyButton.setDisable(true);
 
@@ -276,7 +239,6 @@ public class RegistryView extends AbstractView<RegistryModel> {
 		model.getSurname().addListener(new ChangeStyleListener(surnameField));
 		model.getPatronymic().addListener(new ChangeStyleListener(patronymicField));
 		model.getPosition().addListener(new ChangeStyleListener(positionField));
-		model.getMilitaryRank().addListener(new ChangeStyleListener(militaryRankBox));
 		model.getSubElsProperty().addListener(new ChangeStyleListener(subElBox));
 
 		// Загружаем данные по нажатию кнопки "принять"
@@ -325,8 +287,6 @@ public class RegistryView extends AbstractView<RegistryModel> {
 			surnameField.clear();
 			patronymicField.clear();
 			positionField.clear();
-			militaryRankBox.getSelectionModel().clearSelection();
-			model.getMilitaryRank().setValue("");
 			subElBox.getSelectionModel().clearSelection();
 			model.getSubElsProperty().setValue("");
 			if (!applyButton.isDisabled()) {
@@ -449,43 +409,7 @@ public class RegistryView extends AbstractView<RegistryModel> {
 			property.set(internalPane);
 			return property;
 		});
-		rankColumn.setCellValueFactory(user -> {
-			ObjectProperty<AnchorPane> property = new SimpleObjectProperty<>();
-			AnchorPane internalPane = new AnchorPane();
-			ComboBox<MilitaryRank> comboBox = new ComboBox<>();
-			comboBox.setItems(ranks);
-			comboBox.setConverter(new StringConverter<MilitaryRank>() {
 
-				/**
-				 * @see javafx.util.StringConverter#toString(Object)
-				 */
-				@Override
-				public String toString(MilitaryRank object) {
-					return object.getName();
-				}
-
-				/**
-				 * @see javafx.util.StringConverter#fromString(String)
-				 */
-				@Override
-				public MilitaryRank fromString(String string) {
-					return null;
-				}
-			});
-			comboBox.getSelectionModel()
-					.select(MilitaryRank.getRankByName(user.getValue().getMilitaryRank()));
-			comboBox.valueProperty().addListener(e -> {
-				// usersTable.getSelectionModel().select(user.getValue());
-				user.getValue()
-						.setMilitaryRank(comboBox.getSelectionModel().getSelectedItem().getName());
-				model.addChangedUser(user.getValue());
-			});
-			internalPane.getChildren().add(comboBox);
-			internalPane.setLeftAnchor(comboBox, 0.0);
-			internalPane.setRightAnchor(comboBox, 0.0);
-			property.set(internalPane);
-			return property;
-		});
 		subordinationColumn.setCellValueFactory(user -> {
 			ObjectProperty<AnchorPane> property = new SimpleObjectProperty<>();
 			AnchorPane internalPane = new AnchorPane();
@@ -660,12 +584,9 @@ public class RegistryView extends AbstractView<RegistryModel> {
 				field.getStyleClass().remove("textFieldErr");
 			}
 
-			militaryRankBox.getSelectionModel().isEmpty();
-
 			if (loginField.getText().isEmpty() || passwordField.getText().isEmpty()
 					|| nameField.getText().isEmpty() || surnameField.getText().isEmpty()
 					|| patronymicField.getText().isEmpty() || positionField.getText().isEmpty()
-					|| (null == militaryRankBox.getSelectionModel().getSelectedItem())
 					|| (null == subElBox.getSelectionModel().getSelectedItem())) {
 				applyButton.setDisable(true);
 				pressedFlag = false;

@@ -10,11 +10,11 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.SplitPane.Divider;
 import javafx.scene.input.MouseEvent;
-import ru.sciencesquad.hqtasks.server.datamodel.SubordinationElementEntity;
-import ru.siencesquad.hqtasks.ui.entities.SubordinationElement;
-import ru.siencesquad.hqtasks.ui.interfaces.SelectableObject;
-import ru.siencesquad.hqtasks.ui.model.SubordinationViewModel;
-import ru.siencesquad.hqtasks.ui.widgets.TreeViewWithItems;
+import ru.devazz.entities.SubordinationElement;
+import ru.devazz.interfaces.SelectableObject;
+import ru.devazz.model.SubordinationViewModel;
+import ru.devazz.server.api.model.SubordinationElementModel;
+import ru.devazz.widgets.TreeViewWithItems;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,20 +74,14 @@ public class SubordinationTreeView extends AbstractView<SubordinationViewModel>
 		return leftTreeView;
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#createPresentaionModel()
-	 */
 	@Override
 	protected SubordinationViewModel createPresentaionModel() {
 		return new SubordinationViewModel();
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#initialize()
-	 */
 	@Override
 	public void initialize() {
-		model.getListEntities().addListener((ListChangeListener<SubordinationElementEntity>) c -> {
+		model.getListEntities().addListener((ListChangeListener<SubordinationElementModel>) c -> {
 			loadTreeView();
 		});
 		Thread thread = new Thread(() -> model.loadTree());
@@ -161,7 +155,6 @@ public class SubordinationTreeView extends AbstractView<SubordinationViewModel>
 	/**
 	 * Управляет доступностью разделителя сплит панели
 	 *
-	 * @param aNumber номер сплит-панели
 	 * @param aDisable доступность
 	 */
 	public void disableSplitDivider(Boolean aDisable) {
@@ -191,9 +184,6 @@ public class SubordinationTreeView extends AbstractView<SubordinationViewModel>
 		}
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#getTabPane()
-	 */
 	@Override
 	public TabPane getTabPane() {
 		return tabPaneSubTree;

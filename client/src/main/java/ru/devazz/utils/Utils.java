@@ -1,17 +1,16 @@
 package ru.devazz.utils;
 
 import javafx.fxml.FXMLLoader;
-import ru.sciencesquad.hqtasks.server.bean.role.RoleServiceRemote;
-import ru.sciencesquad.hqtasks.server.bean.subel.SubordinatioElementServiceRemote;
-import ru.sciencesquad.hqtasks.server.bean.user.UserServiceRemote;
-import ru.sciencesquad.hqtasks.server.datamodel.RoleEntity;
-import ru.sciencesquad.hqtasks.server.datamodel.UserEntity;
-import ru.sciencesquad.hqtasks.server.utils.DayOfWeek;
-import ru.sciencesquad.hqtasks.server.utils.UserRoles;
-import ru.siencesquad.hqtasks.ui.entities.SubordinationElement;
-import ru.siencesquad.hqtasks.ui.server.EJBProxyFactory;
+import ru.devazz.entities.SubordinationElement;
+import ru.devazz.server.EJBProxyFactory;
+import ru.devazz.server.api.IRoleService;
+import ru.devazz.server.api.ISubordinationElementService;
+import ru.devazz.server.api.IUserService;
+import ru.devazz.server.api.model.RoleModel;
+import ru.devazz.server.api.model.UserModel;
+import ru.devazz.server.api.model.enums.DayOfWeek;
+import ru.devazz.server.api.model.enums.UserRoles;
 
-import javax.naming.NamingException;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -28,7 +27,7 @@ public class Utils {
 	private static Utils instance;
 
 	/** Сущность текщуего пользователя */
-	private UserEntity currentUser;
+	private UserModel currentUser;
 
 	/** Текущий элемент подчиненности */
 	private SubordinationElement currentElement;
@@ -45,7 +44,6 @@ public class Utils {
 	/**
 	 * Конструктор
 	 *
-	 * @throws NamingException в случае ошибки
 	 */
 	private Utils() {
 	}
@@ -67,7 +65,6 @@ public class Utils {
 	 *
 	 * @param <T> тип представления
 	 * @param aType объект типа представления
-	 * @param aFXMLPath путь до FXML файла с описанием представления
 	 * @return инициализированное представление
 	 * @throws IOException в случае ошибки загрузки FXML файла
 	 */
@@ -271,12 +268,11 @@ public class Utils {
 	 *
 	 * @param aRole роль
 	 * @return {@code true} - если текущий пользователь соответствует роли
-	 * @throws в случае ошибки
 	 */
-	public boolean checkUserAccess(UserRoles aRole) throws NamingException {
-		RoleServiceRemote roleService = EJBProxyFactory.getInstance()
-				.getService(RoleServiceRemote.class);
-		return roleService.checkUserPrivilege(aRole, currentUser.getIduser());
+	public boolean checkUserAccess(UserRoles aRole){
+		IRoleService roleService = EJBProxyFactory.getInstance()
+				.getService(IRoleService.class);
+		return roleService.checkUserPrivilege(aRole, currentUser.getSuid());
 	}
 
 	/**
@@ -285,14 +281,13 @@ public class Utils {
 	 * @param aRole заданная роль
 	 * @return {@code true} - если заданная роль соответствует роли текущего
 	 *         пользователя
-	 * @throws NamingException в случае ошибки получения сервиса ролей
 	 */
-	public boolean checkRoleEquals(UserRoles aRole) throws NamingException {
+	public boolean checkRoleEquals(UserRoles aRole){
 		Boolean result = false;
 		if (null != currentUser) {
-			RoleServiceRemote roleService = EJBProxyFactory.getInstance()
-					.getService(RoleServiceRemote.class);
-			RoleEntity role = roleService.get(currentUser.getIdrole());
+			IRoleService roleService = EJBProxyFactory.getInstance()
+					.getService(IRoleService.class);
+			RoleModel role = roleService.get(currentUser.getIdRole());
 			UserRoles currentUserRole = UserRoles.getUserRoleByName(role.getName());
 			result = currentUserRole.equals(aRole);
 		}
@@ -304,7 +299,7 @@ public class Utils {
 	 *
 	 * @return the {@link#currentUser}
 	 */
-	public UserEntity getCurrentUser() {
+	public UserModel getCurrentUser() {
 		return currentUser;
 	}
 
@@ -313,7 +308,7 @@ public class Utils {
 	 *
 	 * @param currentUser значение поля
 	 */
-	public void setCurrentUser(UserEntity currentUser) {
+	public void setCurrentUser(UserModel currentUser) {
 		this.currentUser = currentUser;
 	}
 
@@ -368,7 +363,7 @@ public class Utils {
 			if ((null != aOnlineFlag) && (null != currentUser)) {
 				currentUser.setOnline(aOnlineFlag);
 				try {
-					EJBProxyFactory.getInstance().getService(UserServiceRemote.class)
+					EJBProxyFactory.getInstance().getService(IUserService.class)
 							.update(currentUser, true);
 				} catch (Exception e) {
 					// TODO Логирование
@@ -383,13 +378,12 @@ public class Utils {
 	 * Возвращает элемент подчиненности текущего пользователя
 	 *
 	 * @return элемент подчиненности текущего пользователя
-	 * @throws NamingException в случае ошибки получения сервиса
 	 */
-	public SubordinationElement getCurrentUserSubEl() throws NamingException {
+	public SubordinationElement getCurrentUserSubEl() {
 		if (null == currentElement) {
 			if (null != currentUser) {
-				SubordinatioElementServiceRemote service = EJBProxyFactory.getInstance()
-						.getService(SubordinatioElementServiceRemote.class);
+				ISubordinationElementService service = EJBProxyFactory.getInstance()
+						.getService(ISubordinationElementService.class);
 				currentElement = EntityConverter.getInstatnce()
 						.convertSubElEntityToClientWrap(service.get(currentUser.getPositionSuid()));
 			}

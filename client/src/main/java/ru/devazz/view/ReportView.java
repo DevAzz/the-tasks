@@ -13,15 +13,15 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
 import jfxtras.scene.control.LocalDateTimeTextField;
-import ru.sciencesquad.hqtasks.server.bean.subel.SubordinatioElementServiceRemote;
-import ru.sciencesquad.hqtasks.server.datamodel.SubordinationElementEntity;
-import ru.siencesquad.hqtasks.ui.entities.SubordinationElement;
-import ru.siencesquad.hqtasks.ui.model.ReportViewModel;
-import ru.siencesquad.hqtasks.ui.server.EJBProxyFactory;
-import ru.siencesquad.hqtasks.ui.utils.EntityConverter;
-import ru.siencesquad.hqtasks.ui.utils.LoadAnimation;
-import ru.siencesquad.hqtasks.ui.utils.Utils;
-import ru.siencesquad.hqtasks.ui.utils.dialogs.DialogUtils;
+import ru.devazz.entities.SubordinationElement;
+import ru.devazz.model.ReportViewModel;
+import ru.devazz.server.EJBProxyFactory;
+import ru.devazz.server.api.ISubordinationElementService;
+import ru.devazz.server.api.model.SubordinationElementModel;
+import ru.devazz.utils.EntityConverter;
+import ru.devazz.utils.LoadAnimation;
+import ru.devazz.utils.Utils;
+import ru.devazz.utils.dialogs.DialogUtils;
 
 import java.io.File;
 import java.util.List;
@@ -135,9 +135,6 @@ public class ReportView extends AbstractView<ReportViewModel> {
 	@FXML
 	private Label loadLabel;
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#initialize()
-	 */
 	@Override
 	public void initialize() {
 		bindView();
@@ -146,8 +143,8 @@ public class ReportView extends AbstractView<ReportViewModel> {
 
 		searchBattlePostButton.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
 			try {
-				SubordinatioElementServiceRemote subElsService = EJBProxyFactory.getInstance()
-						.getService(SubordinatioElementServiceRemote.class);
+				ISubordinationElementService subElsService = EJBProxyFactory.getInstance()
+						.getService(ISubordinationElementService.class);
 
 				Consumer<? super List<SubordinationElement>> consumer = t -> {
 					model.setBattleNameTextPropertyValue(t.get(0).getName());
@@ -157,8 +154,8 @@ public class ReportView extends AbstractView<ReportViewModel> {
 				ObservableList<SubordinationElement> listSubEls = FXCollections
 						.observableArrayList();
 
-				for (SubordinationElementEntity entity : subElsService
-						.getAll(Utils.getInstance().getCurrentUser().getIduser())) {
+				for (SubordinationElementModel entity : subElsService
+						.getAll(Utils.getInstance().getCurrentUser().getSuid())) {
 					if ((19 != entity.getSuid()) && (2 != entity.getSuid())) {
 						listSubEls.add(EntityConverter.getInstatnce()
 								.convertSubElEntityToClientWrap(entity));
@@ -166,7 +163,7 @@ public class ReportView extends AbstractView<ReportViewModel> {
 				}
 
 				DialogUtils.getInstance().showSelectSubElsDialog(getStage(), consumer, false,
-						false);
+																 false);
 
 			} catch (Exception e) {
 				// TODO Логирование
@@ -351,9 +348,6 @@ public class ReportView extends AbstractView<ReportViewModel> {
 
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#getTabPane()
-	 */
 	@Override
 	public TabPane getTabPane() {
 		return reportTabPane;
@@ -369,9 +363,6 @@ public class ReportView extends AbstractView<ReportViewModel> {
 		return reportTab;
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#createPresentaionModel()
-	 */
 	@Override
 	protected ReportViewModel createPresentaionModel() {
 		return new ReportViewModel();

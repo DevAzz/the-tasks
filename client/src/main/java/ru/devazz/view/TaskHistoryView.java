@@ -2,7 +2,6 @@ package ru.devazz.view;
 
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
-import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
@@ -12,11 +11,11 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
-import ru.sciencesquad.hqtasks.server.datamodel.TaskHistoryEntity;
-import ru.siencesquad.hqtasks.ui.model.TaskHistoryModel;
-import ru.siencesquad.hqtasks.ui.utils.Utils;
-import ru.siencesquad.hqtasks.ui.widgets.CustomTimeIntervalView;
-import ru.siencesquad.hqtasks.ui.widgets.PageSettingsView;
+import ru.devazz.model.TaskHistoryViewModel;
+import ru.devazz.server.api.model.TaskHistoryModel;
+import ru.devazz.utils.Utils;
+import ru.devazz.widgets.CustomTimeIntervalView;
+import ru.devazz.widgets.PageSettingsView;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -25,7 +24,7 @@ import java.util.Map;
 /**
  * Представление формы истории задачи
  */
-public class TaskHistoryView extends AbstractView<TaskHistoryModel> {
+public class TaskHistoryView extends AbstractView<TaskHistoryViewModel> {
 
 	/** Корневая панель представления */
 	@FXML
@@ -74,9 +73,6 @@ public class TaskHistoryView extends AbstractView<TaskHistoryModel> {
 	/** Карта страниц задач */
 	private Map<Integer, ScrollPane> pageMap = new HashMap<>();
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#initialize()
-	 */
 	@Override
 	public void initialize() {
 		Bindings.bindBidirectional(pagination.pageCountProperty(), model.getPageCountProperty());
@@ -86,7 +82,7 @@ public class TaskHistoryView extends AbstractView<TaskHistoryModel> {
 
 		pagination.setPageFactory(param -> createPage(param));
 		pagination.currentPageIndexProperty()
-				.addListener((ChangeListener<Number>) (observable, oldValue, newValue) -> {
+				.addListener((observable, oldValue, newValue) -> {
 					loadPageEntries(pagination.getCurrentPageIndex());
 				});
 
@@ -103,7 +99,7 @@ public class TaskHistoryView extends AbstractView<TaskHistoryModel> {
 			e.printStackTrace();
 		}
 
-		model.getVisibleEntries().addListener((ListChangeListener<TaskHistoryEntity>) c -> {
+		model.getVisibleEntries().addListener((ListChangeListener<TaskHistoryModel>) c -> {
 			Platform.runLater(() -> {
 				int oldPageCount = pagination.getPageCount();
 				int newPageCount = model.getCountPages();
@@ -122,7 +118,7 @@ public class TaskHistoryView extends AbstractView<TaskHistoryModel> {
 
 				while (c.next()) {
 					if (c.wasAdded()) {
-						for (TaskHistoryEntity entity : FXCollections.synchronizedObservableList(
+						for (TaskHistoryModel entity : FXCollections.synchronizedObservableList(
 								FXCollections.observableArrayList(c.getAddedSubList()))) {
 							createHistoryEntryPanel(entity);
 						}
@@ -307,7 +303,7 @@ public class TaskHistoryView extends AbstractView<TaskHistoryModel> {
 	 *
 	 * @param aEntity историческая запись
 	 */
-	private void createHistoryEntryPanel(TaskHistoryEntity aEntity) {
+	private void createHistoryEntryPanel(TaskHistoryModel aEntity) {
 		try {
 			TaskHistoryEntryPanelView panel = Utils.getInstance()
 					.loadView(TaskHistoryEntryPanelView.class);
@@ -353,12 +349,9 @@ public class TaskHistoryView extends AbstractView<TaskHistoryModel> {
 		}
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#createPresentaionModel()
-	 */
 	@Override
-	protected TaskHistoryModel createPresentaionModel() {
-		return new TaskHistoryModel();
+	protected TaskHistoryViewModel createPresentaionModel() {
+		return new TaskHistoryViewModel();
 	}
 
 	/**
@@ -377,7 +370,7 @@ public class TaskHistoryView extends AbstractView<TaskHistoryModel> {
 	 */
 	private void selectTask(TitledPane taskRoot) {
 		if (null != taskRoot) {
-			TaskHistoryEntity entry = model.getHistoryEntryBySuid(Long.getLong(taskRoot.getId()));
+			TaskHistoryModel entry = model.getHistoryEntryBySuid(Long.getLong(taskRoot.getId()));
 			if (null != entry) {
 				VBox box = getPageNode(model.getNumberPageByTask(entry));
 				if (null != box) {

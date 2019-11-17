@@ -5,8 +5,8 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
-import ru.sciencesquad.hqtasks.server.bean.ICommonService;
-import ru.sciencesquad.hqtasks.server.datamodel.IEntity;
+import ru.devazz.server.api.ICommonService;
+import ru.devazz.server.api.model.IEntity;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -33,9 +33,6 @@ public class CustomTimeIntervalModel extends PresentationModel<ICommonService, I
 	/** Свойство недоступности кнопки поиска */
 	private BooleanProperty disableSearchButton;
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.model.PresentationModel#initModel()
-	 */
 	@Override
 	protected void initModel() {
 		fromTimeIntervalProperty = new SimpleStringProperty(this, "fromTimeIntervalProperty", "");
@@ -107,7 +104,7 @@ public class CustomTimeIntervalModel extends PresentationModel<ICommonService, I
 	/**
 	 * Устанавливает значение полю {@link#toTimeIntervalProperty}
 	 *
-	 * @param toTimeIntervalProperty значение поля
+	 * @param toTimeIntervalPropertyValue значение поля
 	 */
 	public void setToTimeIntervalPropertyValue(String toTimeIntervalPropertyValue) {
 		this.toTimeIntervalProperty.set(toTimeIntervalPropertyValue);
@@ -151,9 +148,6 @@ public class CustomTimeIntervalModel extends PresentationModel<ICommonService, I
 		fromTimeIntervalProperty.set("");
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.model.PresentationModel#getTypeService()
-	 */
 	@Override
 	public Class<ICommonService> getTypeService() {
 		return null;

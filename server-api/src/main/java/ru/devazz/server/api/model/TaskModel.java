@@ -1,9 +1,6 @@
 package ru.devazz.server.api.model;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.*;
 import ru.devazz.server.api.model.enums.CycleTypeTask;
 import ru.devazz.server.api.model.enums.TaskPriority;
 import ru.devazz.server.api.model.enums.TaskStatus;

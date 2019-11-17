@@ -9,11 +9,11 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Font;
-import ru.siencesquad.hqtasks.ui.entities.Event;
-import ru.siencesquad.hqtasks.ui.entities.SubordinationElement;
-import ru.siencesquad.hqtasks.ui.model.EventJournalModel;
-import ru.siencesquad.hqtasks.ui.utils.EventType;
-import ru.siencesquad.hqtasks.ui.utils.dialogs.DialogUtils;
+import ru.devazz.entities.Event;
+import ru.devazz.entities.SubordinationElement;
+import ru.devazz.model.EventJournalModel;
+import ru.devazz.utils.EventType;
+import ru.devazz.utils.dialogs.DialogUtils;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -89,9 +89,6 @@ public class EventJournalView extends AbstractView<EventJournalModel> {
 	@FXML
 	private CheckMenuItem allTimeFilterItem;
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#initialize()
-	 */
 	@Override
 	@FXML
 	public void initialize() {
@@ -135,17 +132,11 @@ public class EventJournalView extends AbstractView<EventJournalModel> {
 		refresh();
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#createPresentaionModel()
-	 */
 	@Override
 	protected EventJournalModel createPresentaionModel() {
 		return new EventJournalModel();
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#getTabPane()
-	 */
 	@Override
 	public TabPane getTabPane() {
 		return eventJournalTabPane;
@@ -224,7 +215,7 @@ public class EventJournalView extends AbstractView<EventJournalModel> {
 	}
 
 	/**
-	 * Фильтрует события по боевому посту
+	 * Фильтрует события по должности
 	 */
 	@FXML
 	public void filterByExecutor() {
@@ -236,7 +227,7 @@ public class EventJournalView extends AbstractView<EventJournalModel> {
 	}
 
 	/**
-	 * Фильтрует события по боевому посту
+	 * Фильтрует события по должности
 	 */
 	@FXML
 	public void filterByAuthor() {

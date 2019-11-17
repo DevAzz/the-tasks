@@ -10,9 +10,6 @@ public class User {
 	/** ФИО пользователя */
 	private String name;
 
-	/** Звание пользователя */
-	private String militaryRank;
-
 	/** Должность пользователя */
 	private String position;
 
@@ -90,24 +87,6 @@ public class User {
 	 */
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	/**
-	 * Возвращает {@link#militaryRank}
-	 *
-	 * @return the militaryRank
-	 */
-	public String getMilitaryRank() {
-		return militaryRank;
-	}
-
-	/**
-	 * Устанавливает значение полю militaryRank
-	 *
-	 * @param militaryRank значение поле
-	 */
-	public void setMilitaryRank(String militaryRank) {
-		this.militaryRank = militaryRank;
 	}
 
 	/**
@@ -224,11 +203,6 @@ public class User {
 			return this;
 		}
 
-		public UserBuilder addMilitaryRank(String aMIlitaryRank) {
-			user.setMilitaryRank(aMIlitaryRank);
-			return this;
-		}
-
 		public UserBuilder addOnline(Boolean aOnline) {
 			user.setOnline(aOnline);
 			return this;
@@ -271,7 +245,6 @@ public class User {
 		final int prime = 31;
 		int result = 1;
 		result = (prime * result) + ((image == null) ? 0 : image.hashCode());
-		result = (prime * result) + ((militaryRank == null) ? 0 : militaryRank.hashCode());
 		result = (prime * result) + ((name == null) ? 0 : name.hashCode());
 		result = (prime * result) + ((position == null) ? 0 : position.hashCode());
 		result = (prime * result) + ((roleSuid == null) ? 0 : roleSuid.hashCode());
@@ -300,13 +273,6 @@ public class User {
 				return false;
 			}
 		} else if (!image.equals(other.image)) {
-			return false;
-		}
-		if (militaryRank == null) {
-			if (other.militaryRank != null) {
-				return false;
-			}
-		} else if (!militaryRank.equals(other.militaryRank)) {
 			return false;
 		}
 		if (name == null) {

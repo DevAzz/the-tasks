@@ -7,8 +7,8 @@ import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
-import ru.sciencesquad.hqtasks.server.datamodel.HelpEntity;
-import ru.siencesquad.hqtasks.ui.model.HelpViewModel;
+import ru.devazz.model.HelpViewModel;
+import ru.devazz.server.api.model.HelpModel;
 
 /**
  * Представление справки
@@ -21,7 +21,7 @@ public class HelpView extends AbstractView<HelpViewModel> {
 
 	/** Список заголовков */
 	@FXML
-	public ListView<HelpEntity> headsList;
+	public ListView<HelpModel> headsList;
 
 	/** Текст справки */
 	@FXML
@@ -32,9 +32,9 @@ public class HelpView extends AbstractView<HelpViewModel> {
 	public SplitPane commonSplitPane;
 
 	/** Стартовая строка */
-	private String defaultString = "                                   ИНСТРУКЦИЯ ПОЛЬЗОВАТЕЛЯ “Менеджер задач РЦУ”\r\n"
+	private String defaultString = "                                   ИНСТРУКЦИЯ ПОЛЬЗОВАТЕЛЯ “Менеджер задач”\r\n"
 			+ "\r\n"
-			+ "     Менеджер задач РЦУ – это программный продукт с дружественным интерфейсом пользователя, предназначенный для управления задачами отдельно взятой организации. В его функционал входит создание (постановка), удаление, редактирование, поиск задач; создание и сохранение отчётов о выполненных задачах, уведомления в режиме реального времени и многое другое.\r\n"
+			+ "     Менеджер задач – это программный продукт с дружественным интерфейсом пользователя, предназначенный для управления задачами отдельно взятой организации. В его функционал входит создание (постановка), удаление, редактирование, поиск задач; создание и сохранение отчётов о выполненных задачах, уведомления в режиме реального времени и многое другое.\r\n"
 			+ "";
 
 	/**

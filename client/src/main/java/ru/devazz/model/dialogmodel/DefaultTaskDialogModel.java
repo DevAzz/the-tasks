@@ -3,13 +3,14 @@ package ru.devazz.model.dialogmodel;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import ru.sciencesquad.hqtasks.server.bean.tasks.TaskServiceRemote;
-import ru.sciencesquad.hqtasks.server.datamodel.DefaultTaskEntity;
-import ru.siencesquad.hqtasks.ui.entities.DefaultTask;
-import ru.siencesquad.hqtasks.ui.model.PresentationModel;
-import ru.siencesquad.hqtasks.ui.utils.EntityConverter;
+import ru.devazz.entities.DefaultTask;
+import ru.devazz.model.PresentationModel;
+import ru.devazz.server.api.ITaskService;
+import ru.devazz.server.api.model.DefaultTaskModel;
+import ru.devazz.utils.EntityConverter;
 
-public class DefaultTaskDialogModel extends PresentationModel<TaskServiceRemote, DefaultTaskEntity> {
+public class DefaultTaskDialogModel extends PresentationModel<ITaskService,
+		DefaultTaskModel> {
 
 	/** Список типовых задач */
 	private ObservableList<DefaultTask> defaultTaskList;
@@ -34,23 +35,24 @@ public class DefaultTaskDialogModel extends PresentationModel<TaskServiceRemote,
 	 */
 	public void loadAllDefaultTasks() throws Exception {
 		defaultTaskList.clear();
-		for (DefaultTaskEntity defaultTaskEntity : super.getService().getDefaultTaskAll()) {
+		for (DefaultTaskModel defaultTaskEntity : super.getService().getDefaultTaskAll()) {
 			defaultTaskList.add(
-					EntityConverter.getInstatnce().convertDefaultTaskEntityToClientWrapDefaultTask(defaultTaskEntity));
+					EntityConverter
+							.getInstatnce().convertDefaultTaskModelToClientWrapDefaultTask(defaultTaskEntity));
 		}
 	}
 
 	/**
-	 * Загрузка типовых задач по SUID боевого поста
+	 * Загрузка типовых задач по SUID должности
 	 *
-	 * @param SUID - SUID боевого поста
+	 * @param SUID - SUID должности
 	 * @throws Exception
 	 */
 	public void loadDefaultTasksBySub(Long SUID) throws Exception {
 		defaultTaskList.clear();
-		for (DefaultTaskEntity defaultTaskEntity : super.getService().getDefaultTaskBySub(SUID)) {
+		for (DefaultTaskModel defaultTaskEntity : super.getService().getDefaultTaskBySub(SUID)) {
 			defaultTaskList.add(
-					EntityConverter.getInstatnce().convertDefaultTaskEntityToClientWrapDefaultTask(defaultTaskEntity));
+					EntityConverter.getInstatnce().convertDefaultTaskModelToClientWrapDefaultTask(defaultTaskEntity));
 		}
 	}
 
@@ -78,8 +80,8 @@ public class DefaultTaskDialogModel extends PresentationModel<TaskServiceRemote,
 	}
 
 	@Override
-	public Class<TaskServiceRemote> getTypeService() {
-		return TaskServiceRemote.class;
+	public Class<ITaskService> getTypeService() {
+		return ITaskService.class;
 	}
 
 }

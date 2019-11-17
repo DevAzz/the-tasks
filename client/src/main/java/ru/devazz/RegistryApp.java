@@ -4,8 +4,8 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import ru.siencesquad.hqtasks.ui.utils.Utils;
-import ru.siencesquad.hqtasks.ui.view.RegistryView;
+import ru.devazz.utils.Utils;
+import ru.devazz.view.RegistryView;
 
 /**
  * Приложение регистрации пользователей

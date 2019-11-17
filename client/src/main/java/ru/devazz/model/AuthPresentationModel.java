@@ -5,16 +5,15 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
-import ru.sciencesquad.hqtasks.server.bean.user.UserServiceRemote;
-import ru.sciencesquad.hqtasks.server.datamodel.UserEntity;
-import ru.sciencesquad.hqtasks.server.exceptions.AuthorizeUserOnlineException;
-import ru.siencesquad.hqtasks.ui.server.EJBProxyFactory;
-import ru.siencesquad.hqtasks.ui.utils.Utils;
+import ru.devazz.server.EJBProxyFactory;
+import ru.devazz.server.api.IUserService;
+import ru.devazz.server.api.model.UserModel;
+import ru.devazz.utils.Utils;
 
 /**
  * Модель представления авторизации
  */
-public class AuthPresentationModel extends PresentationModel<UserServiceRemote, UserEntity> {
+public class AuthPresentationModel extends PresentationModel<IUserService, UserModel> {
 
 	/** Логин */
 	private StringProperty login;
@@ -85,12 +84,12 @@ public class AuthPresentationModel extends PresentationModel<UserServiceRemote, 
 	 * Авторизация пользователя
 	 *
 	 * @return {@code true} - в случае успеха
-	 * @throws AuthorizeUserOnlineException в случае, если пользователь с заданным
+	 * @throws Exception в случае, если пользователь с заданным
 	 *             идентификатором уже подключен к системе
 	 */
 	public boolean authorization() throws Exception {
 		boolean result = false;
-		UserEntity user = getService().checkUser(login.get(), password.get());
+		UserModel user = getService().checkUser(login.get(), password.get());
 		if (null != user) {
 			Utils.getInstance().setCurrentUser(user);
 			MyShutdownHook shutdownHook = new MyShutdownHook(user.getSuid());
@@ -100,12 +99,9 @@ public class AuthPresentationModel extends PresentationModel<UserServiceRemote, 
 		return result;
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.model.PresentationModel#getTypeService()
-	 */
 	@Override
-	public Class<UserServiceRemote> getTypeService() {
-		return UserServiceRemote.class;
+	public Class<IUserService> getTypeService() {
+		return IUserService.class;
 	}
 
 	/**
@@ -150,7 +146,7 @@ public class AuthPresentationModel extends PresentationModel<UserServiceRemote, 
 		@Override
 		public void run() {
 			try {
-				EJBProxyFactory.getInstance().getService(UserServiceRemote.class)
+				EJBProxyFactory.getInstance().getService(IUserService.class)
 						.disableUser(userSuid);
 				Thread.sleep(1000L);
 				System.out.println("Сеанс завершен ");

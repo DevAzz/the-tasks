@@ -2,9 +2,9 @@ package ru.devazz.model;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import ru.sciencesquad.hqtasks.server.bean.ICommonService;
-import ru.sciencesquad.hqtasks.server.datamodel.IEntity;
-import ru.siencesquad.hqtasks.ui.entities.Task;
+import ru.devazz.entities.Task;
+import ru.devazz.server.api.ICommonService;
+import ru.devazz.server.api.model.IEntity;
 
 public class PushUpMessageViewModel extends PresentationModel<ICommonService, IEntity> {
 
@@ -102,9 +102,6 @@ public class PushUpMessageViewModel extends PresentationModel<ICommonService, IE
 		this.task = task;
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.model.PresentationModel#getTypeService()
-	 */
 	@Override
 	public Class<ICommonService> getTypeService() {
 		return null;

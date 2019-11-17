@@ -11,8 +11,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.util.Duration;
-import ru.siencesquad.hqtasks.ui.entities.Event;
-import ru.siencesquad.hqtasks.ui.model.EventIndicatorViewModel;
+import ru.devazz.entities.Event;
+import ru.devazz.model.EventIndicatorViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +51,7 @@ public class EventIndicatorView extends AbstractView<EventIndicatorViewModel> {
 	/**
 	 * Устанавливает значение полю слушателю двойного клика по записи в списке
 	 *
-	 * @param слушатель
+	 * @param doubleClickHandler слушатель
 	 */
 	public void setDoubleClickHandler(EventHandler<MouseEvent> doubleClickHandler) {
 		listView.addEventFilter(MouseEvent.MOUSE_CLICKED, doubleClickHandler);
@@ -75,9 +75,6 @@ public class EventIndicatorView extends AbstractView<EventIndicatorViewModel> {
 		goToTaskItem.addEventHandler(ActionEvent.ACTION, itemClickHandler);
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#initialize()
-	 */
 	@Override
 	@FXML
 	public void initialize() {
@@ -101,17 +98,11 @@ public class EventIndicatorView extends AbstractView<EventIndicatorViewModel> {
 		});
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#createPresentaionModel()
-	 */
 	@Override
 	protected EventIndicatorViewModel createPresentaionModel() {
 		return new EventIndicatorViewModel();
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#getTabPane()
-	 */
 	@Override
 	public TabPane getTabPane() {
 		return eventTabPane;

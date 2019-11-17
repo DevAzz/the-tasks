@@ -314,7 +314,7 @@ public class TaskService extends AbstractEntityService<TaskModel, TaskEntity>
     /**
      * Получение типовых задач по SUID поевого поста
      *
-     * @param aPositionSuid боевой пост
+     * @param aPositionSuid должность
      * @return список типовых задач
      */
     @Override

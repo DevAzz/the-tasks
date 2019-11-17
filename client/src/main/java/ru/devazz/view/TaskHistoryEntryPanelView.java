@@ -6,7 +6,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TitledPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-import ru.siencesquad.hqtasks.ui.model.TaskHistoryEntryPanelModel;
+import ru.devazz.model.TaskHistoryEntryPanelModel;
 
 /**
  * Представление панели исторической записи
@@ -37,9 +37,6 @@ public class TaskHistoryEntryPanelView extends AbstractView<TaskHistoryEntryPane
 	@FXML
 	private AnchorPane titleAchorPane;
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#initialize()
-	 */
 	@Override
 	public void initialize() {
 		Bindings.bindBidirectional(textLabel.textProperty(), model.getTextLabelProperty());
@@ -49,9 +46,6 @@ public class TaskHistoryEntryPanelView extends AbstractView<TaskHistoryEntryPane
 
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#createPresentaionModel()
-	 */
 	@Override
 	protected TaskHistoryEntryPanelModel createPresentaionModel() {
 		return new TaskHistoryEntryPanelModel();

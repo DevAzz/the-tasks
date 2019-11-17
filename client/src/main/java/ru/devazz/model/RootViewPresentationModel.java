@@ -3,8 +3,8 @@ package ru.devazz.model;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import ru.sciencesquad.hqtasks.server.bean.ICommonService;
-import ru.sciencesquad.hqtasks.server.datamodel.IEntity;
+import ru.devazz.server.api.ICommonService;
+import ru.devazz.server.api.model.IEntity;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -19,25 +19,25 @@ public class RootViewPresentationModel extends PresentationModel<ICommonService,
 
 	private StringProperty dateTimeTextProperty;
 
-	/** Часы */
-	private Thread timeThread = new Thread(() -> {
-		while (true) {
-			try {
-				Date date = new Date();
-				SimpleDateFormat formatForTimeNow = new SimpleDateFormat("HH:mm:ss  d.MM.Y");
-				Platform.runLater(() -> dateTimeTextProperty.set(formatForTimeNow.format(date)));
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-	});
-
 	/**
 	 * Конструктор
 	 */
 	public RootViewPresentationModel() {
 		super();
+		/* Часы */
+		Thread timeThread = new Thread(() -> {
+			while (true) {
+				try {
+					Date date = new Date();
+					SimpleDateFormat formatForTimeNow = new SimpleDateFormat("HH:mm:ss  d.MM.Y");
+					Platform.runLater(
+							() -> dateTimeTextProperty.set(formatForTimeNow.format(date)));
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		});
 		timeThread.setDaemon(true);
 		timeThread.setName("TimeThread");
 		timeThread.start();
@@ -79,18 +79,12 @@ public class RootViewPresentationModel extends PresentationModel<ICommonService,
 		this.dateTimeTextProperty = dateTimeTextProperty;
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.model.PresentationModel#initModel()
-	 */
 	@Override
 	protected void initModel() {
 		searchBoxTextProperty = new SimpleStringProperty(this, "searchBoxTextProperty", "");
 		dateTimeTextProperty = new SimpleStringProperty(this, "dateTimeTextProperty", "время и дата");
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.model.PresentationModel#getTypeService()
-	 */
 	@Override
 	public Class<ICommonService> getTypeService() {
 		// TODO Auto-generated method stub

@@ -14,18 +14,22 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
-import ru.siencesquad.hqtasks.ui.utils.PushUpTypes;
-import ru.siencesquad.hqtasks.ui.utils.Utils;
-import ru.siencesquad.hqtasks.ui.utils.dialogs.DialogUtils;
-import ru.siencesquad.hqtasks.ui.view.AuthView;
-import ru.siencesquad.hqtasks.ui.view.RootView;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.jms.annotation.EnableJms;
+import ru.devazz.utils.PushUpTypes;
+import ru.devazz.utils.Utils;
+import ru.devazz.utils.dialogs.DialogUtils;
+import ru.devazz.view.AuthView;
+import ru.devazz.view.RootView;
 
 import java.io.IOException;
 
 /**
  * Основной класс - точка входа в приложение
  */
-public class MainApp extends Application {
+@SpringBootApplication
+@EnableJms
+public class MainApp extends AbstractJavaFxApplicationSupport {
 
 	/** Окно приложения */
 	private Stage primaryStage;
@@ -123,8 +127,8 @@ public class MainApp extends Application {
 
 			if (lowScreenResolution) {
 				DialogUtils.getInstance().showAlertDialog("Низкое разрешение экрана",
-						"Разрешение слишком низкое, некоторые элементы управления могут не поместиться на экран",
-						AlertType.WARNING);
+														  "Разрешение слишком низкое, некоторые элементы управления могут не поместиться на экран",
+														  AlertType.WARNING);
 			}
 		} catch (Throwable e) {
 			// TODO Сделать логирование
@@ -193,30 +197,7 @@ public class MainApp extends Application {
 	 * @throws Exception в случае если не введены параметры
 	 */
 	public static void main(String[] args) throws Exception {
-		if (4 <= args.length) {
-			StringBuilder builder = new StringBuilder(args[0]);
-			String subscriberIp = builder.substring(builder.lastIndexOf("=") + 1);
-			Utils.getInstance().setConnectionURL(subscriberIp);
-
-			builder = new StringBuilder(args[1]);
-			String user = builder.substring(builder.lastIndexOf("=") + 1);
-			Utils.getInstance().setServerConnectionUser(user);
-
-			builder = new StringBuilder(args[2]);
-			String password = builder.substring(builder.lastIndexOf("=") + 1);
-			Utils.getInstance().setServerConnectionPassword(password);
-
-			builder = new StringBuilder(args[3]);
-			String registration = builder.substring(builder.lastIndexOf("=") + 1);
-			if (Boolean.valueOf(registration)) {
-				RegistryApp.main(null);
-			} else {
-				launch(args);
-			}
-		} else {
-			throw new Exception("Некорректные параметры запуска приложения");
-		}
-
+		launchApp(MainApp.class, args);
 	}
 
 	/**
@@ -248,8 +229,8 @@ public class MainApp extends Application {
 		hideline.setOnFinished(event -> {
 			primaryStage.setOpacity(0);
 			showAuthView();
-			DialogUtils.getInstance().showPushUp("Менеджер задач РЦУ", "Менеджер задач РЦУ запущен",
-					PushUpTypes.HELLO_PUSH, null);
+			DialogUtils.getInstance().showPushUp("Менеджер задач", "Менеджер задач запущен",
+												 PushUpTypes.HELLO_PUSH, null);
 			primaryStage.requestFocus();
 		});
 	}

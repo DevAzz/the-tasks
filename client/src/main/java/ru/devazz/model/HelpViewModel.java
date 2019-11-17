@@ -4,22 +4,22 @@ import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import ru.sciencesquad.hqtasks.server.bean.help.HelpServiceRemote;
-import ru.sciencesquad.hqtasks.server.datamodel.HelpEntity;
+import ru.devazz.server.api.IHelpService;
+import ru.devazz.server.api.model.HelpModel;
 
 /**
  * Модель справки
  */
-public class HelpViewModel extends PresentationModel<HelpServiceRemote, HelpEntity> {
+public class HelpViewModel extends PresentationModel<IHelpService, HelpModel> {
 
 	/** Для выбора заголовка */
-	private HelpEntity selection;
+	private HelpModel selection;
 
 	/** Свойство основного текста */
 	private StringProperty helpTextProperty;
 
 	/** Свойство списка заголовков */
-	private ListProperty<HelpEntity> helpEntityListProperty;
+	private ListProperty<HelpModel> helpEntityListProperty;
 
 	@Override
 	protected void initModel() {
@@ -34,7 +34,7 @@ public class HelpViewModel extends PresentationModel<HelpServiceRemote, HelpEnti
 	 *
 	 * @return the helpEntityListProperty
 	 */
-	public ListProperty<HelpEntity> getHelpEntityListProperty() {
+	public ListProperty<HelpModel> getHelpEntityListProperty() {
 		return helpEntityListProperty;
 	}
 
@@ -43,7 +43,7 @@ public class HelpViewModel extends PresentationModel<HelpServiceRemote, HelpEnti
 	 *
 	 * @param helpEntityListProperty значение поле
 	 */
-	public void setHelpEntityListProperty(ListProperty<HelpEntity> helpEntityListProperty) {
+	public void setHelpEntityListProperty(ListProperty<HelpModel> helpEntityListProperty) {
 		this.helpEntityListProperty = helpEntityListProperty;
 	}
 
@@ -70,7 +70,7 @@ public class HelpViewModel extends PresentationModel<HelpServiceRemote, HelpEnti
 	 *
 	 * @return the selection
 	 */
-	public HelpEntity getSelection() {
+	public HelpModel getSelection() {
 		return selection;
 	}
 
@@ -79,7 +79,7 @@ public class HelpViewModel extends PresentationModel<HelpServiceRemote, HelpEnti
 	 *
 	 * @param selection значение поле
 	 */
-	public void setSelection(HelpEntity selection) {
+	public void setSelection(HelpModel selection) {
 		if (null != selection) {
 			this.selection = selection;
 			getHelpTextProperty().set(selection.getHelpItemText());
@@ -87,9 +87,9 @@ public class HelpViewModel extends PresentationModel<HelpServiceRemote, HelpEnti
 	}
 
 	@Override
-	public Class<HelpServiceRemote> getTypeService() {
+	public Class<IHelpService> getTypeService() {
 		// TODO Auto-generated method stub
-		return HelpServiceRemote.class;
+		return IHelpService.class;
 	}
 
 }

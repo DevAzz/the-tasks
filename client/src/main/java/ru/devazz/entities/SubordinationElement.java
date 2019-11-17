@@ -2,15 +2,15 @@ package ru.devazz.entities;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import ru.siencesquad.hqtasks.ui.interfaces.HierarchyData;
-import ru.siencesquad.hqtasks.ui.interfaces.SelectableObject;
+import ru.devazz.interfaces.HierarchyData;
+import ru.devazz.interfaces.SelectableObject;
 
 /**
  * Элемент дерева подчиненности
  */
 public class SubordinationElement implements SelectableObject, HierarchyData<SubordinationElement> {
 
-	/** Идентификатор подразделения */
+	/** Идентификатор должности */
 	private Long suid;
 
 	/** Имя */
@@ -27,8 +27,6 @@ public class SubordinationElement implements SelectableObject, HierarchyData<Sub
 
 	/**
 	 * Конструктор
-	 *
-	 * @param name имя
 	 */
 	public SubordinationElement() {
 		super();

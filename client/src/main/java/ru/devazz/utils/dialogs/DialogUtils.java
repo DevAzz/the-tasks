@@ -14,13 +14,13 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
 import javafx.stage.*;
 import javafx.util.Duration;
-import ru.siencesquad.hqtasks.ui.entities.DefaultTask;
-import ru.siencesquad.hqtasks.ui.entities.SubordinationElement;
-import ru.siencesquad.hqtasks.ui.entities.Task;
-import ru.siencesquad.hqtasks.ui.utils.PushUpTypes;
-import ru.siencesquad.hqtasks.ui.utils.Utils;
-import ru.siencesquad.hqtasks.ui.view.RootView.GoOverTaskListener;
-import ru.siencesquad.hqtasks.ui.view.dialogs.*;
+import ru.devazz.entities.DefaultTask;
+import ru.devazz.entities.SubordinationElement;
+import ru.devazz.entities.Task;
+import ru.devazz.utils.PushUpTypes;
+import ru.devazz.utils.Utils;
+import ru.devazz.view.RootView;
+import ru.devazz.view.dialogs.*;
 
 import java.io.IOException;
 import java.util.List;
@@ -113,7 +113,6 @@ public class DialogUtils {
 	 * Отображает диалог завершения задачи
 	 *
 	 * @param aStage родительское окно
-	 * @param aConsumer действия по закрытию диалога
 	 * @return факт удаления задачи
 	 * @throws IOException в случае ошибки
 	 */
@@ -217,12 +216,12 @@ public class DialogUtils {
 	}
 
 	/**
-	 * Отображает диалог выбора боевых постов
+	 * Отображает диалог выбора должностей
 	 *
 	 * @param aStage Окно
-	 * @param aList список боевых постов
+	 * @param aSelectedList список выделенных элементов подчиненности
 	 * @param aConsumer действия по закрытию диалога
-	 * @param aMultiplySelectionMode
+	 * @param aMultiplySelectionMode режим множественного выбора
 	 */
 	public void showSelectSubElsDialogWithSelectedSubs(Stage aStage,
 			ObservableList<SubordinationElement> aSelectedList,
@@ -263,7 +262,7 @@ public class DialogUtils {
 	}
 
 	/**
-	 * Отображает диалог выбора боевых постов
+	 * Отображает диалог выбора должностей
 	 *
 	 * @param aStage Окно
 	 * @param aConsumer действия по закрытию диалога
@@ -361,7 +360,7 @@ public class DialogUtils {
 	 * @param aListener Обработчик перехода к задаче
 	 */
 	public void showPushUp(String caption, String text, PushUpTypes type,
-			GoOverTaskListener aListener) {
+			RootView.GoOverTaskListener aListener) {
 		Thread thread = new Thread(() -> Platform.runLater(() -> {
 			try {
 				if (createdPushUpCounter == 0) {
@@ -437,7 +436,7 @@ public class DialogUtils {
 	 *
 	 * @param aStage - Stage на который вызывается диалог
 	 * @param consumer - действие по закрытию диалога
-	 * @param executorSUID - SUID боевого поста
+	 * @param executorSUID - SUID должности
 	 */
 	public void showSelectDefaultTaskDialog(Stage aStage, Consumer<? super DefaultTask> consumer,
 			Long executorSUID) {

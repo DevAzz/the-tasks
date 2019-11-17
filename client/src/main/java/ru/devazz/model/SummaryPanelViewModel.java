@@ -7,21 +7,20 @@ import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.image.Image;
-import ru.sciencesquad.hqtasks.server.bean.ICommonService;
-import ru.sciencesquad.hqtasks.server.bean.tasks.TaskServiceRemote;
-import ru.sciencesquad.hqtasks.server.bean.user.UserServiceRemote;
-import ru.sciencesquad.hqtasks.server.datamodel.IEntity;
-import ru.sciencesquad.hqtasks.server.datamodel.ReportEntity;
-import ru.sciencesquad.hqtasks.server.datamodel.TaskEntity;
-import ru.sciencesquad.hqtasks.server.utils.Filter;
-import ru.sciencesquad.hqtasks.server.utils.FilterType;
-import ru.sciencesquad.hqtasks.server.utils.TaskTimeInterval;
-import ru.siencesquad.hqtasks.ui.entities.Task;
-import ru.siencesquad.hqtasks.ui.server.EJBProxyFactory;
-import ru.siencesquad.hqtasks.ui.utils.EntityConverter;
-import ru.siencesquad.hqtasks.ui.utils.Utils;
+import ru.devazz.entities.Task;
+import ru.devazz.server.EJBProxyFactory;
+import ru.devazz.server.api.ICommonService;
+import ru.devazz.server.api.ITaskService;
+import ru.devazz.server.api.IUserService;
+import ru.devazz.server.api.model.Filter;
+import ru.devazz.server.api.model.IEntity;
+import ru.devazz.server.api.model.ReportModel;
+import ru.devazz.server.api.model.TaskModel;
+import ru.devazz.server.api.model.enums.FilterType;
+import ru.devazz.server.api.model.enums.TaskTimeInterval;
+import ru.devazz.utils.EntityConverter;
+import ru.devazz.utils.Utils;
 
-import javax.naming.NamingException;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,9 +33,9 @@ import java.util.Map;
 public class SummaryPanelViewModel extends PresentationModel<ICommonService, IEntity> {
 
 	/** Сущност отчета */
-	private ReportEntity entity = null;
+	private ReportModel entity = null;
 
-	/** Свойство текста лейбла отображения наименования боевого поста */
+	/** Свойство текста лейбла отображения наименования должности */
 	private StringProperty subElLabelProperty;
 
 	/** Свойство фотографии ДЛ на БП */
@@ -69,9 +68,6 @@ public class SummaryPanelViewModel extends PresentationModel<ICommonService, IEn
 	/** Список исходящих задач */
 	private ObservableList<Task> outTasks;
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.model.PresentationModel#initModel()
-	 */
 	@Override
 	protected void initModel() {
 		inTasks = FXCollections.synchronizedObservableList(FXCollections.observableArrayList());
@@ -276,7 +272,7 @@ public class SummaryPanelViewModel extends PresentationModel<ICommonService, IEn
 	 *
 	 * @return the {@link#entity}
 	 */
-	public ReportEntity getEntity() {
+	public ReportModel getEntity() {
 		return entity;
 	}
 
@@ -285,10 +281,10 @@ public class SummaryPanelViewModel extends PresentationModel<ICommonService, IEn
 	 *
 	 * @param aEntity значение поля
 	 */
-	public void setReportEntity(ReportEntity aEntity) {
+	public void setReportEntity(ReportModel aEntity) {
 		if (null != aEntity) {
 			this.entity = aEntity;
-			setSubElLabelValue(aEntity.getBattlePostName());
+			setSubElLabelValue(aEntity.getPostName());
 			setSuccessDoneAmountLabelPropertyValue(String.valueOf(aEntity.getSuccessDoneAmount()));
 			setClosedAmountLabelPropertyValue(String.valueOf(aEntity.getClosedAmount()));
 			setFailedAmountLabelPropertyValue(String.valueOf(aEntity.getFailedAmount()));
@@ -296,28 +292,26 @@ public class SummaryPanelViewModel extends PresentationModel<ICommonService, IEn
 			setOverdueAmountLabelPropertyValue(String.valueOf(aEntity.getOverdueAmount()));
 			setOverdueDoneAmountLabelPropertyValue(String.valueOf(aEntity.getOverdueDoneAmount()));
 			setReworkAmountLabelPropertyValue(String.valueOf(aEntity.getReworkAmount()));
-			setUserImage(aEntity.getBattlePostSuid());
+			setUserImage(aEntity.getPostSuid());
 			loadTasks(aEntity);
 		}
 	}
 
 	/**
 	 * Загрузка записей
-	 *
-	 * @param aPositionSuid идентификатор боевого поста
 	 */
-	private void loadTasks(final ReportEntity aEntity) {
+	private void loadTasks(final ReportModel aEntity) {
 		Thread threadIn = new Thread(() -> {
 			try {
-				TaskServiceRemote service = EJBProxyFactory.getInstance()
-						.getService(TaskServiceRemote.class);
+				ITaskService service = EJBProxyFactory.getInstance()
+						.getService(ITaskService.class);
 				inTasks.clear();
 
-				List<TaskEntity> entities = service.getAllUserTasksExecutorWithFilter(
-						aEntity.getBattlePostSuid(), getFilter(aEntity));
-				for (TaskEntity entity : entities) {
+				List<TaskModel> entities = service.getAllUserTasksExecutorWithFilter(
+						aEntity.getPostSuid(), getFilter(aEntity));
+				for (TaskModel entity : entities) {
 					inTasks.add(EntityConverter.getInstatnce()
-							.convertTaskEntityToClientWrapTask(entity));
+							.convertTaskModelToClientWrapTask(entity));
 					Thread.sleep(70L);
 				}
 			} catch (Exception e) {
@@ -330,15 +324,15 @@ public class SummaryPanelViewModel extends PresentationModel<ICommonService, IEn
 		threadIn.start();
 		Thread threadOut = new Thread(() -> {
 			try {
-				TaskServiceRemote service = EJBProxyFactory.getInstance()
-						.getService(TaskServiceRemote.class);
+				ITaskService service = EJBProxyFactory.getInstance()
+						.getService(ITaskService.class);
 				outTasks.clear();
 
-				List<TaskEntity> entities = service.getAllUserTasksAuthorWithFilter(
-						aEntity.getBattlePostSuid(), getFilter(aEntity));
-				for (TaskEntity entity : entities) {
+				List<TaskModel> entities = service.getAllUserTasksAuthorWithFilter(
+						aEntity.getPostSuid(), getFilter(aEntity));
+				for (TaskModel entity : entities) {
 					outTasks.add(EntityConverter.getInstatnce()
-							.convertTaskEntityToClientWrapTask(entity));
+							.convertTaskModelToClientWrapTask(entity));
 					Thread.sleep(70L);
 				}
 			} catch (Exception e) {
@@ -357,7 +351,7 @@ public class SummaryPanelViewModel extends PresentationModel<ICommonService, IEn
 	 * @param aEntity сущность отчета
 	 * @return сформированный фильтр
 	 */
-	private Filter getFilter(final ReportEntity aEntity) {
+	private Filter getFilter(final ReportModel aEntity) {
 		Filter filter = new Filter();
 		filter.setStartDate(aEntity.getDateStart());
 		filter.setEndDate(aEntity.getDateEnd());
@@ -377,36 +371,28 @@ public class SummaryPanelViewModel extends PresentationModel<ICommonService, IEn
 	 */
 	private void setUserImage(Long aSubElSuid) {
 		Thread thread = new Thread(() -> {
-			try {
-				Image image = null;
-				UserServiceRemote userService = EJBProxyFactory.getInstance()
-						.getService(UserServiceRemote.class);
-				Long userSuid = userService.getUserSuidBySubElSuid(aSubElSuid);
-				File file = new File(Utils.getInstance().getUserImageName(userSuid));
-				if (file.exists()) {
-					image = new Image(file.toURI().toString(), 145, 145, true, false, true);
-				} else {
-					byte[] imageArr = userService.getUserImage(userSuid);
-					file = Utils.getInstance().createFileImage(imageArr, userSuid);
-					image = new Image(file.toURI().toString(), 145, 145, true, false, true);
-				}
-
-				setImagePropertyValue(image);
-				image = null;
-				file = null;
-				System.gc();
-			} catch (NamingException e) {
-				// TODO Логирование
-				e.printStackTrace();
+			Image image = null;
+			IUserService userService = EJBProxyFactory.getInstance()
+					.getService(IUserService.class);
+			Long userSuid = userService.getUserSuidBySubElSuid(aSubElSuid);
+			File file = new File(Utils.getInstance().getUserImageName(userSuid));
+			if (file.exists()) {
+				image = new Image(file.toURI().toString(), 145, 145, true, false, true);
+			} else {
+				byte[] imageArr = userService.getUserImage(userSuid);
+				file = Utils.getInstance().createFileImage(imageArr, userSuid);
+				image = new Image(file.toURI().toString(), 145, 145, true, false, true);
 			}
+
+			setImagePropertyValue(image);
+			image = null;
+			file = null;
+			System.gc();
 		});
 		thread.setDaemon(true);
 		thread.start();
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.model.PresentationModel#getTypeService()
-	 */
 	@Override
 	public Class<ICommonService> getTypeService() {
 		// TODO Auto-generated method stub

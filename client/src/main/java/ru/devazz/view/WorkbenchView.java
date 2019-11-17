@@ -11,13 +11,13 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import ru.sciencesquad.hqtasks.server.utils.TasksViewType;
-import ru.sciencesquad.hqtasks.server.utils.UserRoles;
-import ru.siencesquad.hqtasks.ui.entities.SubordinationElement;
-import ru.siencesquad.hqtasks.ui.entities.Task;
-import ru.siencesquad.hqtasks.ui.interfaces.SelectionListener;
-import ru.siencesquad.hqtasks.ui.model.WorkbenchViewModel;
-import ru.siencesquad.hqtasks.ui.utils.Utils;
+import ru.devazz.entities.SubordinationElement;
+import ru.devazz.entities.Task;
+import ru.devazz.interfaces.SelectionListener;
+import ru.devazz.model.WorkbenchViewModel;
+import ru.devazz.server.api.model.enums.TasksViewType;
+import ru.devazz.server.api.model.enums.UserRoles;
+import ru.devazz.utils.Utils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -136,9 +136,6 @@ public class WorkbenchView extends AbstractView<WorkbenchViewModel> {
 		view.load(currentTasksViewIn.getCurrentPageNumber());
 	};
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#initialize()
-	 */
 	@Override
 	public void initialize() {
 		Bindings.bindBidirectional(titleCurrentLabel.textProperty(), model.getTitleProperty());
@@ -560,9 +557,6 @@ public class WorkbenchView extends AbstractView<WorkbenchViewModel> {
 		return viewTasks;
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#createPresentaionModel()
-	 */
 	@Override
 	protected WorkbenchViewModel createPresentaionModel() {
 		return new WorkbenchViewModel();
@@ -687,9 +681,6 @@ public class WorkbenchView extends AbstractView<WorkbenchViewModel> {
 		}
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#refresh()
-	 */
 	@Override
 	public void refresh() {
 		inTasksView.refresh();
@@ -731,9 +722,6 @@ public class WorkbenchView extends AbstractView<WorkbenchViewModel> {
 		return subTreeEventHandler;
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#setStage(javafx.stage.Stage)
-	 */
 	@Override
 	public void setStage(Stage aStage) {
 		super.setStage(aStage);

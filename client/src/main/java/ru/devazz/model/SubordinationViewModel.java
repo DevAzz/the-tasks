@@ -2,16 +2,16 @@ package ru.devazz.model;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import ru.sciencesquad.hqtasks.server.bean.subel.SubordinatioElementServiceRemote;
-import ru.sciencesquad.hqtasks.server.datamodel.SubordinationElementEntity;
-import ru.siencesquad.hqtasks.ui.entities.SubordinationElement;
-import ru.siencesquad.hqtasks.ui.utils.EntityConverter;
+import ru.devazz.entities.SubordinationElement;
+import ru.devazz.server.api.ISubordinationElementService;
+import ru.devazz.server.api.model.SubordinationElementModel;
+import ru.devazz.utils.EntityConverter;
 
 /**
  * Модель представления дерева подчиненности
  */
 public class SubordinationViewModel
-		extends PresentationModel<SubordinatioElementServiceRemote, SubordinationElementEntity> {
+		extends PresentationModel<ISubordinationElementService, SubordinationElementModel> {
 
 	/** Общий корень иерархии */
 	private SubordinationElement root;
@@ -139,12 +139,9 @@ public class SubordinationViewModel
 		return result;
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.model.PresentationModel#getTypeService()
-	 */
 	@Override
-	public Class<SubordinatioElementServiceRemote> getTypeService() {
-		return SubordinatioElementServiceRemote.class;
+	public Class<ISubordinationElementService> getTypeService() {
+		return ISubordinationElementService.class;
 	}
 
 	/**

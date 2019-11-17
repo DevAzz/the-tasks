@@ -1,6 +1,6 @@
 package ru.devazz.utils;
 
-import ru.sciencesquad.hqtasks.server.utils.CycleTypeTask;
+import ru.devazz.server.api.model.enums.CycleTypeTask;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -126,17 +126,11 @@ public class CycleEnums {
 			return nameElement;
 		}
 
-		/**
-		 * @see ru.siencesquad.hqtasks.ui.model.CycleTaskViewModel.NodePropertyType#getPropertyType()
-		 */
 		@Override
 		public PropertyType getPropertyType() {
 			return PropertyType.DISABLED;
 		}
 
-		/**
-		 * @see ru.siencesquad.hqtasks.ui.model.CycleTaskViewModel.NodePropertyType#getTypeByElementName(String)
-		 */
 		public static CheckBoxDisabledType getTypeByElementName(String aNameElement) {
 			CheckBoxDisabledType type = null;
 			for (CheckBoxDisabledType value : CheckBoxDisabledType.values()) {
@@ -148,9 +142,6 @@ public class CycleEnums {
 			return type;
 		}
 
-		/**
-		 * @see ru.siencesquad.hqtasks.ui.utils.CycleEnums.NodePropertyType#getElementType()
-		 */
 		@Override
 		public PropertyType getElementType() {
 			return PropertyType.DISABLED_CHECK_BOX;
@@ -202,17 +193,11 @@ public class CycleEnums {
 			return controlNodes;
 		}
 
-		/**
-		 * @see ru.siencesquad.hqtasks.ui.model.CycleTaskViewModel.NodePropertyType#getPropertyType()
-		 */
 		@Override
 		public PropertyType getPropertyType() {
 			return PropertyType.VALUE;
 		}
 
-		/**
-		 * @see ru.siencesquad.hqtasks.ui.model.CycleTaskViewModel.NodePropertyType#getTypeByElementName(String)
-		 */
 		public static CheckBoxValueType getTypeByElementName(String aNameElement) {
 			CheckBoxValueType type = null;
 			for (CheckBoxValueType value : CheckBoxValueType.values()) {
@@ -224,9 +209,6 @@ public class CycleEnums {
 			return type;
 		}
 
-		/**
-		 * @see ru.siencesquad.hqtasks.ui.utils.CycleEnums.NodePropertyType#getElementType()
-		 */
 		@Override
 		public PropertyType getElementType() {
 			return PropertyType.CHECK_BOX_VALUE;
@@ -267,17 +249,11 @@ public class CycleEnums {
 			return nameElement;
 		}
 
-		/**
-		 * @see ru.siencesquad.hqtasks.ui.model.CycleTaskViewModel.NodePropertyType#getPropertyType()
-		 */
 		@Override
 		public PropertyType getPropertyType() {
 			return PropertyType.DISABLED;
 		}
 
-		/**
-		 * @see ru.siencesquad.hqtasks.ui.model.CycleTaskViewModel.NodePropertyType#getTypeByElementName(String)
-		 */
 		public static SpinnerDisabledType getTypeByElementName(String aNameElement) {
 			SpinnerDisabledType type = null;
 			for (SpinnerDisabledType value : SpinnerDisabledType.values()) {
@@ -289,9 +265,6 @@ public class CycleEnums {
 			return type;
 		}
 
-		/**
-		 * @see ru.siencesquad.hqtasks.ui.utils.CycleEnums.NodePropertyType#getElementType()
-		 */
 		@Override
 		public PropertyType getElementType() {
 			return PropertyType.DISABLED_SPINNER;
@@ -332,17 +305,11 @@ public class CycleEnums {
 			return nameElement;
 		}
 
-		/**
-		 * @see ru.siencesquad.hqtasks.ui.model.CycleTaskViewModel.NodePropertyType#getPropertyType()
-		 */
 		@Override
 		public PropertyType getPropertyType() {
 			return PropertyType.VALUE;
 		}
 
-		/**
-		 * @see ru.siencesquad.hqtasks.ui.model.CycleTaskViewModel.NodePropertyType#getTypeByElementName(String)
-		 */
 		public static SpinnerValueType getTypeByElementName(String aNameElement) {
 			SpinnerValueType type = null;
 			for (SpinnerValueType value : SpinnerValueType.values()) {
@@ -354,9 +321,6 @@ public class CycleEnums {
 			return type;
 		}
 
-		/**
-		 * @see ru.siencesquad.hqtasks.ui.utils.CycleEnums.NodePropertyType#getElementType()
-		 */
 		@Override
 		public PropertyType getElementType() {
 			return PropertyType.SPINNER_VALUE;
@@ -395,17 +359,11 @@ public class CycleEnums {
 			return nameElement;
 		}
 
-		/**
-		 * @see ru.siencesquad.hqtasks.ui.model.CycleTaskViewModel.NodePropertyType#getPropertyType()
-		 */
 		@Override
 		public PropertyType getPropertyType() {
 			return PropertyType.DISABLED;
 		}
 
-		/**
-		 * @see ru.siencesquad.hqtasks.ui.model.CycleTaskViewModel.NodePropertyType#getTypeByElementName(String)
-		 */
 		public static TimeFieldDisabledType getTypeByElementName(String aNameElement) {
 			TimeFieldDisabledType type = null;
 			for (TimeFieldDisabledType value : TimeFieldDisabledType.values()) {
@@ -417,9 +375,6 @@ public class CycleEnums {
 			return type;
 		}
 
-		/**
-		 * @see ru.siencesquad.hqtasks.ui.utils.CycleEnums.NodePropertyType#getElementType()
-		 */
 		@Override
 		public PropertyType getElementType() {
 			return PropertyType.DISABLED_TIME_FIELD;
@@ -457,17 +412,11 @@ public class CycleEnums {
 			return nameElement;
 		}
 
-		/**
-		 * @see ru.siencesquad.hqtasks.ui.model.CycleTaskViewModel.NodePropertyType#getPropertyType()
-		 */
 		@Override
 		public PropertyType getPropertyType() {
 			return PropertyType.VALUE;
 		}
 
-		/**
-		 * @see ru.siencesquad.hqtasks.ui.model.CycleTaskViewModel.NodePropertyType#getTypeByElementName(String)
-		 */
 		public static TimeFieldValueType getTypeByElementName(String aNameElement) {
 			TimeFieldValueType type = null;
 			for (TimeFieldValueType value : TimeFieldValueType.values()) {
@@ -479,9 +428,6 @@ public class CycleEnums {
 			return type;
 		}
 
-		/**
-		 * @see ru.siencesquad.hqtasks.ui.utils.CycleEnums.NodePropertyType#getElementType()
-		 */
 		@Override
 		public PropertyType getElementType() {
 			return PropertyType.TIME_FIELD_VALUE;
@@ -515,17 +461,11 @@ public class CycleEnums {
 			return nameElement;
 		}
 
-		/**
-		 * @see ru.siencesquad.hqtasks.ui.model.CycleTaskViewModel.NodePropertyType#getPropertyType()
-		 */
 		@Override
 		public PropertyType getPropertyType() {
 			return PropertyType.DISABLED;
 		}
 
-		/**
-		 * @see ru.siencesquad.hqtasks.ui.model.CycleTaskViewModel.NodePropertyType#getTypeByElementName(String)
-		 */
 		public static ComboBoxDisabledType getTypeByElementName(String aNameElement) {
 			ComboBoxDisabledType type = null;
 			for (ComboBoxDisabledType value : ComboBoxDisabledType.values()) {
@@ -537,9 +477,6 @@ public class CycleEnums {
 			return type;
 		}
 
-		/**
-		 * @see ru.siencesquad.hqtasks.ui.utils.CycleEnums.NodePropertyType#getElementType()
-		 */
 		@Override
 		public PropertyType getElementType() {
 			return PropertyType.DISABLED_COMBO;
@@ -573,17 +510,11 @@ public class CycleEnums {
 			return nameElement;
 		}
 
-		/**
-		 * @see ru.siencesquad.hqtasks.ui.model.CycleTaskViewModel.NodePropertyType#getPropertyType()
-		 */
 		@Override
 		public PropertyType getPropertyType() {
 			return PropertyType.VALUE;
 		}
 
-		/**
-		 * @see ru.siencesquad.hqtasks.ui.model.CycleTaskViewModel.NodePropertyType#getTypeByElementName(String)
-		 */
 		public static ComboBoxValueType getTypeByElementName(String aNameElement) {
 			ComboBoxValueType type = null;
 			for (ComboBoxValueType value : ComboBoxValueType.values()) {
@@ -595,9 +526,6 @@ public class CycleEnums {
 			return type;
 		}
 
-		/**
-		 * @see ru.siencesquad.hqtasks.ui.utils.CycleEnums.NodePropertyType#getElementType()
-		 */
 		@Override
 		public PropertyType getElementType() {
 			return PropertyType.COMBO_VALUE;

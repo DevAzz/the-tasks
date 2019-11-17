@@ -15,17 +15,16 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
-import ru.sciencesquad.hqtasks.server.bean.subel.SubordinatioElementServiceRemote;
-import ru.sciencesquad.hqtasks.server.datamodel.SubordinationElementEntity;
-import ru.siencesquad.hqtasks.ui.entities.ExtSearchRes;
-import ru.siencesquad.hqtasks.ui.entities.SubordinationElement;
-import ru.siencesquad.hqtasks.ui.model.ExtendedSearchViewModel;
-import ru.siencesquad.hqtasks.ui.server.EJBProxyFactory;
-import ru.siencesquad.hqtasks.ui.utils.EntityConverter;
-import ru.siencesquad.hqtasks.ui.utils.Utils;
-import ru.siencesquad.hqtasks.ui.utils.dialogs.DialogUtils;
+import ru.devazz.entities.ExtSearchRes;
+import ru.devazz.entities.SubordinationElement;
+import ru.devazz.model.ExtendedSearchViewModel;
+import ru.devazz.server.EJBProxyFactory;
+import ru.devazz.server.api.ISubordinationElementService;
+import ru.devazz.server.api.model.SubordinationElementModel;
+import ru.devazz.utils.EntityConverter;
+import ru.devazz.utils.Utils;
+import ru.devazz.utils.dialogs.DialogUtils;
 
-import javax.naming.NamingException;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -86,7 +85,7 @@ public class ExtendedSearchView extends AbstractView<ExtendedSearchViewModel> {
 	@FXML
 	private TextField nameTaskTextField;
 
-	/** Текстовое поле Наименование боевого поста */
+	/** Текстовое поле Наименование должности */
 	@FXML
 	private TextField executorTextField;
 
@@ -100,38 +99,23 @@ public class ExtendedSearchView extends AbstractView<ExtendedSearchViewModel> {
 	@FXML
 	private TextField positionSubElTextField;
 
-	/** Текстовое поле наименование боевого поста */
+	/** Текстовое поле наименование должности */
 	@FXML
 	private TextField subElnameTextField;
 
 	/** Обработчик двойного клика по результату поиска */
 	private EventHandler<MouseEvent> doubleClickHandler;
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#initialize()
-	 */
 	@Override
 	public void initialize() {
 		bindView();
-		authorTextField.setOnKeyPressed(event -> {
-			startSearchByEnter(event);
-		});
-		nameTaskTextField.setOnKeyPressed(event -> {
-			startSearchByEnter(event);
-		});
-		executorTextField.setOnKeyPressed(event -> {
-			startSearchByEnter(event);
-		});
+		authorTextField.setOnKeyPressed(this::startSearchByEnter);
+		nameTaskTextField.setOnKeyPressed(this::startSearchByEnter);
+		executorTextField.setOnKeyPressed(this::startSearchByEnter);
 
-		personNameTextField.setOnKeyPressed(event -> {
-			startSearchByEnter(event);
-		});
-		positionSubElTextField.setOnKeyPressed(event -> {
-			startSearchByEnter(event);
-		});
-		subElnameTextField.setOnKeyPressed(event -> {
-			startSearchByEnter(event);
-		});
+		personNameTextField.setOnKeyPressed(this::startSearchByEnter);
+		positionSubElTextField.setOnKeyPressed(this::startSearchByEnter);
+		subElnameTextField.setOnKeyPressed(this::startSearchByEnter);
 	}
 
 	/**
@@ -168,25 +152,16 @@ public class ExtendedSearchView extends AbstractView<ExtendedSearchViewModel> {
 		Bindings.bindBidirectional(subElnameTextField.textProperty(), model.getSubElNameProperty());
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#createPresentaionModel()
-	 */
 	@Override
 	protected ExtendedSearchViewModel createPresentaionModel() {
 		return new ExtendedSearchViewModel();
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#getTabPane()
-	 */
 	@Override
 	public TabPane getTabPane() {
 		return extendedSearchTabPane;
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#getTab()
-	 */
 	@Override
 	public Tab getTab() {
 		Tab tab = (!extendedSearchTabPane.getTabs().isEmpty())
@@ -200,33 +175,28 @@ public class ExtendedSearchView extends AbstractView<ExtendedSearchViewModel> {
 	 */
 	@FXML
 	private void selectAuthor() {
-		SubordinatioElementServiceRemote subElsService;
-		try {
-			subElsService = EJBProxyFactory.getInstance()
-					.getService(SubordinatioElementServiceRemote.class);
+		ISubordinationElementService subElsService;
+		subElsService = EJBProxyFactory.getInstance()
+				.getService(ISubordinationElementService.class);
 
-			ObservableList<SubordinationElement> listSubEls = FXCollections.observableArrayList();
+		ObservableList<SubordinationElement> listSubEls = FXCollections.observableArrayList();
 
-			Consumer<? super List<SubordinationElement>> consumer = t -> {
-				SubordinationElement element = t.get(0);
-				if (null != element) {
-					model.setAuthor(element);
-					model.setExecutor(null);
-				}
-				authorTextField.requestFocus();
-			};
-
-			for (SubordinationElementEntity entity : subElsService
-					.getAll(Utils.getInstance().getCurrentUser().getIduser())) {
-				listSubEls
-						.add(EntityConverter.getInstatnce().convertSubElEntityToClientWrap(entity));
+		Consumer<? super List<SubordinationElement>> consumer = t -> {
+			SubordinationElement element = t.get(0);
+			if (null != element) {
+				model.setAuthor(element);
+				model.setExecutor(null);
 			}
+			authorTextField.requestFocus();
+		};
 
-			DialogUtils.getInstance().showSelectSubElsDialog(getStage(), consumer, false, true);
-		} catch (NamingException e) {
-			// TODO Логирование
-			e.printStackTrace();
+		for (SubordinationElementModel entity : subElsService
+				.getAll(Utils.getInstance().getCurrentUser().getSuid())) {
+			listSubEls
+					.add(EntityConverter.getInstatnce().convertSubElEntityToClientWrap(entity));
 		}
+
+		DialogUtils.getInstance().showSelectSubElsDialog(getStage(), consumer, false, true);
 	}
 
 	/**
@@ -234,33 +204,28 @@ public class ExtendedSearchView extends AbstractView<ExtendedSearchViewModel> {
 	 */
 	@FXML
 	private void selectExecutor() {
-		SubordinatioElementServiceRemote subElsService;
-		try {
-			subElsService = EJBProxyFactory.getInstance()
-					.getService(SubordinatioElementServiceRemote.class);
+		ISubordinationElementService subElsService;
+		subElsService = EJBProxyFactory.getInstance()
+				.getService(ISubordinationElementService.class);
 
-			ObservableList<SubordinationElement> listSubEls = FXCollections.observableArrayList();
+		ObservableList<SubordinationElement> listSubEls = FXCollections.observableArrayList();
 
-			Consumer<? super List<SubordinationElement>> consumer = t -> {
-				SubordinationElement element = t.get(0);
-				if (null != element) {
-					model.setAuthor(null);
-					model.setExecutor(element);
-				}
-				executorTextField.requestFocus();
-			};
-
-			for (SubordinationElementEntity entity : subElsService
-					.getAll(Utils.getInstance().getCurrentUser().getIduser())) {
-				listSubEls
-						.add(EntityConverter.getInstatnce().convertSubElEntityToClientWrap(entity));
+		Consumer<? super List<SubordinationElement>> consumer = t -> {
+			SubordinationElement element = t.get(0);
+			if (null != element) {
+				model.setAuthor(null);
+				model.setExecutor(element);
 			}
+			executorTextField.requestFocus();
+		};
 
-			DialogUtils.getInstance().showSelectSubElsDialog(getStage(), consumer, false, true);
-		} catch (NamingException e) {
-			// TODO Логирование
-			e.printStackTrace();
+		for (SubordinationElementModel entity : subElsService
+				.getAll(Utils.getInstance().getCurrentUser().getSuid())) {
+			listSubEls
+					.add(EntityConverter.getInstatnce().convertSubElEntityToClientWrap(entity));
 		}
+
+		DialogUtils.getInstance().showSelectSubElsDialog(getStage(), consumer, false, true);
 	}
 
 	/**

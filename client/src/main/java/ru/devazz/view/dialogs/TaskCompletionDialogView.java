@@ -7,11 +7,11 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
-import ru.siencesquad.hqtasks.ui.entities.Task;
-import ru.siencesquad.hqtasks.ui.model.TaskCompletionDialogViewModel;
-import ru.siencesquad.hqtasks.ui.utils.Utils;
-import ru.siencesquad.hqtasks.ui.utils.dialogs.DialogUtils;
-import ru.siencesquad.hqtasks.ui.view.AbstractView;
+import ru.devazz.entities.Task;
+import ru.devazz.model.TaskCompletionDialogViewModel;
+import ru.devazz.utils.Utils;
+import ru.devazz.utils.dialogs.DialogUtils;
+import ru.devazz.view.AbstractView;
 
 import java.io.File;
 
@@ -35,9 +35,6 @@ public class TaskCompletionDialogView extends AbstractView<TaskCompletionDialogV
 	/** Экземпляр диалога */
 	private Dialog<Task> dialog;
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#initialize()
-	 */
 	@Override
 	public void initialize() {
 		bindView();
@@ -84,7 +81,7 @@ public class TaskCompletionDialogView extends AbstractView<TaskCompletionDialogV
 			}
 		} else {
 			DialogUtils.getInstance().showAlertDialog("Ошибка выбора файла",
-					"Выбран исполняемый файл. \n\rДобавление исполняемых файлов запрещено", AlertType.WARNING);
+													  "Выбран исполняемый файл. \n\rДобавление исполняемых файлов запрещено", AlertType.WARNING);
 		}
 
 	}
@@ -107,9 +104,6 @@ public class TaskCompletionDialogView extends AbstractView<TaskCompletionDialogV
 		this.dialog = dialog;
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#createPresentaionModel()
-	 */
 	@Override
 	protected TaskCompletionDialogViewModel createPresentaionModel() {
 		return new TaskCompletionDialogViewModel();

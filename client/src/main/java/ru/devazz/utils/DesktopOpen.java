@@ -22,7 +22,7 @@ public class DesktopOpen {
 	/**
 	 * Подбор команды запуска со спицификой ОС
 	 *
-	 * @param Полный путь к файлу
+	 * @param file Полный путь к файлу
 	 * @return успешность
 	 */
 	private boolean openSystemSpecific(String file) {
@@ -49,14 +49,6 @@ public class DesktopOpen {
 		return false;
 	}
 
-	/**
-	 * Выполнение команды
-	 *
-	 * @param команда
-	 * @param аргументы
-	 * @param путь к файлу
-	 * @return успешность
-	 */
 	private boolean runCommand(String command, String args, String file) {
 
 		String[] parts = prepareCommand(command, args, file);
@@ -82,14 +74,6 @@ public class DesktopOpen {
 		}
 	}
 
-	/**
-	 * Подготовка команды для выполнения
-	 *
-	 * @param команда
-	 * @param аргументы
-	 * @param путь к файлу
-	 * @return подготовленная комманда
-	 */
 	private String[] prepareCommand(String command, String args, String file) {
 
 		List<String> parts = new ArrayList<>();

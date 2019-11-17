@@ -7,8 +7,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 import jfxtras.scene.control.LocalDateTimeTextField;
-import ru.siencesquad.hqtasks.ui.model.CustomTimeIntervalModel;
-import ru.siencesquad.hqtasks.ui.view.AbstractView;
+import ru.devazz.model.CustomTimeIntervalModel;
+import ru.devazz.view.AbstractView;
 
 /**
  * Представление компонента выбора временного интервала
@@ -38,9 +38,6 @@ public class CustomTimeIntervalView extends AbstractView<CustomTimeIntervalModel
 	/** Поток выполнения действия поиска */
 	private Runnable searchRunnable;
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#initialize()
-	 */
 	@Override
 	public void initialize() {
 		Bindings.bindBidirectional(startDateTimeIntervalTextField.textProperty(),
@@ -102,7 +99,6 @@ public class CustomTimeIntervalView extends AbstractView<CustomTimeIntervalModel
 	/**
 	 * Выполняет поиск записей
 	 *
-	 * @param aRunnable Поток выполнения действия поиска
 	 */
 	@FXML
 	private void search() {
@@ -145,9 +141,6 @@ public class CustomTimeIntervalView extends AbstractView<CustomTimeIntervalModel
 		model.clearDateFields();
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#createPresentaionModel()
-	 */
 	@Override
 	protected CustomTimeIntervalModel createPresentaionModel() {
 		return new CustomTimeIntervalModel();

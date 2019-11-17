@@ -8,10 +8,10 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.util.StringConverter;
 import jfxtras.scene.control.LocalTimeTextField;
-import ru.sciencesquad.hqtasks.server.utils.DayOfWeek;
-import ru.siencesquad.hqtasks.ui.model.CycleTaskViewModel;
-import ru.siencesquad.hqtasks.ui.utils.CycleEnums;
-import ru.siencesquad.hqtasks.ui.utils.CycleEnums.PropertyType;
+import ru.devazz.model.CycleTaskViewModel;
+import ru.devazz.server.api.model.enums.DayOfWeek;
+import ru.devazz.utils.CycleEnums;
+import ru.devazz.utils.CycleEnums.PropertyType;
 
 import java.time.Month;
 import java.util.ArrayList;
@@ -143,9 +143,6 @@ public class CycleTaskView extends AbstractView<CycleTaskViewModel> {
 	/** Позиция скролл-бара на момент перевода фокуса на спиннер */
 	private double vValueScroll;
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#initialize()
-	 */
 	@Override
 	public void initialize() {
 		bindView();
@@ -473,9 +470,6 @@ public class CycleTaskView extends AbstractView<CycleTaskViewModel> {
 		return rootPane;
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#createPresentaionModel()
-	 */
 	@Override
 	protected CycleTaskViewModel createPresentaionModel() {
 		return new CycleTaskViewModel();

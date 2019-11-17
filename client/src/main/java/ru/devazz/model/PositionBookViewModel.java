@@ -4,11 +4,11 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import ru.sciencesquad.hqtasks.server.bean.user.UserServiceRemote;
-import ru.sciencesquad.hqtasks.server.datamodel.UserEntity;
-import ru.siencesquad.hqtasks.ui.entities.User;
-import ru.siencesquad.hqtasks.ui.utils.EntityConverter;
-import ru.siencesquad.hqtasks.ui.utils.Utils;
+import ru.devazz.entities.User;
+import ru.devazz.server.api.IUserService;
+import ru.devazz.server.api.model.UserModel;
+import ru.devazz.utils.EntityConverter;
+import ru.devazz.utils.Utils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * Модель представления книги должностных лиц
  */
-public class PositionBookViewModel extends PresentationModel<UserServiceRemote, UserEntity> {
+public class PositionBookViewModel extends PresentationModel<IUserService, UserModel> {
 
 	/** Список пользователей */
 	private ObservableList<User> data;
@@ -25,9 +25,6 @@ public class PositionBookViewModel extends PresentationModel<UserServiceRemote, 
 	/** Свойство списка пользователей */
 	private ObjectProperty<ObservableList<User>> dataProperty;
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.model.PresentationModel#initModel()
-	 */
 	@Override
 	protected void initModel() {
 		data = FXCollections.observableArrayList();
@@ -44,7 +41,7 @@ public class PositionBookViewModel extends PresentationModel<UserServiceRemote, 
 	 */
 	private List<User> createClientWrapUserList() {
 		List<User> result = new ArrayList<>();
-		for (UserEntity entity : listDataModelEntities) {
+		for (UserModel entity : listDataModelEntities) {
 			User user = EntityConverter.getInstatnce().convertUserEntitytoClientWrapUser(entity);
 			result.add(user);
 		}
@@ -69,12 +66,9 @@ public class PositionBookViewModel extends PresentationModel<UserServiceRemote, 
 		this.data = data;
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.model.PresentationModel#getTypeService()
-	 */
 	@Override
-	public Class<UserServiceRemote> getTypeService() {
-		return UserServiceRemote.class;
+	public Class<IUserService> getTypeService() {
+		return IUserService.class;
 	}
 
 	/**

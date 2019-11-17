@@ -6,29 +6,29 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.image.Image;
-import org.apache.activemq.artemis.jms.client.ActiveMQMessage;
-import ru.sciencesquad.hqtasks.server.bean.subel.SubordinatioElementServiceRemote;
-import ru.sciencesquad.hqtasks.server.bean.user.UserServiceRemote;
-import ru.sciencesquad.hqtasks.server.datamodel.IEntity;
-import ru.sciencesquad.hqtasks.server.datamodel.SubordinationElementEntity;
-import ru.sciencesquad.hqtasks.server.datamodel.UserEntity;
-import ru.sciencesquad.hqtasks.server.events.ObjectEvent;
-import ru.sciencesquad.hqtasks.server.events.UserEvent;
-import ru.siencesquad.hqtasks.ui.entities.SubordinationElement;
-import ru.siencesquad.hqtasks.ui.server.EJBProxyFactory;
-import ru.siencesquad.hqtasks.ui.utils.EntityConverter;
-import ru.siencesquad.hqtasks.ui.utils.PushUpTypes;
-import ru.siencesquad.hqtasks.ui.utils.Utils;
-import ru.siencesquad.hqtasks.ui.utils.dialogs.DialogUtils;
+import org.apache.activemq.command.ActiveMQMessage;
+import org.apache.activemq.command.ActiveMQObjectMessage;
+import ru.devazz.entities.SubordinationElement;
+import ru.devazz.server.EJBProxyFactory;
+import ru.devazz.server.api.ISubordinationElementService;
+import ru.devazz.server.api.IUserService;
+import ru.devazz.server.api.event.ObjectEvent;
+import ru.devazz.server.api.event.UserEvent;
+import ru.devazz.server.api.model.IEntity;
+import ru.devazz.server.api.model.SubordinationElementModel;
+import ru.devazz.server.api.model.UserModel;
+import ru.devazz.utils.EntityConverter;
+import ru.devazz.utils.PushUpTypes;
+import ru.devazz.utils.Utils;
+import ru.devazz.utils.dialogs.DialogUtils;
 
-import javax.naming.NamingException;
 import java.io.File;
 
 /**
  * Модель представления информации о подразделении
  */
 public class SubInfoViewModel
-		extends PresentationModel<SubordinatioElementServiceRemote, SubordinationElementEntity> {
+		extends PresentationModel<ISubordinationElementService, SubordinationElementModel> {
 
 	/** Свойство текста заголовка */
 	private StringProperty titleProperty;
@@ -36,13 +36,10 @@ public class SubInfoViewModel
 	/** Свойство текста ФИО пользователя */
 	private StringProperty fioProperty;
 
-	/** Свойство текста звания пользователя */
-	private StringProperty rankProperty;
-
 	/** Свойство текста должности пользователя */
 	private StringProperty positionProperty;
 
-	/** Выбранное подразделение */
+	/** Выбранный элемент подчиненности */
 	private SubordinationElement selectionSub;
 
 	/** Свойство изображения пользователя */
@@ -52,16 +49,12 @@ public class SubInfoViewModel
 	private StringProperty onlineProperty;
 
 	/** Текущий пользователь */
-	private UserEntity userData = null;
+	private UserModel userData = null;
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.model.PresentationModel#initModel()
-	 */
 	@Override
 	protected void initModel() {
 		titleProperty = new SimpleStringProperty(this, "titleProperty", "Заголовок");
 		fioProperty = new SimpleStringProperty(this, "fioProperty", "fio");
-		rankProperty = new SimpleStringProperty(this, "rankProperty", "rank");
 		positionProperty = new SimpleStringProperty(this, "positionProperty", "position");
 		imageProperty = new SimpleObjectProperty<>(this, "imageProperty", null);
 		onlineProperty = new SimpleStringProperty(this, "positionProperty", "Не в сети");
@@ -70,12 +63,13 @@ public class SubInfoViewModel
 			try {
 				if (message instanceof ActiveMQMessage) {
 					ActiveMQMessage objectMessage = (ActiveMQMessage) message;
-					if (objectMessage.isBodyAssignableTo(ObjectEvent.class)) {
-						ObjectEvent event = objectMessage.getBody(ObjectEvent.class);
+					if (objectMessage instanceof ActiveMQObjectMessage) {
+						ObjectEvent event =
+								(ObjectEvent) ((ActiveMQObjectMessage) objectMessage).getObject();
 						IEntity entity = event.getEntity();
 						if (event instanceof UserEvent) {
-							userData = (UserEntity) entity;
-							SubordinationElementEntity subEl = service
+							userData = (UserModel) entity;
+							SubordinationElementModel subEl = service
 									.get(userData.getPositionSuid());
 							if ((null != selectionSub)
 									&& selectionSub.getSuid().equals(userData.getPositionSuid())) {
@@ -127,24 +121,6 @@ public class SubInfoViewModel
 	 */
 	public void setFioValue(String fioProperty) {
 		this.fioProperty.set(fioProperty);
-	}
-
-	/**
-	 * Возвращает {@link#rankProperty}
-	 *
-	 * @return the rankProperty
-	 */
-	public StringProperty getRankProperty() {
-		return rankProperty;
-	}
-
-	/**
-	 * Устанавливает значение полю rankProperty
-	 *
-	 * @param rankProperty значение поле
-	 */
-	public void setRankValue(String rankProperty) {
-		this.rankProperty.set(rankProperty);
 	}
 
 	/**
@@ -205,60 +181,44 @@ public class SubInfoViewModel
 		Thread thread = new Thread(() -> {
 			String imageURI = "";
 			byte[] imageArr = null;
-			try {
-				UserServiceRemote userService = EJBProxyFactory.getInstance()
-						.getService(UserServiceRemote.class);
-				userData = userService.getUserBySubElSuid(aSubElSuid);
-				if (null == userData) {
-					userData = new UserEntity();
-					userData.setName("ФИО");
-					userData.setMilitaryRank("Звание");
-					userData.setPosition("Должность");
-				}
-				File file = new File(Utils.getInstance().getUserImageName(userData.getSuid()));
-				if (file.exists()) {
-					imageURI = file.toURI().toString();
-				} else {
-					imageArr = userService.getUserImage(userData.getSuid());
-					file = Utils.getInstance().createFileImage(imageArr, userData.getSuid());
-					if (null != file) {
-						imageURI = file.toURI().toString();
-					}
-				}
-				file = null;
-				imageArr = null;
-				System.gc();
-
-				final String imageFile = (imageURI.isEmpty()) ? "/css/user.png" : imageURI;
-				Platform.runLater(() -> {
-					setFioValue(userData.getName());
-					setRankValue(userData.getMilitaryRank());
-					setPositionValue(userData.getPosition());
-					setOnlineValue((userData.getOnline()) ? "В сети" : "Не в сети");
-					setImageValue(new Image(imageFile, 293, 289, true, false, true));
-				});
-			} catch (NamingException e) {
-				Platform.runLater(() -> {
-					setFioValue("ФИО " + selectionSub.getName());
-					setRankValue("Звание " + selectionSub.getName());
-					setPositionValue("Должность " + selectionSub.getName());
-					setImageValue(new Image("/css/user.png"));
-				});
-				// TODO Логирование
-				e.printStackTrace();
+			IUserService userService = EJBProxyFactory.getInstance()
+					.getService(IUserService.class);
+			userData = userService.getUserBySubElSuid(aSubElSuid);
+			if (null == userData) {
+				userData = new UserModel();
+				userData.setName("ФИО");
+				userData.setPosition("Должность");
 			}
+			File file = new File(Utils.getInstance().getUserImageName(userData.getSuid()));
+			if (file.exists()) {
+				imageURI = file.toURI().toString();
+			} else {
+				imageArr = userService.getUserImage(userData.getSuid());
+				file = Utils.getInstance().createFileImage(imageArr, userData.getSuid());
+				if (null != file) {
+					imageURI = file.toURI().toString();
+				}
+			}
+			file = null;
+			imageArr = null;
+			System.gc();
+
+			final String imageFile = (imageURI.isEmpty()) ? "/css/user.png" : imageURI;
+			Platform.runLater(() -> {
+				setFioValue(userData.getName());
+				setPositionValue(userData.getPosition());
+				setOnlineValue((userData.getOnline()) ? "В сети" : "Не в сети");
+				setImageValue(new Image(imageFile, 293, 289, true, false, true));
+			});
 		});
 		thread.setDaemon(true);
 		thread.start();
 
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.model.PresentationModel#getTypeService()
-	 */
 	@Override
-	public Class<SubordinatioElementServiceRemote> getTypeService() {
-		return SubordinatioElementServiceRemote.class;
+	public Class<ISubordinationElementService> getTypeService() {
+		return ISubordinationElementService.class;
 	}
 
 	/**

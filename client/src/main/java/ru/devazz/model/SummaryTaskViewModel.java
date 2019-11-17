@@ -5,9 +5,9 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.image.Image;
-import ru.sciencesquad.hqtasks.server.bean.ICommonService;
-import ru.sciencesquad.hqtasks.server.datamodel.IEntity;
-import ru.siencesquad.hqtasks.ui.entities.Task;
+import ru.devazz.entities.Task;
+import ru.devazz.server.api.ICommonService;
+import ru.devazz.server.api.model.IEntity;
 
 /**
  * Модель представления панели задачи сводки
@@ -26,9 +26,6 @@ public class SummaryTaskViewModel extends PresentationModel<ICommonService, IEnt
 	/** Идентификатор задачи */
 	private Long taskSuid;
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.model.PresentationModel#initModel()
-	 */
 	@Override
 	protected void initModel() {
 		priorityImageProperty = new SimpleObjectProperty<>(this, "priorityImageProperty", null);
@@ -162,9 +159,6 @@ public class SummaryTaskViewModel extends PresentationModel<ICommonService, IEnt
 		}
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.model.PresentationModel#getTypeService()
-	 */
 	@Override
 	public Class<ICommonService> getTypeService() {
 		// TODO Auto-generated method stub

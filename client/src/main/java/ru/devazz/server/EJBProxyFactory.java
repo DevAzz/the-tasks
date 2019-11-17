@@ -1,23 +1,10 @@
 package ru.devazz.server;
 
-import ru.sciencesquad.hqtasks.server.bean.ICommonService;
-import ru.sciencesquad.hqtasks.server.bean.events.EventServiceRemote;
-import ru.sciencesquad.hqtasks.server.bean.help.HelpServiceRemote;
-import ru.sciencesquad.hqtasks.server.bean.history.TaskHistoryServiceRemote;
-import ru.sciencesquad.hqtasks.server.bean.report.ReportServiceRemote;
-import ru.sciencesquad.hqtasks.server.bean.role.RoleServiceRemote;
-import ru.sciencesquad.hqtasks.server.bean.search.SearchServiceRemote;
-import ru.sciencesquad.hqtasks.server.bean.subel.SubordinatioElementServiceRemote;
-import ru.sciencesquad.hqtasks.server.bean.tasks.TaskServiceRemote;
-import ru.sciencesquad.hqtasks.server.bean.user.UserServiceRemote;
-import ru.siencesquad.hqtasks.ui.utils.Utils;
+import org.springframework.beans.factory.annotation.Autowired;
+import ru.devazz.server.api.*;
 
 import javax.jms.MessageListener;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Map;
 
 /**
@@ -29,34 +16,48 @@ public class EJBProxyFactory {
 	private static EJBProxyFactory instance;
 
 	/** Карта соответствия типов и имен сервисов */
-	private Map<Class<? extends ICommonService>, String> mapServiceNameType = new HashMap<>();
-
-	/** Карта соответствия типов и имен сервисов */
 	private Map<Class<? extends ICommonService>, Object> mapServiceType = new HashMap<>();
+
+	@Autowired
+	private IUserService userService;
+
+	@Autowired
+	private IEventService eventService;
+
+	@Autowired
+	private IHelpService helpService;
+
+	@Autowired
+	private IReportService reportService;
+
+	@Autowired
+	private IRoleService roleService;
+
+	@Autowired
+	private ISearchService searchService;
+
+	@Autowired
+	private ISubordinationElementService subordinationElementService;
+
+	@Autowired
+	private ITaskHistoryService taskHistoryService;
+
+	@Autowired
+	private ITaskService taskService;
 
 	/**
 	 * Конструктор
 	 */
 	private EJBProxyFactory() {
-		String deployName = "ejb:/hqtasks.server-0.0.1-SNAPSHOT/";
-		mapServiceNameType.put(UserServiceRemote.class, deployName
-				+ "UserServiceBean!ru.sciencesquad.hqtasks.server.bean.user.UserServiceRemote");
-		mapServiceNameType.put(SubordinatioElementServiceRemote.class, deployName
-				+ "SubordinationElementServiceBean!ru.sciencesquad.hqtasks.server.bean.subel.SubordinatioElementServiceRemote");
-		mapServiceNameType.put(TaskServiceRemote.class, deployName
-				+ "TaskServiceBean!ru.sciencesquad.hqtasks.server.bean.tasks.TaskServiceRemote");
-		mapServiceNameType.put(RoleServiceRemote.class, deployName
-				+ "RoleServiceBean!ru.sciencesquad.hqtasks.server.bean.role.RoleServiceRemote");
-		mapServiceNameType.put(EventServiceRemote.class, deployName
-				+ "EventServiceBean!ru.sciencesquad.hqtasks.server.bean.events.EventServiceRemote");
-		mapServiceNameType.put(ReportServiceRemote.class, deployName
-				+ "ReportServiceBean!ru.sciencesquad.hqtasks.server.bean.report.ReportServiceRemote");
-		mapServiceNameType.put(SearchServiceRemote.class, deployName
-				+ "SearchServiceBean!ru.sciencesquad.hqtasks.server.bean.search.SearchServiceRemote");
-		mapServiceNameType.put(HelpServiceRemote.class, deployName
-				+ "HelpServiceBean!ru.sciencesquad.hqtasks.server.bean.help.HelpServiceRemote");
-		mapServiceNameType.put(TaskHistoryServiceRemote.class, deployName
-				+ "TaskHistoryServiceBean!ru.sciencesquad.hqtasks.server.bean.history.TaskHistoryServiceRemote");
+		mapServiceType.put(IUserService.class, userService);
+		mapServiceType.put(IEventService.class, eventService);
+		mapServiceType.put(IHelpService.class, helpService);
+		mapServiceType.put(IReportService.class, reportService);
+		mapServiceType.put(IRoleService.class, roleService);
+		mapServiceType.put(ISearchService.class, searchService);
+		mapServiceType.put(ISubordinationElementService.class, subordinationElementService);
+		mapServiceType.put(ITaskHistoryService.class, taskHistoryService);
+		mapServiceType.put(ITaskService.class, taskService);
 	}
 
 	/**
@@ -76,32 +77,10 @@ public class EJBProxyFactory {
 	 *
 	 * @param aType тип сервиса
 	 * @return сервис
-	 * @throws NamingException в случае ошибки
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends ICommonService> T getService(Class<T> aType) throws NamingException {
-		T service = null;
-		if (null != aType) {
-			if (null == mapServiceType.get(aType)) {
-				String beanName = mapServiceNameType.get(aType);
-				final Hashtable<String, String> jndiProperties = new Hashtable<>();
-				jndiProperties.put(Context.INITIAL_CONTEXT_FACTORY,
-						"org.jboss.naming.remote.client.InitialContextFactory");
-				jndiProperties.put(Context.PROVIDER_URL, Utils.getInstance().getConnectionURL());
-				jndiProperties.put(Context.SECURITY_PRINCIPAL,
-						Utils.getInstance().getServerConnectionUser());
-				jndiProperties.put(Context.SECURITY_CREDENTIALS,
-						Utils.getInstance().getServerConnectionPassword());
-
-				Context context = new InitialContext(jndiProperties);
-				service = (T) context.lookup(beanName);
-				mapServiceType.put(aType, service);
-				context.close();
-			} else {
-				service = (T) mapServiceType.get(aType);
-			}
-		}
-		return service;
+	public <T extends ICommonService> T getService(Class<T> aType) {
+		return (T) mapServiceType.get(aType);
 	}
 
 	/**
@@ -111,14 +90,13 @@ public class EJBProxyFactory {
 	 */
 	public void addMessageListener(MessageListener aListener) {
 		try {
-			Subscriber subscriber = new Subscriber();
-			subscriber.createSubscriber();
-			subscriber.addMessageListener(aListener);
+			Subscriber subscriber =
+					new Subscriber("tcp://127.0.0.1:61616", "test_queue", "admin", "password");
+			subscriber.run(aListener);
 		} catch (Exception e) {
 			// TODO Логирование
 			e.printStackTrace();
 		}
-
 	}
 
 }

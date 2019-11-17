@@ -6,7 +6,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import ru.siencesquad.hqtasks.ui.model.ExtSearchResModel;
+import ru.devazz.model.ExtSearchResModel;
 
 /**
  * Представление результатов поиска
@@ -21,17 +21,11 @@ public class ExtSearchResView extends AbstractView<ExtSearchResModel> {
 	@FXML
 	private AnchorPane rootPane;
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#initialize()
-	 */
 	@Override
 	public void initialize() {
 		Bindings.bindBidirectional(resultsLabel.textProperty(), model.getResLabelProperty());
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#createPresentaionModel()
-	 */
 	@Override
 	protected ExtSearchResModel createPresentaionModel() {
 		return new ExtSearchResModel();
@@ -76,7 +70,7 @@ public class ExtSearchResView extends AbstractView<ExtSearchResModel> {
 	/**
 	 * Добавляет обработчик выделения панели
 	 *
-	 * @param обработчик выделения
+	 * @param aHandler обработчик выделения
 	 */
 	public void addResultSelectionHandler(EventHandler<MouseEvent> aHandler) {
 		rootPane.addEventFilter(MouseEvent.MOUSE_CLICKED, aHandler);

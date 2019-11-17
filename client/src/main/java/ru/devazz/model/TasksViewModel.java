@@ -5,14 +5,14 @@ import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import ru.sciencesquad.hqtasks.server.bean.tasks.TaskServiceRemote;
-import ru.sciencesquad.hqtasks.server.datamodel.TaskEntity;
-import ru.sciencesquad.hqtasks.server.utils.*;
-import ru.siencesquad.hqtasks.ui.entities.Task;
-import ru.siencesquad.hqtasks.ui.utils.EntityConverter;
-import ru.siencesquad.hqtasks.ui.utils.Utils;
+import ru.devazz.entities.Task;
+import ru.devazz.server.api.ITaskService;
+import ru.devazz.server.api.model.Filter;
+import ru.devazz.server.api.model.TaskModel;
+import ru.devazz.server.api.model.enums.*;
+import ru.devazz.utils.EntityConverter;
+import ru.devazz.utils.Utils;
 
-import javax.jms.JMSException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -20,7 +20,7 @@ import java.util.*;
 /**
  * Модель представления задач
  */
-public class TasksViewModel extends PresentationModel<TaskServiceRemote, TaskEntity> {
+public class TasksViewModel extends PresentationModel<ITaskService, TaskModel> {
 
 	/** Видимые задачи */
 	private ObservableList<Task> visibleTasks;
@@ -80,9 +80,6 @@ public class TasksViewModel extends PresentationModel<TaskServiceRemote, TaskEnt
 	/** Признак активности представления отображения задач */
 	private BooleanProperty isActiveProperty;
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.model.PresentationModel#initModel()
-	 */
 	@Override
 	protected void initModel() {
 		if (null == visibleTasks) {
@@ -475,12 +472,7 @@ public class TasksViewModel extends PresentationModel<TaskServiceRemote, TaskEnt
 	 */
 	public void deleteTask(Task aTask) {
 		visibleTasks.remove(aTask);
-		try {
-			getService().delete(aTask.getSuid(), true);
-		} catch (JMSException e) {
-			// TODO Логирование
-			e.printStackTrace();
-		}
+		getService().delete(aTask.getSuid(), true);
 	}
 
 	/**
@@ -522,12 +514,9 @@ public class TasksViewModel extends PresentationModel<TaskServiceRemote, TaskEnt
 		return result;
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.model.PresentationModel#getTypeService()
-	 */
 	@Override
-	public Class<TaskServiceRemote> getTypeService() {
-		return TaskServiceRemote.class;
+	public Class<ITaskService> getTypeService() {
+		return ITaskService.class;
 	}
 
 	/**
@@ -607,7 +596,7 @@ public class TasksViewModel extends PresentationModel<TaskServiceRemote, TaskEnt
 							calcOffset(countPageEntries, aPageNumber), filter));
 					break;
 				}
-				for (TaskEntity entity : new ArrayList<>(listDataModelEntities)) {
+				for (TaskModel entity : new ArrayList<>(listDataModelEntities)) {
 					try {
 						Thread.sleep(70L);
 					} catch (InterruptedException e) {
@@ -615,7 +604,7 @@ public class TasksViewModel extends PresentationModel<TaskServiceRemote, TaskEnt
 						e.printStackTrace();
 					}
 					Task task = EntityConverter.getInstatnce()
-							.convertTaskEntityToClientWrapTask(entity);
+							.convertTaskModelToClientWrapTask(entity);
 					visibleTasks.add(task);
 				}
 			} catch (Exception e) {
@@ -651,9 +640,9 @@ public class TasksViewModel extends PresentationModel<TaskServiceRemote, TaskEnt
 	 * @param aEventType тип события
 	 * @param aTask обновляемая задача
 	 */
-	public void updateTaskList(String aEventType, TaskEntity aTask) {
+	public void updateTaskList(String aEventType, TaskModel aTask) {
 		if (!"time_left_over".equals(aEventType)) {
-			for (TaskEntity entity : new ArrayList<>(listDataModelEntities)) {
+			for (TaskModel entity : new ArrayList<>(listDataModelEntities)) {
 				if (entity.getSuid().equals(aTask.getSuid())) {
 					listDataModelEntities.remove(entity);
 					for (Task task : new ArrayList<>(visibleTasks)) {
@@ -665,7 +654,7 @@ public class TasksViewModel extends PresentationModel<TaskServiceRemote, TaskEnt
 			}
 		}
 
-		Task task = EntityConverter.getInstatnce().convertTaskEntityToClientWrapTask(aTask);
+		Task task = EntityConverter.getInstatnce().convertTaskModelToClientWrapTask(aTask);
 		boolean isUsual = TaskType.USUAL.equals(task.getType());
 		switch (aEventType) {
 		case "created":
@@ -977,7 +966,7 @@ public class TasksViewModel extends PresentationModel<TaskServiceRemote, TaskEnt
 	 */
 	public Boolean isTaskRemoved(Task aTask) {
 		Boolean result = false;
-		TaskEntity entity = service.get(aTask.getSuid());
+		TaskModel entity = service.get(aTask.getSuid());
 		if (null == entity) {
 			result = true;
 		}
@@ -1092,7 +1081,6 @@ public class TasksViewModel extends PresentationModel<TaskServiceRemote, TaskEnt
 	 * Создает свойство цвета вкладки задачи
 	 *
 	 * @param aSuid идентификатор задачи
-	 * @param aColor цвет
 	 * @return созданное свойство
 	 */
 	public ObjectProperty<TaskBackGroundColor> createColorProperty(String aSuid) {

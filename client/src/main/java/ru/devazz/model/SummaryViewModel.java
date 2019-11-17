@@ -5,18 +5,17 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import ru.sciencesquad.hqtasks.server.bean.ICommonService;
-import ru.sciencesquad.hqtasks.server.bean.report.ReportServiceRemote;
-import ru.sciencesquad.hqtasks.server.bean.subel.SubordinatioElementServiceRemote;
-import ru.sciencesquad.hqtasks.server.datamodel.IEntity;
-import ru.sciencesquad.hqtasks.server.datamodel.ReportEntity;
-import ru.sciencesquad.hqtasks.server.datamodel.SubordinationElementEntity;
-import ru.siencesquad.hqtasks.ui.entities.SubordinationElement;
-import ru.siencesquad.hqtasks.ui.server.EJBProxyFactory;
-import ru.siencesquad.hqtasks.ui.utils.EntityConverter;
-import ru.siencesquad.hqtasks.ui.utils.Utils;
+import ru.devazz.entities.SubordinationElement;
+import ru.devazz.server.EJBProxyFactory;
+import ru.devazz.server.api.ICommonService;
+import ru.devazz.server.api.IReportService;
+import ru.devazz.server.api.ISubordinationElementService;
+import ru.devazz.server.api.model.IEntity;
+import ru.devazz.server.api.model.ReportModel;
+import ru.devazz.server.api.model.SubordinationElementModel;
+import ru.devazz.utils.EntityConverter;
+import ru.devazz.utils.Utils;
 
-import javax.naming.NamingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -34,8 +33,8 @@ public class SummaryViewModel extends PresentationModel<ICommonService, IEntity>
 	/** Модель виджета выбора временного промежутка */
 	private CustomTimeIntervalModel customTimeIntervalModel;
 
-	/** Список сущностей отчетов по боевым постам */
-	private ObservableList<ReportEntity> panelsList;
+	/** Список сущностей отчетов по должностям */
+	private ObservableList<ReportModel> panelsList;
 
 	/** Список идентификаторов элементов подчиненности */
 	private ObservableList<SubordinationElement> subElList;
@@ -47,11 +46,8 @@ public class SummaryViewModel extends PresentationModel<ICommonService, IEntity>
 	private Date endDate;
 
 	/** Сервис работы с элементами подчиненности */
-	private SubordinatioElementServiceRemote subElsService;
+	private ISubordinationElementService subElsService;
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.model.PresentationModel#initModel()
-	 */
 	@Override
 	protected void initModel() {
 		dateLabelProperty = new SimpleStringProperty(this, "dateLabelProperty", "");
@@ -61,14 +57,9 @@ public class SummaryViewModel extends PresentationModel<ICommonService, IEntity>
 		initDateLabelValue(null, null);
 
 		Thread thread = new Thread(() -> {
-			try {
-				subElsService = EJBProxyFactory.getInstance()
-						.getService(SubordinatioElementServiceRemote.class);
-				setSubElSuidList(getListSubEls());
-			} catch (NamingException e) {
-				// TODO Логирование
-				e.printStackTrace();
-			}
+			subElsService = EJBProxyFactory.getInstance()
+					.getService(ISubordinationElementService.class);
+			setSubElSuidList(getListSubEls());
 		});
 		thread.setDaemon(true);
 		thread.start();
@@ -129,11 +120,11 @@ public class SummaryViewModel extends PresentationModel<ICommonService, IEntity>
 		Thread thread = new Thread(() -> {
 			try {
 				panelsList.clear();
-				ReportServiceRemote reportService = EJBProxyFactory.getInstance()
-						.getService(ReportServiceRemote.class);
+				IReportService reportService = EJBProxyFactory.getInstance()
+						.getService(IReportService.class);
 				if ((null != startDate) && (null != endDate)) {
 					for (SubordinationElement subEl : subElList) {
-						ReportEntity report = reportService.createReportEntity(subEl.getSuid(),
+						ReportModel report = reportService.createReportEntity(subEl.getSuid(),
 								startDate, endDate);
 						panelsList.add(report);
 						Thread.sleep(70L);
@@ -250,7 +241,7 @@ public class SummaryViewModel extends PresentationModel<ICommonService, IEntity>
 	 *
 	 * @return the {@link#panelsList}
 	 */
-	public ObservableList<ReportEntity> getPanelsList() {
+	public ObservableList<ReportModel> getPanelsList() {
 		return panelsList;
 	}
 
@@ -281,7 +272,7 @@ public class SummaryViewModel extends PresentationModel<ICommonService, IEntity>
 	 */
 	private ObservableList<SubordinationElement> getListSubEls() {
 		ObservableList<SubordinationElement> result = FXCollections.observableArrayList();
-		for (SubordinationElementEntity entity : subElsService.getTotalSubElList()) {
+		for (SubordinationElementModel entity : subElsService.getTotalSubElList()) {
 			result.add(EntityConverter.getInstatnce().convertSubElEntityToClientWrap(entity));
 		}
 		return result;
@@ -304,9 +295,6 @@ public class SummaryViewModel extends PresentationModel<ICommonService, IEntity>
 		}
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.model.PresentationModel#getTypeService()
-	 */
 	@Override
 	public Class<ICommonService> getTypeService() {
 		return null;

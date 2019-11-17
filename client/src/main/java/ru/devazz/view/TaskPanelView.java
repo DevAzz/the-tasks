@@ -4,7 +4,7 @@ import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TitledPane;
-import ru.siencesquad.hqtasks.ui.model.TaskPanelViewModel;
+import ru.devazz.model.TaskPanelViewModel;
 
 /**
  * Представление панели задачи
@@ -31,9 +31,6 @@ public class TaskPanelView extends AbstractView<TaskPanelViewModel> {
 	@FXML
 	private TitledPane titledPane;
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#initialize()
-	 */
 	@Override
 	public void initialize() {
 		Bindings.bindBidirectional(noteLabel.textProperty(), model.getNoteLabelProperty());
@@ -42,9 +39,6 @@ public class TaskPanelView extends AbstractView<TaskPanelViewModel> {
 		Bindings.bindBidirectional(taskAuthorLabel.textProperty(), model.getAuthorLabelProperty());
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.view.AbstractView#createPresentaionModel()
-	 */
 	@Override
 	protected TaskPanelViewModel createPresentaionModel() {
 		return new TaskPanelViewModel();

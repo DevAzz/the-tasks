@@ -37,14 +37,12 @@
                                     <Label layoutX="3.0" layoutY="138.0" text="Имя" AnchorPane.leftAnchor="3.0" />
                                     <Label layoutX="3.0" layoutY="178.0" text="Отчество" AnchorPane.leftAnchor="3.0" />
                                     <Label layoutX="3.0" layoutY="218.0" text="Должность" AnchorPane.leftAnchor="3.0" />
-                                    <Label layoutX="3.0" layoutY="258.0" text="Воинское звание" AnchorPane.leftAnchor="3.0" />
                                     <TextField fx:id="surnameField" layoutX="145.0" layoutY="96.0" prefHeight="25.0" prefWidth="164.0" AnchorPane.leftAnchor="145.0" AnchorPane.rightAnchor="5.0" />
                                     <TextField fx:id="nameField" layoutX="145.0" layoutY="136.0" prefHeight="25.0" prefWidth="164.0" AnchorPane.leftAnchor="145.0" AnchorPane.rightAnchor="5.0" />
                                     <TextField fx:id="patronymicField" layoutX="145.0" layoutY="176.0" prefHeight="25.0" prefWidth="164.0" AnchorPane.leftAnchor="145.0" AnchorPane.rightAnchor="5.0" />
                                     <TextField fx:id="loginField" layoutX="145.0" layoutY="14.0" prefHeight="25.0" prefWidth="164.0" AnchorPane.leftAnchor="145.0" AnchorPane.rightAnchor="5.0" />
                                     <TextField fx:id="passwordField" layoutX="145.0" layoutY="54.0" prefHeight="25.0" prefWidth="164.0" AnchorPane.leftAnchor="145.0" AnchorPane.rightAnchor="5.0" />
-                                    <ComboBox fx:id="militaryRankBox" layoutX="145.0" layoutY="256.0" prefHeight="25.0" prefWidth="163.0" AnchorPane.leftAnchor="145.0" AnchorPane.rightAnchor="5.0" />
-                                    <Label layoutX="3.0" layoutY="295.0" text="Боевой пост" AnchorPane.leftAnchor="3.0" />
+                                    <Label layoutX="3.0" layoutY="295.0" text="Должность" AnchorPane.leftAnchor="3.0" />
                                     <ComboBox fx:id="subElBox" layoutX="145.0" layoutY="293.0" prefHeight="25.0" prefWidth="165.0" AnchorPane.leftAnchor="145.0" AnchorPane.rightAnchor="5.0" />
                                  </children>
                                  <padding>
@@ -80,8 +78,7 @@
                                           <TableColumn fx:id="passwordColumn" prefWidth="179.9007568359375" text="Пароль" />
                                           <TableColumn fx:id="fioColumn" prefWidth="205.699462890625" text="ФИО" />
                                           <TableColumn fx:id="positionColumn" prefWidth="182.2674560546875" text="Должность" />
-                                          <TableColumn fx:id="rankColumn" prefWidth="165.906494140625" text="Звание" />
-                                          <TableColumn fx:id="subordinationColumn" prefWidth="160.77880859375" text="Боевой пост" />
+                                          <TableColumn fx:id="subordinationColumn" prefWidth="160.77880859375" text="Должность" />
                                           <TableColumn fx:id="onlineColumn" prefWidth="122.3890380859375" text="Онлайн" />
                                        </columns>
                                        <columnResizePolicy>
