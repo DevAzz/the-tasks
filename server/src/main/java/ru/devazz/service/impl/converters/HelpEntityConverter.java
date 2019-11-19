@@ -9,11 +9,26 @@ public class HelpEntityConverter implements IEntityConverter<HelpModel, HelpEnti
 
     @Override
     public HelpModel entityToModel(HelpEntity entity) {
-        return null;
+        HelpModel model = null;
+        if (null != entity) {
+            model = new HelpModel();
+            model.setHelpItemText(entity.getHelpItemText());
+            model.setName(entity.getName());
+            model.setRole(entity.getRole());
+            model.setSuid(entity.getSuid());
+        }
+        return model;
     }
 
     @Override
     public HelpEntity modelToEntity(HelpModel model) {
-        return null;
+        HelpEntity entity = null;
+        if (null != model) {
+            entity = new HelpEntity();
+            entity.setHelpItemText(model.getHelpItemText());
+            entity.setHelpItemName(model.getName());
+            entity.setRole(model.getRole());
+        }
+        return entity;
     }
 }

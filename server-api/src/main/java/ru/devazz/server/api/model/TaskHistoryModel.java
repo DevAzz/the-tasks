@@ -6,13 +6,14 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import ru.devazz.server.api.model.enums.TaskHistoryType;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @EqualsAndHashCode
 @ToString
 @Data
 @Builder
-public class TaskHistoryModel implements IEntity{
+public class TaskHistoryModel implements Serializable, IEntity{
 
     private Long suid;
 

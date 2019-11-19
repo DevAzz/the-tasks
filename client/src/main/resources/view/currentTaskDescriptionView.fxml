@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Rectangle2D?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import jfxtras.scene.control.LocalDateTimeTextField?>
+
+<AnchorPane stylesheets="@/css/main.css" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.111" fx:controller="ru.devazz.view.CurrentTaskView">
+	<children>
+	<ScrollPane fitToHeight="true" fitToWidth="true" minHeight="0.0" minWidth="0.0">
+                                             <content>
+                                            <AnchorPane prefWidth="665.0">
+                                                   <children>
+                                                      <TextField fx:id="title" layoutX="195.0" layoutY="14.0" prefHeight="31.0" prefWidth="444.0" text="Наименование задачи" AnchorPane.leftAnchor="195.0" AnchorPane.rightAnchor="14.0" />
+                                                      <Label layoutX="15.0" layoutY="64.0" prefHeight="20.0" prefWidth="90.0" text="Приоритет" />
+                                                      <Label layoutX="15.0" layoutY="156.0" prefHeight="20.0" prefWidth="105.0" text="Примечание" />
+                                                      <Label layoutX="15.0" layoutY="207.0" text="Дата начала" />
+                                                      <Label layoutX="15.0" layoutY="254.0" text="Дата завершения" />
+                                                      <Label layoutX="15.0" layoutY="111.0" text="Статус" />
+                                                      <ImageView fx:id="priorityImage" fitHeight="24.0" fitWidth="24.0" layoutX="197.0" layoutY="62.0" pickOnBounds="true" preserveRatio="true">
+                                                         <viewport>
+                                                            <Rectangle2D />
+                                                         </viewport>
+                                                      </ImageView>
+                                                      <LocalDateTimeTextField fx:id="endDate" layoutX="195.0" layoutY="254.0" minWidth="198.0" styleClass="LocalDateTimeTextFieldSkin" AnchorPane.leftAnchor="195.0" AnchorPane.rightAnchor="257.0" />
+                                                      <LocalDateTimeTextField fx:id="startDate" layoutX="195.0" layoutY="204.0" minWidth="198.0" prefHeight="26.0" prefWidth="204.0" styleClass="LocalDateTimeTextFieldSkin" AnchorPane.leftAnchor="195.0" AnchorPane.rightAnchor="256.0" />
+                                                      <TextField fx:id="note" layoutX="195.0" layoutY="153.0" AnchorPane.leftAnchor="195.0" AnchorPane.rightAnchor="14.0" />
+                                                      <ImageView fx:id="statusImage" fitHeight="24.0" fitWidth="24.0" layoutX="197.0" layoutY="109.0" pickOnBounds="true" preserveRatio="true" />
+                                                      <Label fx:id="status" layoutX="234.0" layoutY="111.0" text="Не установлен" />
+                                                      <Label layoutX="15.0" layoutY="19.0" text="Заголовок" />
+                                                      <Button fx:id="buttonDoc" layoutX="193.0" layoutY="304.0" maxHeight="41.0" minHeight="31.0" mnemonicParsing="false" prefHeight="41.0" prefWidth="134.0" styleClass="fileAddBut" AnchorPane.leftAnchor="194.0">
+                                                         <tooltip>
+                                                            <Tooltip fx:id="tooltipDocument" text="Прикрепить документ" />
+                                                         </tooltip></Button>
+                                                      <Label layoutX="15.0" layoutY="307.0" prefHeight="20.0" prefWidth="89.0" text="Документ" />
+                                                      <TextField fx:id="documentTextField" editable="false" layoutX="241.0" layoutY="307.0" AnchorPane.leftAnchor="241.0" AnchorPane.rightAnchor="14.0" />
+                                                      <ComboBox layoutX="234.0" layoutY="61.0" prefHeight="28.0" prefWidth="162.0" visible="false" AnchorPane.leftAnchor="234.0" AnchorPane.rightAnchor="258.0" />
+                                                      <Button fx:id="selectTypedTask" layoutX="197.0" layoutY="466.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="262.0" text="Выбрать типовую задачу" AnchorPane.leftAnchor="197.0" AnchorPane.rightAnchor="196.0" />
+                                                      <Label layoutX="15.0" layoutY="362.0" text="Исполнитель" />
+                                                      <TextField fx:id="executorTextField" layoutX="194.0" layoutY="360.0" prefHeight="26.0" prefWidth="257.0" AnchorPane.leftAnchor="194.0" AnchorPane.rightAnchor="214.0" />
+                                                      <Button fx:id="selectExec" layoutX="465.0" layoutY="357.0" mnemonicParsing="false" onMouseClicked="#selectExecutor" text="Выбор исполнителя" AnchorPane.rightAnchor="14.0" />
+                                                      <ComboBox fx:id="priority" layoutX="234.0" layoutY="61.0" prefHeight="28.0" prefWidth="161.0" AnchorPane.leftAnchor="234.0" AnchorPane.rightAnchor="270.0" />
+                                                      <Label layoutX="14.0" layoutY="415.0" text="Автор" />
+                                                      <TextField fx:id="authorTextField" editable="false" layoutX="194.0" layoutY="412.0" prefHeight="25.0" prefWidth="258.0" AnchorPane.leftAnchor="194.0" AnchorPane.rightAnchor="14.0" />
+                                                   </children>
+                                                </AnchorPane>
+                                             </content>
+                                          </ScrollPane>
+                                          </children>
+</AnchorPane>

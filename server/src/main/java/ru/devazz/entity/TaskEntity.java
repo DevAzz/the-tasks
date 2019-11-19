@@ -19,14 +19,11 @@ import java.util.Date;
 @Builder
 @Entity
 @Table(name = "tasks", schema = "tasksdb")
-public class TaskEntity implements Serializable, IEntity {
-
-	/** Идентификатор сериализации */
-	private static final long serialVersionUID = 936798165804131990L;
+public class TaskEntity implements IEntity {
 
 	/** Идентификатор задачи */
 	@Id
-	@Column(name = "task_suid")
+	@Column(name = "id")
 	private Long taskSuid;
 
 	/** Наименование задачи */
@@ -60,11 +57,11 @@ public class TaskEntity implements Serializable, IEntity {
 	private Date endDate;
 
 	/** идентификатор должностного лица (автор задачи) */
-	@Column(name = "author_suid")
+	@Column(name = "author_id")
 	private Long authorSuid;
 
 	/** идентификатор должностного лица (исполнитель задачи) */
-	@Column(name = "executor_suid", columnDefinition = "bigint")
+	@Column(name = "executor_id", columnDefinition = "bigint")
 	private Long executorSuid;
 
 	/** Прикрепляемый документ */
@@ -73,7 +70,7 @@ public class TaskEntity implements Serializable, IEntity {
 	private byte[] document;
 
 	/** Наименование документа */
-	@Column(name = "documenName")
+	@Column(name = "document_name")
 	private String documentName;
 
 	/** Тип задачи */

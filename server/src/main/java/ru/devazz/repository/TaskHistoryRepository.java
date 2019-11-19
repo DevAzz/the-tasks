@@ -11,6 +11,7 @@ import ru.devazz.utils.Utils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.*;
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -20,6 +21,7 @@ import java.util.Map.Entry;
  * Репизиторий исторических записей
  */
 @Repository
+@Transactional
 public class TaskHistoryRepository extends AbstractRepository<TaskHistoryEntity> {
 
 	private EntityManager em;

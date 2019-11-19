@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.CheckMenuItem?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane fx:id="rootPane" focusTraversable="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="492.0" prefWidth="1252.0" stylesheets="@/css/main.css" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.devazz.view.EventJournalView">
+   <children>
+      <TabPane fx:id="eventJournalTabPane" prefWidth="687.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <tabs>
+          <Tab onClosed="#closeTabView" text="Журнал событий">
+            <content>
+              <AnchorPane focusTraversable="true">
+                     <children>
+                        <ScrollPane fitToHeight="true" fitToWidth="true" layoutX="21.0" layoutY="31.0" pannable="true" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="21.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="31.0">
+                           <content>
+                              <TableView fx:id="eventsTable" minWidth="-Infinity">
+                                <columns>
+                                  <TableColumn fx:id="nameColumn" maxWidth="600.0" minWidth="100.0" prefWidth="298.0" text="Наименование события" />
+                                  <TableColumn fx:id="dateColumn" maxWidth="200.0" minWidth="77.0" prefWidth="100.0" text="Дата события" />
+                                    <TableColumn fx:id="typeEventColumn" maxWidth="200.0" minWidth="70.0" prefWidth="100.0" text="Тип события" />
+                                    <TableColumn fx:id="authorColumn" maxWidth="300.0" minWidth="100.0" prefWidth="157.0" text="Автор задачи" />
+                                    <TableColumn fx:id="executorColumn" maxWidth="460.0" minWidth="100.0" prefWidth="390.0" text="Исполнитель задачи" />
+                                </columns>
+                                 <columnResizePolicy>
+                                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                 </columnResizePolicy>
+                                 <padding>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </padding>
+                              </TableView>
+                           </content>
+                        </ScrollPane>
+                        <MenuBar layoutX="465.0" layoutY="2.0" prefHeight="24.0" prefWidth="135.0" styleClass="EventFilter" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                          <menus>
+                            <Menu mnemonicParsing="false" styleClass="EventFilterLabel" text="Фильтр событий">
+                                 <items>
+                                    <MenuItem mnemonicParsing="false" onAction="#showAllNotes" text="Отобразить все записи" />
+                                    <MenuItem mnemonicParsing="false" onAction="#clearAllNotes" text="Очистить все записи" />
+                                    <MenuItem mnemonicParsing="false" onAction="#filterByAuthor" text="по автору" />
+                                    <MenuItem mnemonicParsing="false" onAction="#filterByExecutor" text="по исполнителю" />
+                                    <Menu fx:id="eventTypeMenu" mnemonicParsing="false" text="по типу события">
+                                       <items>
+                                          <CheckMenuItem fx:id="created" mnemonicParsing="false" onAction="#filterByEventType" text="созданные " />
+                                          <CheckMenuItem fx:id="deleted" mnemonicParsing="false" onAction="#filterByEventType" text="удалённые" />
+                                          <CheckMenuItem fx:id="overdue" mnemonicParsing="false" onAction="#filterByEventType" text="просроченные" />
+                                          <CheckMenuItem fx:id="done" mnemonicParsing="false" onAction="#filterByEventType" text="выполненные" />
+                                       </items>
+                                    </Menu>
+                                    <Menu fx:id="dateFilterMenu" mnemonicParsing="false" text="по дате">
+                                       <items>
+                                          <CheckMenuItem fx:id="dayFilterItem" mnemonicParsing="false" onAction="#filterByDate" text="за день" />
+                                          <CheckMenuItem fx:id="weekFilterItem" mnemonicParsing="false" onAction="#filterByDate" text="за неделю" />
+                                          <CheckMenuItem fx:id="monthFilterItem" mnemonicParsing="false" onAction="#filterByDate" text="за месяц" />
+                                          <CheckMenuItem fx:id="allTimeFilterItem" mnemonicParsing="false" onAction="#filterByDate" text="за всё время" />
+                                       </items>
+                                    </Menu>
+                                 </items>
+                            </Menu>
+                          </menus>
+                           <opaqueInsets>
+                              <Insets left="15.0" />
+                           </opaqueInsets>
+                        </MenuBar>
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+        </tabs>
+      </TabPane>
+   </children>
+</AnchorPane>

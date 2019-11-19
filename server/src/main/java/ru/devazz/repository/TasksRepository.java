@@ -9,6 +9,7 @@ import ru.devazz.utils.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.*;
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -19,6 +20,7 @@ import java.util.Map.Entry;
  * Репозиторий задач
  */
 @Repository
+@Transactional
 public class TasksRepository extends AbstractRepository<TaskEntity> {
 
 	private EntityManager em;

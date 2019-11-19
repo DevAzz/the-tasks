@@ -4,8 +4,10 @@ import org.springframework.stereotype.Repository;
 import ru.devazz.entity.HelpEntity;
 
 import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
 
 @Repository
+@Transactional
 public class HelpRepository extends AbstractRepository<HelpEntity> {
 
 	private EntityManager em;

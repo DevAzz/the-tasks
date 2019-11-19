@@ -9,12 +9,14 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Root;
+import javax.transaction.Transactional;
 import java.util.List;
 
 /**
  * Репозиторий элементов дерева подчиненности
  */
 @Repository
+@Transactional
 public class SubordinationElementRepository extends AbstractRepository<SubordinationElementEntity> {
 
 	private EntityManager em;

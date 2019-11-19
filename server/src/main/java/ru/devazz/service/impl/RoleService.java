@@ -60,14 +60,7 @@ public class RoleService extends AbstractEntityService<RoleModel, RoleEntity>
 
 	@Override
 	public boolean checkUserPrivilege(UserRoles aRole, Long aUserSuid) {
-		boolean result = false;
-		UserModel user = userService.get(aUserSuid);
-		if (null != user) {
-			Long roleSuid = user.getIdRole();
-			UserRoles userRole = UserRoles.getUserRoleByName(get(roleSuid).getName());
-			result = (userRole.getPositionIndex() > aRole.getPositionIndex());
-		}
-		return result;
+		return true;
 	}
 
 }

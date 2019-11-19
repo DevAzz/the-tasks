@@ -2,6 +2,7 @@ package ru.devazz;
 
 import javafx.application.Application;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 import ru.devazz.utils.Utils;
 
@@ -13,7 +14,9 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 
     @Override
     public void init() throws Exception {
-        context = SpringApplication.run(getClass(), savedArgs);
+        SpringApplicationBuilder builder = new SpringApplicationBuilder(getClass());
+        builder.headless(false);
+        context = builder.run(savedArgs);
         context.getAutowireCapableBeanFactory().autowireBean(this);
     }
 
@@ -45,7 +48,7 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
             if (Boolean.parseBoolean(registration)) {
                 RegistryApp.main(null);
             } else {
-                Application.launch(args);
+                Application.launch(appClass, args);
             }
         } else {
             throw new Exception("Некорректные параметры запуска приложения");

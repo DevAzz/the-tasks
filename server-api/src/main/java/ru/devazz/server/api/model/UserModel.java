@@ -4,10 +4,12 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import java.io.Serializable;
+
 @EqualsAndHashCode
 @ToString
 @Data
-public class UserModel implements IEntity{
+public class UserModel implements Serializable, IEntity{
 
     /** Идентификатор пользователя */
     private Long suid;

@@ -5,20 +5,8 @@ package ru.devazz.server.api.model.enums;
  */
 public enum UserRoles {
 
-	/** Начальник РЦУ */
-	RMC_HEAD("rmcHead", 5),
-
-	/** Начальник отдела */
-	DEPARTMENT_HEAD("departmentHead", 4),
-
-	/** Оперативный дежурный */
-	DUTY_OFFICER("dutyOfficer", 3),
-
-	/** Старший помошник оперативного дежурного */
-	MAJOR_ASSISTENT("majorAssistant", 2),
-
-	/** Помошник оперативного дежурного */
-	ASSISTENT("assistant", 1);
+	/** Начальник */
+	SUB_EL_NAME("SubElName", 1);
 
 	/** Наименование роли */
 	private String name;

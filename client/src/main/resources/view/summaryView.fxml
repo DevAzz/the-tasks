@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.CustomMenuItem?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import jfxtras.scene.control.LocalDateTextField?>
+
+<TabPane fx:id="summaryTabPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@/css/main.css" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.devazz.view.SummaryView">
+  <tabs>
+    <Tab fx:id="summaryTab" onClosed="#closeTabView" text="Сводка по задачам">
+         <content>
+            <AnchorPane prefHeight="200.0" prefWidth="200.0">
+               <children>
+                  <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <content>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0">
+                           <children>
+                              <BorderPane fx:id="maskBorderPane" opacity="0.5" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <center>
+                                    <AnchorPane fx:id="loadAnchorPane" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+                                 </center>
+                              </BorderPane>
+                              <MenuBar AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                <menus>
+                                  <Menu mnemonicParsing="false" text="Дата">
+                                    <items>
+                                      <MenuItem mnemonicParsing="false" onAction="#selectCurrentDayInterval" text="На текущий момент" />
+                                          <Menu mnemonicParsing="false" text="За опредленный день">
+                                             <items>
+                                                <CustomMenuItem mnemonicParsing="false">
+                                                   <content>
+                                                      <LocalDateTextField fx:id="selectCustomDayField" styleClass="LocalDateTimeTextFieldSkin" />
+                                                   </content>
+                                                </CustomMenuItem>
+                                             </items>
+                                          </Menu>
+                                          <MenuItem mnemonicParsing="false" onAction="#selectWeekInterval" text="За неделю" />
+                                          <MenuItem mnemonicParsing="false" onAction="#selectMonthInterval" text="За месяц" />
+                                          <Menu mnemonicParsing="false" text="Выбор промежутка времени">
+                                             <items>
+                                                <CustomMenuItem fx:id="selectTimeIntervalMenuItem" mnemonicParsing="false" />
+                                             </items>
+                                          </Menu>
+                                    </items>
+                                  </Menu>
+                                  <Menu mnemonicParsing="false" text="Выбор должностей">
+                                       <items>
+                                          <MenuItem mnemonicParsing="false" onAction="#selectSubEls" text="Выбрать должности" />
+                                       </items>
+                                  </Menu>
+                                </menus>
+                              </MenuBar>
+                              <BorderPane styleClass="decisionBorderPane" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="25.0">
+                                 <top>
+                                    <Label text="Сводка по задачам" BorderPane.alignment="CENTER">
+                                       <BorderPane.margin>
+                                          <Insets top="5.0" />
+                                       </BorderPane.margin>
+                                    </Label>
+                                 </top>
+                                 <center>
+                                    <Label fx:id="dateLabel" text="Дата" BorderPane.alignment="TOP_CENTER">
+                                       <BorderPane.margin>
+                                          <Insets />
+                                       </BorderPane.margin>
+                                    </Label>
+                                 </center>
+                                 <bottom>
+                                    <Separator valignment="TOP" BorderPane.alignment="TOP_CENTER">
+                                       <BorderPane.margin>
+                                          <Insets top="5.0" />
+                                       </BorderPane.margin>
+                                    </Separator>
+                                 </bottom>
+                              </BorderPane>
+                              <ListView fx:id="listPanes" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="80.0" />
+                           </children>
+                        </AnchorPane>
+                    </content>
+                  </ScrollPane>
+               </children>
+            </AnchorPane>
+         </content>
+    </Tab>
+  </tabs>
+</TabPane>

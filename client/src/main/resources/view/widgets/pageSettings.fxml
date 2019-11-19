@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane fx:id="rootPageSettingsPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="143.0" prefWidth="325.0" stylesheets="@/css/main.css" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.devazz.widgets.PageSettingsView">
+   <children>
+      <Label layoutX="14.0" layoutY="5.0" prefHeight="45.0" prefWidth="170.0" text="Количество записей на странице" wrapText="true" />
+      <Spinner fx:id="countPageEntriesSpinner" editable="true" layoutX="197.0" layoutY="14.0" prefHeight="25.0" prefWidth="114.0" />
+      <Label layoutX="14.0" layoutY="56.0" prefHeight="39.0" prefWidth="170.0" text="Количество страниц в блоке" wrapText="true" />
+      <Spinner fx:id="countPagesSpinner" editable="true" layoutX="197.0" layoutY="61.0" prefHeight="25.0" prefWidth="114.0" />
+      <Button fx:id="savePageSettingsButton" layoutX="12.0" layoutY="101.0" mnemonicParsing="false" onAction="#saveSettings" text="Сохранить" />
+      <Button fx:id="defaultPageSettingsButton" layoutX="129.0" layoutY="101.0" mnemonicParsing="false" onAction="#defaultPageSettings" text="По умолчанию" />
+   </children>
+</AnchorPane>

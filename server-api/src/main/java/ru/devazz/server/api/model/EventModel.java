@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -12,7 +13,7 @@ import java.util.Date;
 @EqualsAndHashCode
 @ToString
 @Data
-public class EventModel implements IEntity {
+public class EventModel implements Serializable,  IEntity {
 
     /** Идентификатор события */
     private Long suid;

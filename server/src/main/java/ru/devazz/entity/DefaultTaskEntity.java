@@ -16,7 +16,7 @@ import java.io.Serializable;
 @Data
 @Entity
 @Table(name = "default_tasks", schema = "tasksdb")
-public class DefaultTaskEntity implements Serializable, IEntity {
+public class DefaultTaskEntity implements IEntity {
 
 	/** Идентификатор */
 	@Id

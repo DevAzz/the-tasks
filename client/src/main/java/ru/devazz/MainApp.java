@@ -47,6 +47,16 @@ public class MainApp extends AbstractJavaFxApplicationSupport {
 	private double windowWidth = 1300.0;
 
 	/**
+	 * Точка входа
+	 *
+	 * @param args аргументы приложения
+	 * @throws Exception в случае если не введены параметры
+	 */
+	public static void main(String[] args) throws Exception {
+		launchApp(MainApp.class, args);
+	}
+
+	/**
 	 * Инициализация корневого контейнера
 	 */
 	public void initRootLayout() {
@@ -54,7 +64,7 @@ public class MainApp extends AbstractJavaFxApplicationSupport {
 			primaryStage.initStyle(StageStyle.TRANSPARENT);
 
 			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(MainApp.class.getResource("view/rootLayout.fxml"));
+			loader.setLocation(getClass().getResource("/view/rootLayout.fxml"));
 			rootLayout = (BorderPane) loader.load();
 			rootLayout.setPrefSize(512, 467);
 
@@ -188,16 +198,6 @@ public class MainApp extends AbstractJavaFxApplicationSupport {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
-
-	/**
-	 * Точка входа
-	 *
-	 * @param args аргументы приложения
-	 * @throws Exception в случае если не введены параметры
-	 */
-	public static void main(String[] args) throws Exception {
-		launchApp(MainApp.class, args);
 	}
 
 	/**

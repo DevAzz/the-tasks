@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -12,7 +13,7 @@ import java.util.List;
 @EqualsAndHashCode
 @ToString
 @Data
-public class SubordinationElementModel implements IEntity{
+public class SubordinationElementModel implements Serializable, IEntity{
 
     /** Идентификатор модели элмента подчиненности */
     private Long suid;

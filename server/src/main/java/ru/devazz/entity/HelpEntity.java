@@ -14,19 +14,19 @@ import java.io.Serializable;
 @ToString
 @Entity
 @Table(name = "help", schema = "tasksdb")
-public class HelpEntity implements Serializable, IEntity {
+public class HelpEntity implements IEntity {
 
 	/** Идентификатор */
 	@Id
-	@Column(name = "helpItemID", columnDefinition = "bigint")
+	@Column(name = "id", columnDefinition = "bigint")
 	private long helpItemID;
 
 	/** Наименование пункта помощи */
-	@Column(name = "helpItemName", nullable = false, columnDefinition = "varchar")
+	@Column(name = "help_item_name", nullable = false, columnDefinition = "varchar")
 	private String helpItemName;
 
 	/** Текст пункта помощи */
-	@Column(name = "helpItemText", nullable = false, columnDefinition = "text")
+	@Column(name = "help_item_text", nullable = false, columnDefinition = "text")
 	private String helpItemText;
 
 	/** Наименование пункта помощи */

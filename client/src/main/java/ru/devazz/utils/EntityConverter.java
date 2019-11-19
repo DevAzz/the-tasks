@@ -45,10 +45,10 @@ public class EntityConverter {
 		element.setRoleSuid(aEntity.getRoleSuid());
 		element.setRootElement(aEntity.getRootElement());
 		ObservableList<SubordinationElement> subordinates = FXCollections.observableArrayList();
-		for (SubordinationElementModel entity : aEntity.getSubordinates()) {
-			subordinates.add(convertSubElEntityToClientWrap(entity));
-		}
-		element.setSubElements(subordinates);
+//		for (SubordinationElementModel entity : aEntity.getSubordinates()) {
+//			subordinates.add(convertSubElEntityToClientWrap(entity));
+//		}
+//		element.setSubElements(subordinates);
 		return element;
 	}
 

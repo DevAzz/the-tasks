@@ -16,11 +16,11 @@ import java.util.Date;
 @Data
 @Entity
 @Table(name = "task_history", schema = "tasksdb")
-public class TaskHistoryEntity implements Serializable, IEntity {
+public class TaskHistoryEntity implements IEntity {
 
 	/** Идентификатор записи */
 	@Id
-	@Column(name = "id_history")
+	@Column(name = "id")
 	private Long suid;
 
 	/** Идентификатор задачи */

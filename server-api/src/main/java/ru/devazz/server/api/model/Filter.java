@@ -14,9 +14,6 @@ import java.util.Map;
  */
 public class Filter implements Serializable {
 
-	/** Идентификатор для сериализации */
-	private static final long serialVersionUID = -7803034476976103132L;
-
 	/** Карта типов фильтрации */
 	private Map<FilterType, List<String>> filterTypeMap = new HashMap<>();
 

@@ -13,11 +13,11 @@ import java.io.Serializable;
 @Data
 @Entity
 @Table(name = "user", schema = "tasksdb")
-public class UserEntity implements Serializable, IEntity {
+public class UserEntity implements IEntity {
 
 	/** Идентификатор пользователя */
 	@Id
-	@Column(name = "iduser")
+	@Column(name = "id")
 	private Long iduser;
 
 	/** Логин */
@@ -29,7 +29,7 @@ public class UserEntity implements Serializable, IEntity {
 	private String password;
 
 	/** Идентификатор роли */
-	@Column(name = "idrole")
+	@Column(name = "role_id")
 	private Long idrole;
 
 	/** Идентификатор элемнета подчиненности */

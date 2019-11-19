@@ -1,15 +1,18 @@
 package ru.devazz.server;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import ru.devazz.server.api.*;
 
 import javax.jms.MessageListener;
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Фабрика EJBProxy объектов
  */
+@Component
 public class EJBProxyFactory {
 
 	/** Экземпляр класса */
@@ -49,15 +52,6 @@ public class EJBProxyFactory {
 	 * Конструктор
 	 */
 	private EJBProxyFactory() {
-		mapServiceType.put(IUserService.class, userService);
-		mapServiceType.put(IEventService.class, eventService);
-		mapServiceType.put(IHelpService.class, helpService);
-		mapServiceType.put(IReportService.class, reportService);
-		mapServiceType.put(IRoleService.class, roleService);
-		mapServiceType.put(ISearchService.class, searchService);
-		mapServiceType.put(ISubordinationElementService.class, subordinationElementService);
-		mapServiceType.put(ITaskHistoryService.class, taskHistoryService);
-		mapServiceType.put(ITaskService.class, taskService);
 	}
 
 	/**
@@ -80,7 +74,24 @@ public class EJBProxyFactory {
 	 */
 	@SuppressWarnings("unchecked")
 	public <T extends ICommonService> T getService(Class<T> aType) {
-		return (T) mapServiceType.get(aType);
+		T service = (T) mapServiceType.get(aType);
+		if (null == service) {
+			try {
+				for (Field field : getClass().getDeclaredFields()) {
+					if (aType.getSimpleName().equals(field.getType().getSimpleName())) {
+						service = (T) field.get(this);
+						if (null != service) {
+							mapServiceType.put(aType, service);
+							break;
+						}
+					}
+				}
+			} catch (Exception e) {
+				//TODO логер
+				e.printStackTrace();
+			}
+		}
+		return service;
 	}
 
 	/**

@@ -13,11 +13,11 @@ import java.util.Date;
 @Data
 @Entity
 @Table(name = "events", schema = "tasksdb")
-public class EventEntity implements Serializable, IEntity {
+public class EventEntity implements IEntity {
 
 	/** Идентификатор события */
 	@Id
-	@Column(name = "idevents")
+	@Column(name = "id")
 	private Long suid;
 
 	/** Наименование события */
@@ -33,14 +33,14 @@ public class EventEntity implements Serializable, IEntity {
 	private String eventType;
 
 	/** Идентификатор боевого поста */
-	@Column(name = "author_suid", nullable = false, columnDefinition = "bigint")
+	@Column(name = "author_id", nullable = false, columnDefinition = "bigint")
 	private Long authorSuid;
 
 	/** Идентификатор боевого поста */
-	@Column(name = "executor_suid", nullable = false, columnDefinition = "bigint")
+	@Column(name = "executor_id", nullable = false, columnDefinition = "bigint")
 	private Long executorSuid;
 
 	/** Идентификатор задачи */
-	@Column(name = "tasks_task_suid", columnDefinition = "bigint")
+	@Column(name = "task_suid", columnDefinition = "bigint")
 	private Long taskSuid;
 }

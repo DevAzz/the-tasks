@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import jfxtras.scene.control.LocalTimeTextField?>
+
+<ScrollPane fx:id="rootPane" fitToHeight="true" fitToWidth="true" prefHeight="663.0" prefWidth="796.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.devazz.view.CycleTaskView">
+   <content>
+      <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="760.0" stylesheets="@/css/main.css">
+         <children>
+            <BorderPane layoutX="43.0" layoutY="28.0" maxWidth="1.7976931348623157E308" styleClass="decisionBorderPane" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+               <center>
+                  <Label text="Управление циклическим назначением" />
+               </center>
+            </BorderPane>
+            <BorderPane layoutX="63.0" layoutY="66.0" maxWidth="1.7976931348623157E308" styleClass="decisionBorderPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="50.0">
+               <center>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0">
+                     <children>
+                        <GridPane maxWidth="1.7976931348623157E308" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                          <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" percentWidth="50.0" prefWidth="379.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" percentWidth="50.0" prefWidth="205.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <CheckBox fx:id="everyWeekCheckBox" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Назначать на день недели" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" GridPane.vgrow="ALWAYS">
+                                 <GridPane.margin>
+                                    <Insets left="10.0" />
+                                 </GridPane.margin>
+                                 <padding>
+                                    <Insets right="5.0" />
+                                 </padding>
+                              </CheckBox>
+                              <CheckBox fx:id="everyMonthCheckBox" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Назначать на определенное число месяца" GridPane.hgrow="ALWAYS" GridPane.rowIndex="4" GridPane.vgrow="ALWAYS">
+                                 <GridPane.margin>
+                                    <Insets left="10.0" right="5.0" />
+                                 </GridPane.margin>
+                              </CheckBox>
+                              <CheckBox fx:id="intHoursCheckBox" mnemonicParsing="false" text="Выбрать интервал назначения в часах" GridPane.hgrow="ALWAYS" GridPane.rowIndex="9" GridPane.vgrow="ALWAYS">
+                                 <GridPane.margin>
+                                    <Insets left="10.0" />
+                                 </GridPane.margin>
+                              </CheckBox>
+                              <CheckBox fx:id="intDayCheckBox" mnemonicParsing="false" text="Выбрать интервал назначения в днях" GridPane.hgrow="ALWAYS" GridPane.rowIndex="10" GridPane.vgrow="ALWAYS">
+                                 <GridPane.margin>
+                                    <Insets left="10.0" />
+                                 </GridPane.margin>
+                              </CheckBox>
+                              <CheckBox fx:id="intMonthCheckBox" mnemonicParsing="false" text="Выбрать интервал назначения в месяцах" GridPane.hgrow="ALWAYS" GridPane.rowIndex="12" GridPane.vgrow="ALWAYS">
+                                 <GridPane.margin>
+                                    <Insets left="10.0" />
+                                 </GridPane.margin>
+                              </CheckBox>
+                              <Spinner fx:id="intHoursSpinner" editable="true" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="9" GridPane.vgrow="ALWAYS">
+                                 <GridPane.margin>
+                                    <Insets left="5.0" right="5.0" />
+                                 </GridPane.margin>
+                                 <tooltip>
+                                    <Tooltip text="Выбор интервала назначения задачи в часах" />
+                                 </tooltip>
+                              </Spinner>
+                              <VBox alignment="CENTER" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="10" GridPane.vgrow="ALWAYS">
+                                 <GridPane.margin>
+                                    <Insets left="5.0" right="5.0" />
+                                 </GridPane.margin>
+                                 <children>
+                                    <HBox>
+                                       <children>
+                                          <Spinner fx:id="intDaySpinner" editable="true" prefWidth="168.0" HBox.hgrow="ALWAYS">
+                                             <tooltip>
+                                                <Tooltip text="Выбор интервала назначения задачи в днях" />
+                                             </tooltip></Spinner>
+                                          <LocalTimeTextField fx:id="intDayTimeField" prefWidth="198.0" styleClass="LocalDateTimeTextFieldSkin" HBox.hgrow="ALWAYS">
+                                             <tooltip>
+                                                <Tooltip text="Выбор времени в течение для дня назначения задачи" />
+                                             </tooltip>
+                                             <HBox.margin>
+                                                <Insets left="5.0" />
+                                             </HBox.margin>
+                                          </LocalTimeTextField>
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </VBox>
+                              <VBox alignment="CENTER" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="12" GridPane.vgrow="ALWAYS">
+                                 <GridPane.margin>
+                                    <Insets left="5.0" right="5.0" />
+                                 </GridPane.margin>
+                                 <children>
+                                    <HBox>
+                                       <children>
+                                          <Spinner fx:id="intMonthSpinner" editable="true" prefWidth="168.0" HBox.hgrow="ALWAYS">
+                                             <tooltip>
+                                                <Tooltip text="Выбор интервала назначения задачи в месяцах" />
+                                             </tooltip></Spinner>
+                                          <LocalTimeTextField fx:id="intMonthTimeField" prefWidth="198.0" styleClass="LocalDateTimeTextFieldSkin" HBox.hgrow="ALWAYS">
+                                             <tooltip>
+                                                <Tooltip text="Выбор времени в течение для дня назначения задачи" />
+                                             </tooltip>
+                                             <HBox.margin>
+                                                <Insets left="5.0" />
+                                             </HBox.margin>
+                                          </LocalTimeTextField>
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </VBox>
+                              <Label maxWidth="1.7976931348623157E308" text="Выбрать интервал назначения:" GridPane.rowIndex="6">
+                                 <GridPane.margin>
+                                    <Insets left="10.0" right="5.0" />
+                                 </GridPane.margin>
+                              </Label>
+                              <Separator prefWidth="200.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="7" />
+                              <Separator prefWidth="200.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="14" />
+                              <Label maxWidth="1.7976931348623157E308" text="Назначать на:" GridPane.rowIndex="1">
+                                 <GridPane.margin>
+                                    <Insets left="10.0" right="5.0" />
+                                 </GridPane.margin>
+                              </Label>
+                              <Separator prefWidth="200.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="2" />
+                              <Separator prefWidth="200.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="5" />
+                              <Separator maxWidth="1.7976931348623157E308" GridPane.columnSpan="2147483647" />
+                              <CheckBox fx:id="intWeekCheckBox" mnemonicParsing="false" text="Выбрать интервал назначения в неделях" GridPane.hgrow="ALWAYS" GridPane.rowIndex="11" GridPane.vgrow="ALWAYS">
+                                 <GridPane.margin>
+                                    <Insets left="10.0" />
+                                 </GridPane.margin>
+                              </CheckBox>
+                              <VBox alignment="CENTER" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="11" GridPane.vgrow="ALWAYS">
+                                 <GridPane.margin>
+                                    <Insets left="5.0" right="5.0" />
+                                 </GridPane.margin>
+                                 <children>
+                                    <HBox>
+                                       <children>
+                                          <Spinner fx:id="intWeekSpinner" editable="true" prefWidth="168.0" HBox.hgrow="ALWAYS">
+                                             <tooltip>
+                                                <Tooltip text="Выбор интервала назначения задачи в неделях" />
+                                             </tooltip></Spinner>
+                                          <LocalTimeTextField fx:id="intWeekTimeField" prefWidth="198.0" styleClass="LocalDateTimeTextFieldSkin" HBox.hgrow="ALWAYS">
+                                             <tooltip>
+                                                <Tooltip text="Выбор времени в течение для дня назначения задачи" />
+                                             </tooltip>
+                                             <HBox.margin>
+                                                <Insets left="5.0" />
+                                             </HBox.margin>
+                                          </LocalTimeTextField>
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </VBox>
+                              <VBox alignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+                                 <GridPane.margin>
+                                    <Insets left="5.0" right="5.0" top="5.0" />
+                                 </GridPane.margin>
+                                 <children>
+                                    <HBox>
+                                       <children>
+                                          <ComboBox fx:id="everyWeekComboBox" maxWidth="1.7976931348623157E308" prefWidth="168.0" HBox.hgrow="ALWAYS">
+                                             <tooltip>
+                                                <Tooltip text="Выбор дня недели " />
+                                             </tooltip>
+                                          </ComboBox>
+                                          <LocalTimeTextField fx:id="everyWeekTimeField" prefWidth="113.0" styleClass="LocalDateTimeTextFieldSkin" HBox.hgrow="ALWAYS">
+                                             <HBox.margin>
+                                                <Insets left="7.0" right="5.0" top="1.0" />
+                                             </HBox.margin>
+                                             <tooltip>
+                                                <Tooltip text="Выбор времени в течение для дня назначения задачи" />
+                                             </tooltip>
+                                          </LocalTimeTextField>
+                                          <Spinner fx:id="everyWeekNumberSpinner" editable="true" maxWidth="1.7976931348623157E308" prefWidth="85.0" HBox.hgrow="ALWAYS">
+                                             <tooltip>
+                                                <Tooltip text="Выбор номера недели в месяце" />
+                                             </tooltip>
+                                          </Spinner>
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </VBox>
+                              <VBox alignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="4" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+                                 <GridPane.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </GridPane.margin>
+                                 <children>
+                                    <HBox alignment="CENTER">
+                                       <children>
+                                          <ComboBox fx:id="everyMonthComboBox" maxWidth="1.7976931348623157E308" prefWidth="168.0" HBox.hgrow="ALWAYS" />
+                                          <LocalTimeTextField fx:id="everyMonthTimeField" prefWidth="113.0" styleClass="LocalDateTimeTextFieldSkin" HBox.hgrow="ALWAYS">
+                                             <HBox.margin>
+                                                <Insets left="7.0" right="5.0" top="1.0" />
+                                             </HBox.margin>
+                                             <tooltip>
+                                                <Tooltip text="Выбор времени в течение для дня назначения задачи" />
+                                             </tooltip>
+                                          </LocalTimeTextField>
+                                          <Spinner fx:id="everyMonthSpinner" editable="true" prefWidth="85.0" HBox.hgrow="ALWAYS">
+                                             <tooltip>
+                                                <Tooltip text="Выбор числа месяца" />
+                                             </tooltip>
+                                             <HBox.margin>
+                                                <Insets />
+                                             </HBox.margin>
+                                          </Spinner>
+                                       </children>
+                                       <VBox.margin>
+                                          <Insets top="5.0" />
+                                       </VBox.margin>
+                                    </HBox>
+                                 </children>
+                              </VBox>
+                              <CheckBox fx:id="intYearCheckBox" mnemonicParsing="false" text="Выбрать интервал назначения в годах" GridPane.hgrow="ALWAYS" GridPane.rowIndex="13" GridPane.vgrow="ALWAYS">
+                                 <GridPane.margin>
+                                    <Insets left="10.0" />
+                                 </GridPane.margin>
+                              </CheckBox>
+                              <VBox alignment="CENTER" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="13" GridPane.vgrow="ALWAYS">
+                                 <GridPane.margin>
+                                    <Insets left="5.0" right="5.0" />
+                                 </GridPane.margin>
+                                 <children>
+                                    <HBox>
+                                       <children>
+                                          <Spinner fx:id="intYearSpinner" editable="true" prefWidth="168.0" HBox.hgrow="ALWAYS">
+                                             <tooltip>
+                                                <Tooltip text="Выбор интервала назначения задачи в годах" />
+                                             </tooltip></Spinner>
+                                          <LocalTimeTextField fx:id="intYearTimeField" prefWidth="198.0" styleClass="LocalDateTimeTextFieldSkin" HBox.hgrow="ALWAYS">
+                                             <tooltip>
+                                                <Tooltip text="Выбор времени в течение для дня назначения задачи" />
+                                             </tooltip>
+                                             <HBox.margin>
+                                                <Insets left="5.0" />
+                                             </HBox.margin>
+                                          </LocalTimeTextField>
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </VBox>
+                              <CheckBox fx:id="intMinuteCheckBox" mnemonicParsing="false" text="Выбрать интервал назначения в минутах" GridPane.hgrow="ALWAYS" GridPane.rowIndex="8" GridPane.vgrow="ALWAYS">
+                                 <GridPane.margin>
+                                    <Insets left="10.0" />
+                                 </GridPane.margin>
+                              </CheckBox>
+                              <Spinner fx:id="intMinuteSpinner" editable="true" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="8" GridPane.vgrow="ALWAYS">
+                                 <GridPane.margin>
+                                    <Insets left="5.0" right="5.0" />
+                                 </GridPane.margin>
+                              </Spinner>
+                           </children>
+                        </GridPane>
+                     </children>
+                  </AnchorPane>
+               </center>
+            </BorderPane>
+         </children>
+      </AnchorPane>
+   </content>
+</ScrollPane>

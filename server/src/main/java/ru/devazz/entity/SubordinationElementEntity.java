@@ -13,11 +13,11 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "subordination_element", schema = "tasksdb")
-public class SubordinationElementEntity implements Serializable, IEntity {
+public class SubordinationElementEntity implements IEntity {
 
 	/** Идентификатор подразделения */
 	@Id
-	@Column(name = "idsubel", nullable = false, unique = true, columnDefinition = "bigint")
+	@Column(name = "id", nullable = false, unique = true, columnDefinition = "bigint")
 	private Long suid;
 
 	/** Наименование */
@@ -25,15 +25,15 @@ public class SubordinationElementEntity implements Serializable, IEntity {
 	private String name;
 
 	/** Подчиненные */
-	@ManyToMany(fetch = FetchType.EAGER)
-	private List<SubordinationElementEntity> subordinates;
+//	@ManyToMany(cascade = CascadeType.ALL)
+//	private List<SubordinationElementEntity> subordinates;
 
 	/** Идентификатор роли */
-	@Column(name = "role_suid", columnDefinition = "bigint")
+	@Column(name = "role_id", columnDefinition = "bigint")
 	private Long roleSuid;
 
 	/** Флаг корневого элемента */
-	@Column(name = "rootElement")
+	@Column(name = "root_element")
 	private Boolean rootElement;
 
 	/**
@@ -46,7 +46,6 @@ public class SubordinationElementEntity implements Serializable, IEntity {
 		result.setName(name);
 		result.setRoleSuid(roleSuid);
 		result.setRootElement(rootElement);
-		result.setSubordinates(subordinates);
 		result.setSuid(suid);
 		return result;
 	}

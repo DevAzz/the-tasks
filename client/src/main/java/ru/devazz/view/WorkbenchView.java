@@ -163,28 +163,28 @@ public class WorkbenchView extends AbstractView<WorkbenchViewModel> {
 	 */
 	public void initViews() {
 		try {
-			Boolean access = Utils.getInstance().checkUserAccess(UserRoles.ASSISTENT);
-			Boolean isUserRMCHead = Utils.getInstance().checkRoleEquals(UserRoles.RMC_HEAD);
+//			Boolean access = Utils.getInstance().checkUserAccess(UserRoles.ASSISTENT);
+//			Boolean isUserRMCHead = Utils.getInstance().checkRoleEquals(UserRoles.RMC_HEAD);
 
-			if (!isUserRMCHead) {
+//			if (!isUserRMCHead) {
 				inTasksView = initTaskView(inTitledPane, TasksViewType.IN);
 				inTasksView.load(0);
 				model.putModel(TasksViewType.IN, inTasksView.getModel());
-			}
+//			}
 
-			if (access) {
+//			if (access) {
 				outTaskView = initTaskView(outTitledPane, TasksViewType.OUT);
 				outTaskView.load(0);
 				model.putModel(TasksViewType.OUT, outTaskView.getModel());
-			}
+//			}
 
-			if (!isUserRMCHead) {
+//			if (!isUserRMCHead) {
 				archiveTasksView = initTaskView(archiveTitledPane, TasksViewType.ARCHIVE);
 				archiveTasksView.load(0);
 				model.putModel(TasksViewType.ARCHIVE, archiveTasksView.getModel());
-			}
+//			}
 
-			if (!isUserRMCHead) {
+//			if (!isUserRMCHead) {
 				everydayIn = initTaskView(everyDayTitledPane, TasksViewType.EVERYDAY_IN);
 				everydayIn.load(0);
 				model.putModel(TasksViewType.EVERYDAY_IN, everydayIn.getModel());
@@ -192,9 +192,9 @@ public class WorkbenchView extends AbstractView<WorkbenchViewModel> {
 				everydayOut = initTaskView(everyDayTitledPane, TasksViewType.EVERYDAY_OUT);
 				everydayOut.load(0);
 				model.putModel(TasksViewType.EVERYDAY_OUT, everydayOut.getModel());
-			}
+//			}
 
-			if (access) {
+//			if (access) {
 				currentTasksViewIn = initTaskView(currentTitledPane, TasksViewType.CURRENT_IN);
 				currentTasksViewIn.setPositionSuid(model.getPositionSuid());
 				currentTasksViewIn.load(0);
@@ -227,7 +227,7 @@ public class WorkbenchView extends AbstractView<WorkbenchViewModel> {
 
 				openTitlePane(currentTitledPane);
 				Platform.runLater(() -> currentTaskButton.requestFocus());
-			}
+//			}
 
 			for (TasksView view : getTaskViews()) {
 				if (null != view) {

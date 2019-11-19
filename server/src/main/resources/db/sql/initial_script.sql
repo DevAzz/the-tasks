@@ -71,7 +71,7 @@ CREATE TABLE IF NOT EXISTS `tasksdb`.`subordination_element` (
   `id` BIGINT(20) NOT NULL DEFAULT '-1',
   `name` VARCHAR(45) NULL DEFAULT NULL,
   `role_id` BIGINT(20) NULL DEFAULT NULL,
-  `rootElement` TINYINT(1) NOT NULL DEFAULT '0',
+  `root_element` TINYINT(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
@@ -112,7 +112,7 @@ CREATE TABLE IF NOT EXISTS `tasksdb`.`tasks` (
   `author_id` BIGINT(20) NOT NULL,
   `executor_id` BIGINT(20) NULL DEFAULT NULL,
   `document` LONGBLOB NULL DEFAULT NULL,
-  `documenName` VARCHAR(300) NULL DEFAULT NULL,
+  `document_name` VARCHAR(300) NULL DEFAULT NULL,
   `task_type` VARCHAR(45) NOT NULL,
   `cycle_type` VARCHAR(45) NULL DEFAULT NULL,
   `cycle_time` VARCHAR(45) NULL DEFAULT NULL,
@@ -133,20 +133,20 @@ DEFAULT CHARACTER SET = utf8;
 DROP TABLE IF EXISTS `tasksdb`.`user` ;
 
 CREATE TABLE IF NOT EXISTS `tasksdb`.`user` (
-  `iduser` BIGINT(20) NOT NULL,
+  `id` BIGINT(20) NOT NULL,
   `login` VARCHAR(45) NULL DEFAULT NULL,
   `password` VARCHAR(45) NULL DEFAULT NULL,
-  `idrole` BIGINT(20) NOT NULL,
+  `role_id` BIGINT(20) NOT NULL,
   `sub_element_suid` BIGINT(20) NOT NULL,
   `name` VARCHAR(300) NULL DEFAULT NULL,
   `position` VARCHAR(300) NULL DEFAULT NULL,
   `image` LONGBLOB NULL DEFAULT NULL,
   `online` INT(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`iduser`),
-  INDEX `fk_user_role_idx` (`idrole` ASC),
+  PRIMARY KEY (`id`),
+  INDEX `fk_user_role_idx` (`role_id` ASC),
   INDEX `fk_user_subordination_element1_idx` (`sub_element_suid` ASC),
   CONSTRAINT `fk_user_role`
-    FOREIGN KEY (`idrole`)
+    FOREIGN KEY (`role_id`)
     REFERENCES `tasksdb`.`role` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,

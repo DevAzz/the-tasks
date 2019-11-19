@@ -4,13 +4,15 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import java.io.Serializable;
+
 /**
  * Модель помощи
  */
 @EqualsAndHashCode
 @ToString
 @Data
-public class HelpModel implements IEntity{
+public class HelpModel implements Serializable, IEntity{
 
     /** Идентификатор модели */
     private Long suid;

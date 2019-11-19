@@ -4,13 +4,15 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import java.io.Serializable;
+
 /**
  * Модель задачи по умолчанию
  */
 @EqualsAndHashCode
 @ToString
 @Data
-public class DefaultTaskModel implements IEntity {
+public class DefaultTaskModel implements Serializable, IEntity {
 
     /** Идентифтикатор задачи по умолчанию */
     private Long suid;

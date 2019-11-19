@@ -6,6 +6,7 @@ import ru.devazz.server.api.model.enums.TaskPriority;
 import ru.devazz.server.api.model.enums.TaskStatus;
 import ru.devazz.server.api.model.enums.TaskType;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -15,7 +16,7 @@ import java.util.Date;
 @ToString
 @Data
 @Builder
-public class TaskModel implements IEntity {
+public class TaskModel implements Serializable, IEntity {
 
     /** идентификатор задачи */
     private Long suid;
@@ -62,4 +63,6 @@ public class TaskModel implements IEntity {
     /** Время цикличного назначения (часы или дата) */
     private String cycleTime;
 
+    public TaskModel() {
+    }
 }

@@ -148,9 +148,6 @@ public class SubordinationElement implements SelectableObject, HierarchyData<Sub
 		return true;
 	}
 
-	/**
-	 * @see ru.siencesquad.hqtasks.ui.interfaces.HierarchyData#getChildren()
-	 */
 	@Override
 	public ObservableList<SubordinationElement> getChildren() {
 		return subElements;

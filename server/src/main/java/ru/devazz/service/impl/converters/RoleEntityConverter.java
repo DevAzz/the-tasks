@@ -9,11 +9,22 @@ import ru.devazz.server.api.model.RoleModel;
 public class RoleEntityConverter implements IEntityConverter<RoleModel, RoleEntity> {
     @Override
     public RoleModel entityToModel(RoleEntity entity) {
-        return null;
+        RoleModel model = null;
+        if (null != entity) {
+            model = new RoleModel();
+            model.setName(entity.getName());
+            model.setSuid(entity.getSuid());
+        }
+        return model;
     }
 
     @Override
     public RoleEntity modelToEntity(RoleModel model) {
-        return null;
+        RoleEntity entity = null;
+        if (null != model) {
+            entity = new RoleEntity();
+            entity.setName(entity.getName());
+        }
+        return entity;
     }
 }

@@ -12,11 +12,11 @@ import java.io.Serializable;
 @Data
 @Entity
 @Table(name = "role", schema = "tasksdb")
-public class RoleEntity implements Serializable, IEntity {
+public class RoleEntity implements IEntity {
 
 	/** Идентификатор роли */
 	@Id
-	@Column(name = "idrole")
+	@Column(name = "id")
 	private Long idRole;
 
 	/** Наименование задачи */

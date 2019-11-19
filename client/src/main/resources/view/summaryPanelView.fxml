@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<AnchorPane fx:id="rootAnchorPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.devazz.view.SummaryPanelView">
+   <children>
+      <Label fx:id="topResizeLabel" minHeight="5.0" prefHeight="5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <cursor>
+            <Cursor fx:constant="V_RESIZE" />
+         </cursor>
+      </Label>
+      <SplitPane fx:id="summaryPanelSplitPane" dividerPositions="0.5714285714285714" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="rootBorder" stylesheets="@/css/main.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <items>
+            <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true">
+               <content>
+                  <BorderPane styleClass="decisionBorderPane">
+                     <top>
+                        <Label fx:id="subElLabel" text="Label" BorderPane.alignment="CENTER_LEFT">
+                           <BorderPane.margin>
+                              <Insets left="5.0" top="5.0" />
+                           </BorderPane.margin>
+                        </Label>
+                     </top>
+                     <left>
+                        <ImageView fx:id="subElImage" fitHeight="125.0" fitWidth="145.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
+                           <BorderPane.margin>
+                              <Insets left="10.0" right="5.0" />
+                           </BorderPane.margin>
+                        </ImageView>
+                     </left>
+                     <center>
+                        <GridPane alignment="CENTER" BorderPane.alignment="CENTER">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="255.0" minWidth="10.0" prefWidth="222.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="104.0" minWidth="0.0" prefWidth="46.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <Label text="Выполнено в срок:" />
+                              <Label text="Выполнено с опозданием:" GridPane.rowIndex="1" />
+                              <Label text="Не выполнено:" GridPane.rowIndex="4" />
+                              <Label prefHeight="20.0" prefWidth="139.0" text="Задачи в работе:" GridPane.rowIndex="6" />
+                              <Label fx:id="successDoneAmountLabel" text="Label" GridPane.columnIndex="1" />
+                              <Label fx:id="overdueDoneAmountLabel" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <Label fx:id="failedAmountLabel" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                              <Label fx:id="inWorkAmountLabel" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                              <Label text="Завершено:" GridPane.rowIndex="2" />
+                              <Label text="Просрочено:" GridPane.rowIndex="3" />
+                              <Label fx:id="closedAmountLabel" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <Label fx:id="overdueAmountLabel" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              <Label text="На доработке:" GridPane.rowIndex="5" />
+                              <Label fx:id="reworkAmountLabel" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                           </children>
+                           <BorderPane.margin>
+                              <Insets />
+                           </BorderPane.margin>
+                        </GridPane>
+                     </center>
+                  </BorderPane>
+               </content>
+            </ScrollPane>
+            <ScrollPane fitToHeight="true" fitToWidth="true">
+               <content>
+                  <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0">
+                     <items>
+                        <BorderPane prefHeight="200.0" prefWidth="200.0" styleClass="decisionBorderPane">
+                           <top>
+                              <Label text="Входящие" BorderPane.alignment="CENTER_LEFT">
+                                 <BorderPane.margin>
+                                    <Insets left="5.0" top="5.0" />
+                                 </BorderPane.margin>
+                              </Label>
+                           </top>
+                           <center>
+                              <ListView fx:id="inListView" BorderPane.alignment="CENTER">
+                                 <BorderPane.margin>
+                                    <Insets />
+                                 </BorderPane.margin></ListView>
+                           </center>
+                        </BorderPane>
+                        <BorderPane prefHeight="200.0" prefWidth="200.0" styleClass="decisionBorderPane">
+                           <top>
+                              <Label text="Исходящие" BorderPane.alignment="CENTER_LEFT">
+                                 <BorderPane.margin>
+                                    <Insets left="5.0" top="5.0" />
+                                 </BorderPane.margin>
+                              </Label>
+                           </top>
+                           <center>
+                              <ListView fx:id="outListView" BorderPane.alignment="CENTER" />
+                           </center>
+                        </BorderPane>
+                     </items>
+                  </SplitPane>
+               </content>
+            </ScrollPane>
+         </items>
+      </SplitPane>
+      <Label fx:id="bottomResizeLabel" minHeight="5.0" onMousePressed="#bottomResize" prefHeight="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+         <cursor>
+            <Cursor fx:constant="V_RESIZE" />
+         </cursor>
+      </Label>
+   </children>
+</AnchorPane>
