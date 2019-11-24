@@ -14,7 +14,6 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -23,7 +22,7 @@ import ru.devazz.entities.ExtSearchRes;
 import ru.devazz.entities.SubordinationElement;
 import ru.devazz.entities.Task;
 import ru.devazz.model.RootViewPresentationModel;
-import ru.devazz.server.EJBProxyFactory;
+import ru.devazz.server.ProxyFactory;
 import ru.devazz.server.api.ISubordinationElementService;
 import ru.devazz.server.api.ITaskService;
 import ru.devazz.server.api.model.IEntity;
@@ -32,7 +31,6 @@ import ru.devazz.server.api.model.TaskModel;
 import ru.devazz.server.api.model.UserModel;
 import ru.devazz.server.api.model.enums.TaskPriority;
 import ru.devazz.server.api.model.enums.TaskStatus;
-import ru.devazz.server.api.model.enums.UserRoles;
 import ru.devazz.utils.EntityConverter;
 import ru.devazz.utils.EventType;
 import ru.devazz.utils.SplitViewEnum;
@@ -336,12 +334,12 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 			});
 
 			// Инициализация меню
-			Boolean access = Utils.getInstance().checkUserAccess(UserRoles.ASSISTENT);
-			if (!access) {
-				viewMenu.getItems().remove(subTreeMenuItem);
-				viewMenu.getItems().remove(reportMenuItem);
-				fileMenu.getItems().remove(createTask);
-			}
+//			Boolean access = Utils.getInstance().checkUserAccess(UserRoles.ASSISTENT);
+//			if (!access) {
+//				viewMenu.getItems().remove(subTreeMenuItem);
+//				viewMenu.getItems().remove(reportMenuItem);
+//				fileMenu.getItems().remove(createTask);
+//			}
 
 			UserModel user = Utils.getInstance().getCurrentUser();
 			userNameLabel.setText(user.getPosition() + " " + user.getName());
@@ -470,16 +468,17 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 			});
 
 			workbenchView.setCustomTimeIntervalModeHandler(event -> {
-				if (Utils.getInstance().checkUserAccess(UserRoles.ASSISTENT)) {
+//				if (Utils.getInstance().checkUserAccess(UserRoles.ASSISTENT)) {
 					rightSplitPane.getDividers().get(0).setPosition(0.7);
-				}
+//				}
 				commonSplitPane.getDividers().get(0).setPosition(0.2);
 			});
 
 			if (!subInfoMenuItem.isSelected()) {
 				rightSplitPane.getDividers().get(0).setPosition(1);
-			} else if (Utils.getInstance().checkUserAccess(UserRoles.ASSISTENT)) {
-				rightSplitPane.getDividers().get(0).setPosition(0.6);
+			} else {
+//				if (Utils.getInstance().checkUserAccess(UserRoles.ASSISTENT)) {
+//				rightSplitPane.getDividers().get(0).setPosition(0.6);
 			}
 
 			workbenchView.getModel().setOpenFlagValue(true);
@@ -503,7 +502,7 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 				IEntity entity = res.getEntity();
 				if (entity instanceof TaskModel) {
 					try {
-						TaskModel task = EJBProxyFactory.getInstance()
+						TaskModel task = ProxyFactory.getInstance()
 								.getService(ITaskService.class).get(entity.getSuid());
 						showCurrentTaskView(EntityConverter.getInstatnce()
 								.convertTaskModelToClientWrapTask(task), false, false);
@@ -521,10 +520,10 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 			commonCentralTabPane.getTabs().add(extendedSearchView.getTab());
 			commonCentralTabPane.getSelectionModel().select(extendedSearchView.getTab());
 
-			if (Utils.getInstance().checkUserAccess(UserRoles.ASSISTENT)) {
+//			if (Utils.getInstance().checkUserAccess(UserRoles.ASSISTENT)) {
 				rightSplitPane.setDividerPositions(0.7);
 				commonSplitPane.getDividers().get(0).setPosition(0.2);
-			}
+//			}
 
 			extendedSearchView.getModel().setOpenFlagValue(true);
 
@@ -559,8 +558,9 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 				commonCentralTabPane.getSelectionModel().select(eventJournalView.getTab());
 				if (!subInfoMenuItem.isSelected()) {
 					rightSplitPane.getDividers().get(0).setPosition(1);
-				} else if (Utils.getInstance().checkUserAccess(UserRoles.ASSISTENT)) {
-					rightSplitPane.getDividers().get(0).setPosition(0.6);
+				} else {
+//					if (Utils.getInstance().checkUserAccess(UserRoles.ASSISTENT)) {
+//					rightSplitPane.getDividers().get(0).setPosition(0.6);
 				}
 				eventJournalView.getModel().setOpenFlagValue(true);
 			}
@@ -610,9 +610,9 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 					openTaskMap.remove(aTask.getSuid());
 				});
 
-				if (Utils.getInstance().checkUserAccess(UserRoles.ASSISTENT)) {
+//				if (Utils.getInstance().checkUserAccess(UserRoles.ASSISTENT)) {
 					rightSplitPane.getDividers().get(0).setPosition(0.7);
-				}
+//				}
 				commonSplitPane.getDividers().get(0).setPosition(0.2);
 				openTaskMap.put(aTask.getSuid(), currentTaskView);
 				currentTaskView.getModel().setOpenFlagValue(true);
@@ -642,9 +642,9 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 			positionBookView.addCloseListener(() -> {
 				positionBookMenuItem.setSelected(false);
 			});
-			if (Utils.getInstance().checkUserAccess(UserRoles.ASSISTENT)) {
+//			if (Utils.getInstance().checkUserAccess(UserRoles.ASSISTENT)) {
 				rightSplitPane.getDividers().get(0).setPosition(0.6);
-			}
+//			}
 			positionBookView.getModel().setOpenFlagValue(true);
 		} else {
 			commonCentralTabPane.getTabs().remove(positionBookView.getTab());
@@ -660,7 +660,7 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 	 */
 	@FXML
 	public void showSubTree() throws Exception {
-		if (Utils.getInstance().checkUserAccess(UserRoles.ASSISTENT)) {
+//		if (Utils.getInstance().checkUserAccess(UserRoles.ASSISTENT)) {
 			Boolean menuSelected = subTreeMenuItem.isSelected();
 			if (menuSelected) {
 				subTreeView = Utils.getInstance().loadView(SubordinationTreeView.class);
@@ -745,11 +745,12 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 
 				subTreeView.closeTabView();
 			}
-		} else {
-			leftHorizontalSplitPane.getDividers().get(0).setPosition(0);
-			disableSplitDivider(SplitViewEnum.LEFT_HORIZONTAL_SPLIT_PANEL, true);
-			subTreeMenuItem.setSelected(false);
-		}
+//		}
+//		else {
+//			leftHorizontalSplitPane.getDividers().get(0).setPosition(0);
+//			disableSplitDivider(SplitViewEnum.LEFT_HORIZONTAL_SPLIT_PANEL, true);
+//			subTreeMenuItem.setSelected(false);
+//		}
 	}
 
 	/**
@@ -761,7 +762,9 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 	public void showSubInfo() throws Exception {
 		Boolean menuSelected = subInfoMenuItem.isSelected();
 		if (menuSelected) {
-			subInfoView = Utils.getInstance().loadView(SubInfoView.class);
+			if (null == subInfoView) {
+				subInfoView = Utils.getInstance().loadView(SubInfoView.class);
+			}
 			SplitPane sPane = (SplitPane) rightSplitPane.getItems().get(1);
 			AnchorPane pane = (AnchorPane) sPane.getItems().get(0);
 			if (null != pane) {
@@ -771,7 +774,7 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 				pane.getChildren().add(subInfoView.getTabPane());
 			}
 
-			ISubordinationElementService subelService = EJBProxyFactory.getInstance()
+			ISubordinationElementService subelService = ProxyFactory.getInstance()
 					.getService(ISubordinationElementService.class);
 			SubordinationElement element = (null != subTreeView.getSelection())
 					? subTreeView.getSelection()
@@ -904,7 +907,7 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 					try {
 						ru.devazz.entities.Event eventValue = eventIndicatorView.getSelection();
 						Task task = EntityConverter.getInstatnce()
-								.convertTaskModelToClientWrapTask(EJBProxyFactory.getInstance()
+								.convertTaskModelToClientWrapTask(ProxyFactory.getInstance()
 										.getService(ITaskService.class)
 										.get(eventValue.getTaskId()));
 						if (null != eventValue.getEventType()) {
@@ -935,10 +938,10 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 					final double pos = 0.9;
 					// Поднимаем сплит при открытии view
 					if (pos < leftHorizontalSplitPane.getDividers().get(0).getPosition()) {
-						if (Utils.getInstance().checkUserAccess(UserRoles.ASSISTENT)) {
+//						if (Utils.getInstance().checkUserAccess(UserRoles.ASSISTENT)) {
 							leftHorizontalSplitPane.getDividers().get(0).setPosition(0.7);
 							disableSplitDivider(SplitViewEnum.LEFT_HORIZONTAL_SPLIT_PANEL, false);
-						}
+//						}
 					}
 				}
 
@@ -1054,8 +1057,7 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 	@FXML
 	private void showHelp() throws IOException {
 		Stage helpStage = new Stage();
-		helpStage.setTitle("Справка Менеджера задач РЦУ");
-		helpStage.getIcons().add(new Image("/css/star.png"));
+		helpStage.setTitle("Справка Менеджера задач");
 		helpStage.setResizable(false);
 		HelpView view = Utils.getInstance().loadView(HelpView.class);
 		Scene scene = new Scene(view.getRootPane());
@@ -1074,7 +1076,7 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 				commonCentralTabPane.getSelectionModel().select(reportView.getTab());
 
 				reportView.getModel().setPositionSuid(aElement.getSuid());
-				reportView.getModel().setBattleNameTextPropertyValue(
+				reportView.getModel().setPositionNameTextPropertyValue(
 						subTreeView.getModel().getSelectedElement().getName());
 			} else {
 				reportMenuItem.setSelected(true);
@@ -1085,7 +1087,7 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 					e.printStackTrace();
 				}
 				reportView.getModel().setPositionSuid(aElement.getSuid());
-				reportView.getModel().setBattleNameTextPropertyValue(aElement.getName());
+				reportView.getModel().setPositionNameTextPropertyValue(aElement.getName());
 			}
 		}
 	}
@@ -1097,7 +1099,7 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 	@FXML
 	private void setDefautlLocation() {
 		try {
-			Boolean access = Utils.getInstance().checkUserAccess(UserRoles.ASSISTENT);
+//			Boolean access = Utils.getInstance().checkUserAccess(UserRoles.ASSISTENT);
 			if (!subTreeMenuItem.isSelected()) {
 				subTreeMenuItem.setSelected(true);
 				showSubTree();
@@ -1123,10 +1125,10 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 				showIconsLegend();
 			}
 
-			if (access) {
+//			if (access) {
 				leftHorizontalSplitPane.getDividers().get(0).setPosition(0.7);
 				rightSplitPane.getDividers().get(0).setPosition(0.7);
-			}
+//			}
 			commonSplitPane.getDividers().get(0).setPosition(0.17);
 
 		} catch (Exception e) {
@@ -1522,7 +1524,7 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 			if ((2 == event.getClickCount()) && (null != taskSuid)) {
 				Thread thread = new Thread(() -> {
 					try {
-						TaskModel entity = EJBProxyFactory.getInstance()
+						TaskModel entity = ProxyFactory.getInstance()
 								.getService(ITaskService.class).get(taskSuid);
 						Platform.runLater(() -> {
 							if (null != entity) {

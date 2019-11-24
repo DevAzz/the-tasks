@@ -16,14 +16,8 @@
     -fx-border-weight: 0.1px;
 }
 
-.army{
-    -fx-background-image: url("oskCVO.png");
-    -fx-background-repeat: no-repeat;
-    -fx-background-position: left 5px center;
-}
 .background{
     -fx-background-color: transparent;
-    -fx-background-image: url("AstraRCU.png");
     -fx-background-repeat: no-repeat;
     -fx-background-position: center;
     -fx-background-size:contain;
@@ -502,7 +496,7 @@
     -fx-background-size: 24px;
 }
 .titled-pane {
-    -fx-skin: "com.sun.javafx.scene.control.skin.TitledPaneSkin";
+    -fx-skin: "javafx.scene.control.skin.TitledPaneSkin";
     -fx-border-color:#4a4e4c;
     -fx-background-color: #3c3f41 ;
     -fx-text-fill: #d7d8d9;
@@ -699,7 +693,7 @@
     -fx-background-color:#2d2e30;
 }
 .context-menu {
-    -fx-skin: "com.sun.javafx.scene.control.skin.ContextMenuSkin";
+    -fx-skin: "javafx.scene.control.skin.ContextMenuSkin";
     -fx-background-color: #3c3f41;
     -fx-background-insets: 0, 1, 2;
     -fx-background-radius: 0 6 6 6, 0 5 5 5, 0 4 4 4;

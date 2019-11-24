@@ -64,7 +64,7 @@ public class UserService extends AbstractEntityService<UserModel, UserEntity>
 				result.setOnline(true);
 				repository.update(result);
 
-				broker.convertAndSend(JmsQueueName.DEFAULT.getName(), getEventByEntity(
+				broker.convertAndSend(getQueueName(), getEventByEntity(
 						SystemEventType.USER_ONLINE, converter.entityToModel(result)));
 			}
 		} catch (Exception e) {
@@ -87,6 +87,11 @@ public class UserService extends AbstractEntityService<UserModel, UserEntity>
 	@Override
 	protected Class<? extends ObjectEvent> getTypeEntityEvent() {
 		return UserEvent.class;
+	}
+
+	@Override
+	protected String getQueueName() {
+		return JmsQueueName.USERS.getName();
 	}
 
 	@Override

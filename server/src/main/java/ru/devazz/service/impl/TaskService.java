@@ -115,7 +115,7 @@ public class TaskService extends AbstractEntityService<TaskModel, TaskEntity>
         switch (aEntity.getStatus()) {
             case DONE:
                 if (aNeedPublishEvent) {
-                    broker.convertAndSend(JmsQueueName.DEFAULT.getName(),
+                    broker.convertAndSend(getQueueName(),
                                           getEventByEntity(SystemEventType.DONE, aEntity));
                     createEventByEntity(SystemEventType.DONE, aEntity);
                 }
@@ -138,7 +138,7 @@ public class TaskService extends AbstractEntityService<TaskModel, TaskEntity>
                 break;
             case REWORK:
                 if (aNeedPublishEvent) {
-                    broker.convertAndSend(JmsQueueName.DEFAULT.getName(),
+                    broker.convertAndSend(getQueueName(),
                                           getEventByEntity(SystemEventType.REWORK, aEntity));
                     createEventByEntity(SystemEventType.REWORK, aEntity);
                 }
@@ -152,7 +152,7 @@ public class TaskService extends AbstractEntityService<TaskModel, TaskEntity>
                 break;
             case FAILD:
                 if (aNeedPublishEvent) {
-                    broker.convertAndSend(JmsQueueName.DEFAULT.getName(),
+                    broker.convertAndSend(getQueueName(),
                                           getEventByEntity(SystemEventType.FAIL, aEntity));
                     createEventByEntity(SystemEventType.FAIL, aEntity);
                 }
@@ -166,7 +166,7 @@ public class TaskService extends AbstractEntityService<TaskModel, TaskEntity>
                 break;
             case CLOSED:
                 if (aNeedPublishEvent) {
-                    broker.convertAndSend(JmsQueueName.DEFAULT.getName(),
+                    broker.convertAndSend(getQueueName(),
                                           getEventByEntity(SystemEventType.CLOSED, aEntity));
                     createEventByEntity(SystemEventType.CLOSED, aEntity);
                 }
@@ -178,7 +178,7 @@ public class TaskService extends AbstractEntityService<TaskModel, TaskEntity>
                 break;
             default:
                 if (aNeedPublishEvent) {
-                    broker.convertAndSend(JmsQueueName.DEFAULT.getName(),
+                    broker.convertAndSend(getQueueName(),
                                           getEventByEntity(SystemEventType.UPDATE, aEntity));
                     createEventByEntity(SystemEventType.UPDATE, aEntity);
                 }
@@ -197,6 +197,11 @@ public class TaskService extends AbstractEntityService<TaskModel, TaskEntity>
     @Override
     protected Class<? extends ObjectEvent> getTypeEntityEvent() {
         return TaskEvent.class;
+    }
+
+    @Override
+    protected String getQueueName() {
+        return JmsQueueName.TASKS.getName();
     }
 
     /**

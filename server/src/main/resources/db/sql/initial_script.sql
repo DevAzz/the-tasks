@@ -76,6 +76,14 @@ CREATE TABLE IF NOT EXISTS `tasksdb`.`subordination_element` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
+DROP TABLE IF EXISTS `tasksdb`.`sub_to_sub`;
+
+CREATE TABLE `tasksdb`.`sub_to_sub` (
+ `parent_id` BIGINT(20),
+ `child_id` BIGINT(20),
+ PRIMARY KEY (`parent_id`, `child_id`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
 
 -- -----------------------------------------------------
 -- Table `tasksdb`.`task_history`

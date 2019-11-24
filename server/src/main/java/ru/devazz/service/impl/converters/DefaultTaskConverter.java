@@ -28,6 +28,7 @@ public class DefaultTaskConverter implements IEntityConverter<DefaultTaskModel, 
         DefaultTaskEntity entity = null;
         if (null != model) {
             entity = new DefaultTaskEntity();
+            entity.setDefaultTaskID(model.getSuid());
             entity.setAuthorSuid(model.getAuthorSuid());
             entity.setEndTime(model.getEndTime());
             entity.setName(model.getName());

@@ -8,7 +8,7 @@ import javafx.collections.ObservableList;
 import org.apache.activemq.command.ActiveMQMessage;
 import org.apache.activemq.command.ActiveMQObjectMessage;
 import ru.devazz.entities.Event;
-import ru.devazz.server.EJBProxyFactory;
+import ru.devazz.server.ProxyFactory;
 import ru.devazz.server.api.IEventService;
 import ru.devazz.server.api.event.EventOccurEvent;
 import ru.devazz.server.api.event.ObjectEvent;
@@ -39,7 +39,8 @@ public class EventIndicatorViewModel extends PresentationModel<IEventService, Ev
 	 * Подключение к сервису рассылки уведомлений
 	 */
 	public void connectToJMSService() {
-		EJBProxyFactory.getInstance().addMessageListener(message -> {
+		ProxyFactory.getInstance().addMessageListener("eventIndicatorView", "eventsQueue",
+														 message -> {
 			try {
 				if (message instanceof ActiveMQMessage) {
 					ActiveMQMessage objectMessage = (ActiveMQMessage) message;

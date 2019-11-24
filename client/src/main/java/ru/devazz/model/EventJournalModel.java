@@ -6,7 +6,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import ru.devazz.entities.Event;
 import ru.devazz.entities.SubordinationElement;
-import ru.devazz.server.EJBProxyFactory;
+import ru.devazz.server.ProxyFactory;
 import ru.devazz.server.api.IEventService;
 import ru.devazz.server.api.model.EventModel;
 import ru.devazz.utils.EntityConverter;
@@ -62,7 +62,7 @@ public class EventJournalModel extends PresentationModel<IEventService, EventMod
 	 * Подключение к сервису рассылки уведомлений
 	 */
 	public void connectToJMSService() {
-		EJBProxyFactory.getInstance().addMessageListener(arg0 -> {
+		ProxyFactory.getInstance().addMessageListener("eventJournal", "eventsQueue", arg0 -> {
 			loadEntities();
 		});
 	}

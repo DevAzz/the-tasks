@@ -62,7 +62,4 @@ public class TaskModel implements Serializable, IEntity {
 
     /** Время цикличного назначения (часы или дата) */
     private String cycleTime;
-
-    public TaskModel() {
-    }
 }

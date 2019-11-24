@@ -1,7 +1,9 @@
 package ru.devazz.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import ru.devazz.server.api.model.IEntity;
 import ru.devazz.server.api.model.enums.CycleTypeTask;
 import ru.devazz.server.api.model.enums.TaskPriority;
@@ -19,6 +21,8 @@ import java.util.Date;
 @Builder
 @Entity
 @Table(name = "tasks", schema = "tasksdb")
+@AllArgsConstructor
+@NoArgsConstructor
 public class TaskEntity implements IEntity {
 
 	/** Идентификатор задачи */

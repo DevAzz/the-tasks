@@ -9,6 +9,7 @@ import ru.devazz.server.api.event.ObjectEvent;
 import ru.devazz.server.api.event.TaskHistoryEvent;
 import ru.devazz.server.api.model.Filter;
 import ru.devazz.server.api.model.TaskHistoryModel;
+import ru.devazz.server.api.model.enums.JmsQueueName;
 import ru.devazz.server.api.model.enums.TaskHistoryType;
 import ru.devazz.service.AbstractEntityService;
 import ru.devazz.service.impl.converters.TaskHistoryEntityConverter;
@@ -58,6 +59,11 @@ public class TaskHistoryService extends AbstractEntityService<TaskHistoryModel, 
 	@Override
 	protected Class<? extends ObjectEvent> getTypeEntityEvent() {
 		return TaskHistoryEvent.class;
+	}
+
+	@Override
+	protected String getQueueName() {
+		return JmsQueueName.HISTORY_TASKS.getName();
 	}
 
 	@Override

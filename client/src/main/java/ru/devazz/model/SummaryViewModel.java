@@ -6,7 +6,7 @@ import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import ru.devazz.entities.SubordinationElement;
-import ru.devazz.server.EJBProxyFactory;
+import ru.devazz.server.ProxyFactory;
 import ru.devazz.server.api.ICommonService;
 import ru.devazz.server.api.IReportService;
 import ru.devazz.server.api.ISubordinationElementService;
@@ -57,7 +57,7 @@ public class SummaryViewModel extends PresentationModel<ICommonService, IEntity>
 		initDateLabelValue(null, null);
 
 		Thread thread = new Thread(() -> {
-			subElsService = EJBProxyFactory.getInstance()
+			subElsService = ProxyFactory.getInstance()
 					.getService(ISubordinationElementService.class);
 			setSubElSuidList(getListSubEls());
 		});
@@ -120,7 +120,7 @@ public class SummaryViewModel extends PresentationModel<ICommonService, IEntity>
 		Thread thread = new Thread(() -> {
 			try {
 				panelsList.clear();
-				IReportService reportService = EJBProxyFactory.getInstance()
+				IReportService reportService = ProxyFactory.getInstance()
 						.getService(IReportService.class);
 				if ((null != startDate) && (null != endDate)) {
 					for (SubordinationElement subEl : subElList) {

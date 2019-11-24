@@ -4,7 +4,7 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import ru.devazz.server.EJBProxyFactory;
+import ru.devazz.server.ProxyFactory;
 import ru.devazz.server.api.ICommonService;
 import ru.devazz.server.api.IEntityService;
 import ru.devazz.server.api.model.IEntity;
@@ -93,7 +93,7 @@ public abstract class PresentationModel<T extends ICommonService, E extends IEnt
 		if (null != type) {
 			try {
 				if (null == service) {
-					service = EJBProxyFactory.getInstance().getService(getTypeService());
+					service = ProxyFactory.getInstance().getService(getTypeService());
 				}
 			} catch (Exception e) {
 				// TODO Логирование

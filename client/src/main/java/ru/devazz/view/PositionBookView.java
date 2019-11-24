@@ -12,7 +12,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import ru.devazz.entities.User;
 import ru.devazz.model.PositionBookViewModel;
-import ru.devazz.server.EJBProxyFactory;
+import ru.devazz.server.ProxyFactory;
 import ru.devazz.server.api.ISubordinationElementService;
 import ru.devazz.server.api.model.SubordinationElementModel;
 
@@ -61,7 +61,7 @@ public class PositionBookView extends AbstractView<PositionBookViewModel> {
 			SimpleStringProperty property = new SimpleStringProperty();
 			Long subElSuid = user.getValue().getSubElementSuid();
 			if (null != subElSuid) {
-				ISubordinationElementService subElService = EJBProxyFactory.getInstance()
+				ISubordinationElementService subElService = ProxyFactory.getInstance()
 						.getService(ISubordinationElementService.class);
 				SubordinationElementModel subEl = subElService.get(subElSuid);
 				if (null != subEl) {

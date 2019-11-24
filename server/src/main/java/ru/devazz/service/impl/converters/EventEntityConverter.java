@@ -25,6 +25,17 @@ public class EventEntityConverter implements IEntityConverter<EventModel, EventE
 
     @Override
     public EventEntity modelToEntity(EventModel model) {
-        return null;
+        EventEntity eventEntity = null;
+        if (null != model) {
+            eventEntity = new EventEntity();
+            eventEntity.setSuid(model.getSuid());
+            eventEntity.setAuthorSuid(model.getAuthorSuid());
+            eventEntity.setDate(model.getDate());
+            eventEntity.setEventType(model.getEventType());
+            eventEntity.setExecutorSuid(model.getExecutorSuid());
+            eventEntity.setName(model.getName());
+            eventEntity.setTaskSuid(model.getTaskSuid());
+        }
+        return eventEntity;
     }
 }

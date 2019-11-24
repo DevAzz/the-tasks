@@ -26,8 +26,8 @@ import java.util.Map;
  */
 public class ReportViewModel extends PresentationModel<IReportService, ReportModel> {
 
-	/** Текстовое свойство наименования боевого поста */
-	private StringProperty battleNameTextProperty;
+	/** Текстовое свойство наименования должности */
+	private StringProperty positionNameTextProperty;
 
 	/** Текстовое свойство даты начала */
 	private StringProperty startDateTextProperty;
@@ -76,7 +76,7 @@ public class ReportViewModel extends PresentationModel<IReportService, ReportMod
 
 	@Override
 	protected void initModel() {
-		battleNameTextProperty = new SimpleStringProperty(this, "battleNameTextProperty");
+		positionNameTextProperty = new SimpleStringProperty(this, "positionNameTextProperty");
 		startDateTextProperty = new SimpleStringProperty(this, "startDateTextProperty");
 		endDateTextProperty = new SimpleStringProperty(this, "endDateTextProperty");
 		reportTitleTextProperty = new SimpleStringProperty(this, "reportTitleTextProperty",
@@ -150,22 +150,12 @@ public class ReportViewModel extends PresentationModel<IReportService, ReportMod
 		this.reworkAmountLabel.set(reworkAmountLabelValue);
 	}
 
-	/**
-	 * Возвращает {@link#battleNameTextProperty}
-	 *
-	 * @return the {@link#battleNameTextProperty}
-	 */
-	public StringProperty getBattleNameTextProperty() {
-		return battleNameTextProperty;
+	public StringProperty getPositionNameTextProperty() {
+		return positionNameTextProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#battleNameTextProperty}
-	 *
-	 * @param battleNameTextValue значение поля
-	 */
-	public void setBattleNameTextPropertyValue(String battleNameTextValue) {
-		this.battleNameTextProperty.set(battleNameTextValue);
+	public void setPositionNameTextPropertyValue(String positionNameTextValue) {
+		this.positionNameTextProperty.set(positionNameTextValue);
 	}
 
 	/**
@@ -409,7 +399,7 @@ public class ReportViewModel extends PresentationModel<IReportService, ReportMod
 		dataArr.add(aEntity);
 		JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource(dataArr);
 		Map<String, Object> parameters = new HashMap<>();
-		InputStream jasperStream = getClass().getResourceAsStream("/report/battlePostReport.jrxml");
+		InputStream jasperStream = getClass().getResourceAsStream("/report/postReport.jrxml");
 		JasperDesign jasperDesign = JRXmlLoader.load(jasperStream);
 		JasperReport jasperReport = JasperCompileManager.compileReport(jasperDesign);
 

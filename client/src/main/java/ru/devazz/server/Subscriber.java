@@ -16,35 +16,33 @@ public class Subscriber {
 	private String activeMqBrokerUri;
 	private String username;
 	private String password;
-	private String destinationName;
 
-	public Subscriber(String activeMqBrokerUri, String destinationName, String username,
-								String password) {
+	Subscriber(String activeMqBrokerUri, String username, String password) {
 		super();
 		this.activeMqBrokerUri = activeMqBrokerUri;
 		this.username = username;
 		this.password = password;
-		this.destinationName = destinationName;
 	}
 
-	public void run(MessageListener listener) throws JMSException {
+	void run(String clientName, String queueName, MessageListener listener) throws JMSException {
 		ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(username, password, activeMqBrokerUri);
 		Connection connection = factory.createConnection();
-		connection.setClientID(getClientId());
+		connection.setClientID(getClientId(clientName, queueName));
 		connection.start();
 		Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 
-		Destination destination = session.createQueue(destinationName);
+		Destination destination = session.createQueue(queueName);
 
 		MessageConsumer consumer = session.createConsumer(destination);
 		consumer.setMessageListener(listener);
 
+		//TODO Логгер
 		System.out.println(String.format("QueueMessageConsumer Waiting for messages at queue='%s' broker='%s'",
-										 destinationName, this.activeMqBrokerUri));
+										 queueName, this.activeMqBrokerUri));
 	}
 
-	private String getClientId() {
-		return "TaskClient_" + destinationName + "_" + activeMqBrokerUri.replace("tcp://localhost:",
+	private String getClientId(String clientName, String queueName) {
+		return clientName + queueName + "_" + activeMqBrokerUri.replace("tcp://localhost:",
 																			  "");
 	}
 }

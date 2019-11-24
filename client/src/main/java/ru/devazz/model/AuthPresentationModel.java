@@ -5,7 +5,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
-import ru.devazz.server.EJBProxyFactory;
+import ru.devazz.server.ProxyFactory;
 import ru.devazz.server.api.IUserService;
 import ru.devazz.server.api.model.UserModel;
 import ru.devazz.utils.Utils;
@@ -146,7 +146,7 @@ public class AuthPresentationModel extends PresentationModel<IUserService, UserM
 		@Override
 		public void run() {
 			try {
-				EJBProxyFactory.getInstance().getService(IUserService.class)
+				ProxyFactory.getInstance().getService(IUserService.class)
 						.disableUser(userSuid);
 				Thread.sleep(1000L);
 				System.out.println("Сеанс завершен ");

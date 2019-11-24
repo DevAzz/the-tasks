@@ -10,13 +10,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Фабрика EJBProxy объектов
+ * Фабрика Proxy объектов
  */
 @Component
-public class EJBProxyFactory {
+public class ProxyFactory {
 
 	/** Экземпляр класса */
-	private static EJBProxyFactory instance;
+	private static ProxyFactory instance;
 
 	/** Карта соответствия типов и имен сервисов */
 	private Map<Class<? extends ICommonService>, Object> mapServiceType = new HashMap<>();
@@ -51,7 +51,7 @@ public class EJBProxyFactory {
 	/**
 	 * Конструктор
 	 */
-	private EJBProxyFactory() {
+	private ProxyFactory() {
 	}
 
 	/**
@@ -59,9 +59,9 @@ public class EJBProxyFactory {
 	 *
 	 * @return единственный экземпляр фабрики
 	 */
-	public static EJBProxyFactory getInstance() {
+	public static ProxyFactory getInstance() {
 		if (null == instance) {
-			instance = new EJBProxyFactory();
+			instance = new ProxyFactory();
 		}
 		return instance;
 	}
@@ -99,11 +99,11 @@ public class EJBProxyFactory {
 	 *
 	 * @param aListener слушатель JMS сообщений
 	 */
-	public void addMessageListener(MessageListener aListener) {
+	public void addMessageListener(String clientName, String queueName, MessageListener aListener) {
 		try {
 			Subscriber subscriber =
-					new Subscriber("tcp://127.0.0.1:61616", "test_queue", "admin", "password");
-			subscriber.run(aListener);
+					new Subscriber("tcp://127.0.0.1:61616", "admin", "password");
+			subscriber.run(clientName, queueName, aListener);
 		} catch (Exception e) {
 			// TODO Логирование
 			e.printStackTrace();

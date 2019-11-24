@@ -9,7 +9,7 @@ import javafx.scene.image.Image;
 import org.apache.activemq.command.ActiveMQMessage;
 import org.apache.activemq.command.ActiveMQObjectMessage;
 import ru.devazz.entities.SubordinationElement;
-import ru.devazz.server.EJBProxyFactory;
+import ru.devazz.server.ProxyFactory;
 import ru.devazz.server.api.ISubordinationElementService;
 import ru.devazz.server.api.IUserService;
 import ru.devazz.server.api.event.ObjectEvent;
@@ -59,7 +59,8 @@ public class SubInfoViewModel
 		imageProperty = new SimpleObjectProperty<>(this, "imageProperty", null);
 		onlineProperty = new SimpleStringProperty(this, "positionProperty", "Не в сети");
 
-		EJBProxyFactory.getInstance().addMessageListener(message -> {
+		ProxyFactory.getInstance().addMessageListener("subInfoViewModel", "subElQueue",
+														 message -> {
 			try {
 				if (message instanceof ActiveMQMessage) {
 					ActiveMQMessage objectMessage = (ActiveMQMessage) message;
@@ -181,7 +182,7 @@ public class SubInfoViewModel
 		Thread thread = new Thread(() -> {
 			String imageURI = "";
 			byte[] imageArr = null;
-			IUserService userService = EJBProxyFactory.getInstance()
+			IUserService userService = ProxyFactory.getInstance()
 					.getService(IUserService.class);
 			userData = userService.getUserBySubElSuid(aSubElSuid);
 			if (null == userData) {

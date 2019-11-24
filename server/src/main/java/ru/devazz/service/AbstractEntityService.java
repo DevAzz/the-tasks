@@ -30,7 +30,7 @@ public abstract class AbstractEntityService<M extends IEntity, E extends IEntity
 	public M add(M aEntity, Boolean aNeedPublishEvent) {
 		E createdEntity = repository.add(converter.modelToEntity(aEntity));
 		if (aNeedPublishEvent) {
-			broker.convertAndSend(JmsQueueName.DEFAULT.getName(),
+			broker.convertAndSend(getQueueName(),
 									   (getEventByEntity(SystemEventType.CREATE,
 														 converter.entityToModel(createdEntity))));
 		}
@@ -42,7 +42,7 @@ public abstract class AbstractEntityService<M extends IEntity, E extends IEntity
 		E deletedEntity = repository.get(aSuid);
 		repository.delete(aSuid);
 		if (aNeedPublishEvent) {
-			broker.convertAndSend(JmsQueueName.DEFAULT.getName(),
+			broker.convertAndSend(getQueueName(),
 									   getEventByEntity(SystemEventType.DELETE,
 														converter.entityToModel(deletedEntity)));
 		}
@@ -57,7 +57,7 @@ public abstract class AbstractEntityService<M extends IEntity, E extends IEntity
 	public void update(M aEntity, Boolean aNeedPublishEvent) {
 		repository.update(converter.modelToEntity(aEntity));
 		if (aNeedPublishEvent) {
-			broker.convertAndSend(JmsQueueName.DEFAULT.getName(),
+			broker.convertAndSend(getQueueName(),
 									   getEventByEntity(SystemEventType.UPDATE, aEntity));
 		}
 	}
@@ -88,4 +88,6 @@ public abstract class AbstractEntityService<M extends IEntity, E extends IEntity
 	 * @return тип события
 	 */
 	protected abstract Class<? extends ObjectEvent> getTypeEntityEvent();
+
+	protected abstract String getQueueName();
 }

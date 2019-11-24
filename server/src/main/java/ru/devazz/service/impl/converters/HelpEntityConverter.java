@@ -25,6 +25,7 @@ public class HelpEntityConverter implements IEntityConverter<HelpModel, HelpEnti
         HelpEntity entity = null;
         if (null != model) {
             entity = new HelpEntity();
+            entity.setHelpItemID(model.getSuid());
             entity.setHelpItemText(model.getHelpItemText());
             entity.setHelpItemName(model.getName());
             entity.setRole(model.getRole());

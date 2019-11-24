@@ -3,8 +3,7 @@ package ru.devazz.configuration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.remoting.rmi.RmiProxyFactoryBean;
-import ru.devazz.server.EJBProxyFactory;
-import ru.devazz.server.Subscriber;
+import ru.devazz.server.ProxyFactory;
 import ru.devazz.server.api.*;
 import ru.devazz.utils.Utils;
 
@@ -12,8 +11,8 @@ import ru.devazz.utils.Utils;
 public class AppConfiguration {
 
     @Bean
-    EJBProxyFactory ejbProxyFactory() {
-        return EJBProxyFactory.getInstance();
+    ProxyFactory proxyFactory() {
+        return ProxyFactory.getInstance();
     }
 
     @Bean

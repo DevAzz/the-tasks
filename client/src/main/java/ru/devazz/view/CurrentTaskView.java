@@ -19,7 +19,7 @@ import ru.devazz.entities.DefaultTask;
 import ru.devazz.entities.SubordinationElement;
 import ru.devazz.entities.Task;
 import ru.devazz.model.CurrentTaskViewModel;
-import ru.devazz.server.EJBProxyFactory;
+import ru.devazz.server.ProxyFactory;
 import ru.devazz.server.api.ISubordinationElementService;
 import ru.devazz.server.api.model.SubordinationElementModel;
 import ru.devazz.server.api.model.enums.SortType;
@@ -769,7 +769,7 @@ public class CurrentTaskView extends AbstractView<CurrentTaskViewModel> {
 	@FXML
 	public void selectExecutor() {
 		ISubordinationElementService subElsService;
-		subElsService = EJBProxyFactory.getInstance()
+		subElsService = ProxyFactory.getInstance()
 				.getService(ISubordinationElementService.class);
 
 		ObservableList<SubordinationElement> listSubEls = FXCollections.observableArrayList();

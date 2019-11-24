@@ -15,7 +15,7 @@ import javafx.stage.FileChooser;
 import jfxtras.scene.control.LocalDateTimeTextField;
 import ru.devazz.entities.SubordinationElement;
 import ru.devazz.model.ReportViewModel;
-import ru.devazz.server.EJBProxyFactory;
+import ru.devazz.server.ProxyFactory;
 import ru.devazz.server.api.ISubordinationElementService;
 import ru.devazz.server.api.model.SubordinationElementModel;
 import ru.devazz.utils.EntityConverter;
@@ -24,6 +24,7 @@ import ru.devazz.utils.Utils;
 import ru.devazz.utils.dialogs.DialogUtils;
 
 import java.io.File;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -42,7 +43,7 @@ public class ReportView extends AbstractView<ReportViewModel> {
 
 	/** Поля вывода наименования боевого поста */
 	@FXML
-	private TextField battlePostNameTextField;
+	private TextField positionNameTextField;
 
 	/** Кнопка открытия диалога выбора боевого поста */
 	@FXML
@@ -138,16 +139,19 @@ public class ReportView extends AbstractView<ReportViewModel> {
 	@Override
 	public void initialize() {
 		bindView();
-
+		startDateTimeIntervalTextField
+				.setDateTimeFormatter(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss"));
+		endDateTimeIntervalTextField
+				.setDateTimeFormatter(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss"));
 		formedReport.setVisible(false);
 
 		searchBattlePostButton.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
 			try {
-				ISubordinationElementService subElsService = EJBProxyFactory.getInstance()
+				ISubordinationElementService subElsService = ProxyFactory.getInstance()
 						.getService(ISubordinationElementService.class);
 
 				Consumer<? super List<SubordinationElement>> consumer = t -> {
-					model.setBattleNameTextPropertyValue(t.get(0).getName());
+					model.setPositionNameTextPropertyValue(t.get(0).getName());
 					model.setPositionSuid(t.get(0).getSuid());
 				};
 
@@ -245,15 +249,15 @@ public class ReportView extends AbstractView<ReportViewModel> {
 	 * Связывание представления с моделью
 	 */
 	private void bindView() {
-		Bindings.bindBidirectional(battlePostNameTextField.textProperty(),
-				model.getBattleNameTextProperty());
+		Bindings.bindBidirectional(positionNameTextField.textProperty(),
+				model.getPositionNameTextProperty());
 		Bindings.bindBidirectional(startDateTimeIntervalTextField.textProperty(),
 				model.getStartDateTextProperty());
 		Bindings.bindBidirectional(endDateTimeIntervalTextField.textProperty(),
 				model.getEndDateTextProperty());
-		Bindings.bindBidirectional(reportPane.textProperty(), model.getBattleNameTextProperty());
+		Bindings.bindBidirectional(reportPane.textProperty(), model.getPositionNameTextProperty());
 		Bindings.bindBidirectional(nameButtlePostLabel.textProperty(),
-				model.getBattleNameTextProperty());
+				model.getPositionNameTextProperty());
 		Bindings.bindBidirectional(countDoneTaskLabel.textProperty(),
 				model.getCountDoneTasksTextProperty());
 		Bindings.bindBidirectional(countOverdueDoneTasksLabel.textProperty(),
@@ -274,17 +278,17 @@ public class ReportView extends AbstractView<ReportViewModel> {
 				model.getGenerateReportDisable());
 
 		String errStyle = "textFieldErr";
-		battlePostNameTextField.getStyleClass().add(errStyle);
+		positionNameTextField.getStyleClass().add(errStyle);
 		model.getStartDateTextProperty()
 				.addListener(new ChangeDateTextListener(startDateTimeIntervalTextField));
 		model.getEndDateTextProperty()
 				.addListener(new ChangeDateTextListener(endDateTimeIntervalTextField));
-		model.getBattleNameTextProperty()
-				.addListener((ChangeListener<String>) (observable, oldValue, newValue) -> {
+		model.getPositionNameTextProperty()
+				.addListener((observable, oldValue, newValue) -> {
 					if (newValue.isEmpty()) {
-						battlePostNameTextField.getStyleClass().add(errStyle);
+						positionNameTextField.getStyleClass().add(errStyle);
 					} else {
-						battlePostNameTextField.getStyleClass().remove(errStyle);
+						positionNameTextField.getStyleClass().remove(errStyle);
 					}
 					String startDate = (null != model.getStartDateTextProperty().get())
 							? model.getStartDateTextProperty().get()
@@ -339,8 +343,8 @@ public class ReportView extends AbstractView<ReportViewModel> {
 			String endDate = (null != model.getEndDateTextProperty().get())
 					? model.getEndDateTextProperty().get()
 					: "";
-			String name = (null != model.getBattleNameTextProperty().get())
-					? model.getBattleNameTextProperty().get()
+			String name = (null != model.getPositionNameTextProperty().get())
+					? model.getPositionNameTextProperty().get()
 					: "";
 			model.setGenerateReportDisableValue(
 					name.isEmpty() || startDate.isEmpty() || endDate.isEmpty());

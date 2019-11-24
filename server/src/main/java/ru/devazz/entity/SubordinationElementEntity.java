@@ -25,8 +25,12 @@ public class SubordinationElementEntity implements IEntity {
 	private String name;
 
 	/** Подчиненные */
-//	@ManyToMany(cascade = CascadeType.ALL)
-//	private List<SubordinationElementEntity> subordinates;
+	@ManyToMany(cascade = CascadeType.ALL)
+	@JoinTable(schema = "tasksdb",
+			   name = "sub_to_sub",
+			   joinColumns = {@JoinColumn(name = "parent_id")},
+			   inverseJoinColumns = {@JoinColumn(name = "child_id")})
+	private List<SubordinationElementEntity> subordinates;
 
 	/** Идентификатор роли */
 	@Column(name = "role_id", columnDefinition = "bigint")

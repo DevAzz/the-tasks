@@ -35,6 +35,7 @@ public class TaskEntityConverter implements IEntityConverter<TaskModel, TaskEnti
         TaskEntity entity = null;
         if (null != model) {
             entity = TaskEntity.builder().build();
+            entity.setTaskSuid(model.getSuid());
             entity.setStatus(model.getStatus());
             entity.setDocument(model.getDocument());
             entity.setDocumentName(model.getDocumentName());

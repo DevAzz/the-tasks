@@ -48,6 +48,11 @@ public class RoleService extends AbstractEntityService<RoleModel, RoleEntity>
 	}
 
 	@Override
+	protected String getQueueName() {
+		return null;
+	}
+
+	@Override
 	public RoleModel getRoleByUserRolesEnum(UserRoles aUserRole, Long aUserSuid) {
 		RoleModel result = null;
 		for (RoleModel role : getAll(aUserSuid)) {

@@ -66,7 +66,6 @@
     -fx-font-weight: bold;
 }
 .menu-bar{
-    -fx-background-image: url("ui/army.png");
     -fx-background-repeat: no-repeat;
     -fx-background-position: right 10px center;
     -fx-background-size: 30px;
@@ -92,7 +91,7 @@
     -fx-background-color:#2d2e30;
 }
 .context-menu {
-    -fx-skin: "com.sun.javafx.scene.control.skin.ContextMenuSkin";
+    -fx-skin: "javafx.scene.control.skin.ContextMenuSkin";
     -fx-background-color: #3a3f41;
     -fx-background-insets: 0, 1, 2;
     -fx-background-radius: 0 6 6 6, 0 5 5 5, 0 4 4 4;

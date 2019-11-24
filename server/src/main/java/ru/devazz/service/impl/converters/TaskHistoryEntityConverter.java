@@ -27,6 +27,7 @@ public class TaskHistoryEntityConverter implements IEntityConverter<TaskHistoryM
         TaskHistoryEntity entity = null;
         if (null != model) {
             entity = TaskHistoryEntity.builder().build();
+            entity.setSuid(model.getSuid());
             entity.setHistoryType(model.getHistoryType());
             entity.setText(model.getText());
             entity.setTitle(model.getTitle());

@@ -10,6 +10,7 @@ import ru.devazz.server.api.event.ObjectEvent;
 import ru.devazz.server.api.event.SubElEvent;
 import ru.devazz.server.api.model.SubordinationElementModel;
 import ru.devazz.server.api.model.UserModel;
+import ru.devazz.server.api.model.enums.JmsQueueName;
 import ru.devazz.service.AbstractEntityService;
 import ru.devazz.service.impl.converters.SubElEntityConverter;
 
@@ -70,6 +71,11 @@ public class SubordinationElementService
 	@Override
 	protected Class<? extends ObjectEvent> getTypeEntityEvent() {
 		return SubElEvent.class;
+	}
+
+	@Override
+	protected String getQueueName() {
+		return JmsQueueName.SUB_ELS.getName();
 	}
 
 	@Override

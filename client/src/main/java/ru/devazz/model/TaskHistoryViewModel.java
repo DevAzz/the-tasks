@@ -9,7 +9,7 @@ import javafx.collections.ObservableList;
 import org.apache.activemq.command.ActiveMQMessage;
 import org.apache.activemq.command.ActiveMQObjectMessage;
 import ru.devazz.entities.Task;
-import ru.devazz.server.EJBProxyFactory;
+import ru.devazz.server.ProxyFactory;
 import ru.devazz.server.api.ITaskHistoryService;
 import ru.devazz.server.api.event.ObjectEvent;
 import ru.devazz.server.api.model.Filter;
@@ -545,7 +545,8 @@ public class TaskHistoryViewModel
 	 * Подключение к службе рассылки JMS сообщений
 	 */
 	private void connectToJMSService() {
-		EJBProxyFactory.getInstance().addMessageListener(message -> {
+		ProxyFactory.getInstance().addMessageListener("taskHistoryViewModel", "taskHistoryQueue",
+														 message -> {
 			try {
 				if (message instanceof ActiveMQMessage) {
 					ActiveMQMessage objectMessage = (ActiveMQMessage) message;

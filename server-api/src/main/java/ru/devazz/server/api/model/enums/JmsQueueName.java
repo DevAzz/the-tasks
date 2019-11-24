@@ -2,7 +2,11 @@ package ru.devazz.server.api.model.enums;
 
 public enum JmsQueueName {
 
-    DEFAULT("task_queue");
+    USERS("usersQueue"),
+    TASKS("tasksQueue"),
+    EVENTS("eventsQueue"),
+    SUB_ELS("subElQueue"),
+    HISTORY_TASKS("taskHistoryQueue");
 
     private String name;
 

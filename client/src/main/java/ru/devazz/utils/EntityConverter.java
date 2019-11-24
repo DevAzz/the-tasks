@@ -3,7 +3,7 @@ package ru.devazz.utils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import ru.devazz.entities.*;
-import ru.devazz.server.EJBProxyFactory;
+import ru.devazz.server.ProxyFactory;
 import ru.devazz.server.api.ISubordinationElementService;
 import ru.devazz.server.api.model.*;
 
@@ -45,10 +45,10 @@ public class EntityConverter {
 		element.setRoleSuid(aEntity.getRoleSuid());
 		element.setRootElement(aEntity.getRootElement());
 		ObservableList<SubordinationElement> subordinates = FXCollections.observableArrayList();
-//		for (SubordinationElementModel entity : aEntity.getSubordinates()) {
-//			subordinates.add(convertSubElEntityToClientWrap(entity));
-//		}
-//		element.setSubElements(subordinates);
+		for (SubordinationElementModel entity : aEntity.getSubordinates()) {
+			subordinates.add(convertSubElEntityToClientWrap(entity));
+		}
+		element.setSubElements(subordinates);
 		return element;
 	}
 
@@ -65,7 +65,7 @@ public class EntityConverter {
 			String note = "";
 			String description = "";
 			String documentName = "";
-			ISubordinationElementService subElService = EJBProxyFactory.getInstance()
+			ISubordinationElementService subElService = ProxyFactory.getInstance()
 					.getService(ISubordinationElementService.class);
 
 			SubordinationElementModel entity = subElService.get(aEntity.getExecutorSuid());
@@ -218,7 +218,7 @@ public class EntityConverter {
 	 */
 	public Event convertEventModelToClientWrapEvent(EventModel aEntity) {
 		String name = Utils.getInstance().fromBase64(aEntity.getName());
-		ISubordinationElementService service = EJBProxyFactory.getInstance()
+		ISubordinationElementService service = ProxyFactory.getInstance()
 				.getService(ISubordinationElementService.class);
 		SubordinationElement author = convertSubElEntityToClientWrap(
 				service.get(aEntity.getAuthorSuid()));

@@ -200,7 +200,6 @@ public class PushUpMessageView extends AbstractView<PushUpMessageViewModel> {
 			pushUpButton.setVisible(false);
 			break;
 		case HELLO_PUSH:
-			icon.setImage(new Image("/css/starRED.png"));
 			pushUpButton.setVisible(false);
 			break;
 		case DELETED_PUSH:
@@ -228,7 +227,6 @@ public class PushUpMessageView extends AbstractView<PushUpMessageViewModel> {
 			break;
 		default:
 			pushUpButton.setVisible(false);
-			icon.setImage(new Image("/css/starRED.png"));
 		}
 
 	}

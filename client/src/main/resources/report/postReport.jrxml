@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="battlePostReport" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="501" leftMargin="56" rightMargin="38" topMargin="43" bottomMargin="43" uuid="16ec0b0e-c1c2-4c64-9f45-816b062d146d">
-	<style name="Default" isDefault="true" pdfFontName="./ARIAL.ttf" pdfEncoding="Cp1251"/>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="postReport" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="501" leftMargin="56" rightMargin="38" topMargin="43" bottomMargin="43" uuid="16ec0b0e-c1c2-4c64-9f45-816b062d146d">
+	<style name="Default" isDefault="true" pdfFontName="./client/src/main/resources/ARIAL.ttf" pdfEncoding="Cp1251"/>
 	<queryString language="SQL">
 		<![CDATA[]]>
 	</queryString>
-	<field name="battlePostName" class="java.lang.String"/>
+	<field name="postName" class="java.lang.String"/>
 	<field name="dateSpace" class="java.lang.String"/>
 	<field name="successDoneAmount" class="java.lang.Long"/>
 	<field name="overdueDoneAmount" class="java.lang.Long"/>
@@ -18,7 +18,7 @@
 			<staticText>
 				<reportElement uuid="13bc8e7e-b205-42fe-933b-c6bd4da77333" x="0" y="14" width="496" height="25"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Times New Roman" size="18" isBold="true" pdfFontName="./ARIAL.ttf"/>
+					<font fontName="Times New Roman" size="18" isBold="true" pdfFontName="./client/src/main/resources/ARIAL.ttf"/>
 					<paragraph lineSpacing="Single" lineSpacingSize="1.0" firstLineIndent="0" leftIndent="0" rightIndent="0" spacingBefore="0" spacingAfter="0" tabStopWidth="40"/>
 				</textElement>
 				<text><![CDATA[Отчет по задачам]]></text>
@@ -26,7 +26,7 @@
 			<textField pattern="dd.MM.yyyy">
 				<reportElement uuid="ed9ba0b2-deda-4b9b-b644-b4bca622196e" x="363" y="27" width="72" height="26"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Times New Roman" size="12" pdfFontName="./ARIAL.ttf"/>
+					<font fontName="Times New Roman" size="12" pdfFontName="./client/src/main/resources/ARIAL.ttf"/>
 					<paragraph lineSpacing="Single" lineSpacingSize="1.0" firstLineIndent="0" leftIndent="0" rightIndent="0" spacingBefore="0" spacingAfter="0" tabStopWidth="40"/>
 				</textElement>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
@@ -34,7 +34,7 @@
 			<textField pattern="H:mm:ss">
 				<reportElement uuid="81b54c31-ad34-4028-8a2a-04cb729850bb" x="434" y="28" width="59" height="25"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Times New Roman" size="12" pdfFontName="./ARIAL.ttf"/>
+					<font fontName="Times New Roman" size="12" pdfFontName="./client/src/main/resources/ARIAL.ttf"/>
 					<paragraph lineSpacing="Single" lineSpacingSize="1.0" firstLineIndent="0" leftIndent="0" rightIndent="0" spacingBefore="0" spacingAfter="0" tabStopWidth="40"/>
 				</textElement>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
@@ -88,7 +88,7 @@
 			<textField isBlankWhenNull="true">
 				<reportElement uuid="40fb8454-c80b-4df7-bd6d-aa0fd0e57284" x="168" y="168" width="327" height="56"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Times New Roman" size="14" pdfFontName="./ARIAL.ttf"/>
+					<font fontName="Times New Roman" size="14" pdfFontName="./client/src/main/resources/ARIAL.ttf"/>
 					<paragraph lineSpacing="Single" lineSpacingSize="1.0" firstLineIndent="0" leftIndent="0" rightIndent="0" spacingBefore="0" spacingAfter="0" tabStopWidth="40"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{overdueDoneAmount}]]></textFieldExpression>
@@ -96,7 +96,7 @@
 			<textField isBlankWhenNull="true">
 				<reportElement uuid="78807e8d-70f4-44d9-bfc4-6200aa8c3922" x="168" y="112" width="327" height="56"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Times New Roman" size="14" pdfFontName="./ARIAL.ttf"/>
+					<font fontName="Times New Roman" size="14" pdfFontName="./client/src/main/resources/ARIAL.ttf"/>
 					<paragraph lineSpacing="Single" lineSpacingSize="1.0" firstLineIndent="0" leftIndent="0" rightIndent="0" spacingBefore="0" spacingAfter="0" tabStopWidth="40"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{successDoneAmount}]]></textFieldExpression>
@@ -104,7 +104,7 @@
 			<textField isBlankWhenNull="true">
 				<reportElement uuid="175cf88e-57f4-4d6c-aa92-8e773562bcf6" x="168" y="56" width="327" height="56"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Times New Roman" size="14" pdfFontName="./ARIAL.ttf"/>
+					<font fontName="Times New Roman" size="14" pdfFontName="./client/src/main/resources/ARIAL.ttf"/>
 					<paragraph lineSpacing="Single" lineSpacingSize="1.0" firstLineIndent="0" leftIndent="0" rightIndent="0" spacingBefore="0" spacingAfter="0" tabStopWidth="40"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{dateSpace}]]></textFieldExpression>
@@ -112,10 +112,10 @@
 			<textField isBlankWhenNull="true">
 				<reportElement uuid="1202f01c-707a-40c2-a8b1-a7c0ea8742ab" x="168" y="0" width="327" height="56"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Times New Roman" size="14" pdfFontName="./ARIAL.ttf"/>
+					<font fontName="Times New Roman" size="14" pdfFontName="./client/src/main/resources/ARIAL.ttf"/>
 					<paragraph lineSpacing="Single" lineSpacingSize="1.0" firstLineIndent="0" leftIndent="0" rightIndent="0" spacingBefore="0" spacingAfter="0" tabStopWidth="40"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{battlePostName}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{postName}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement uuid="00415d85-9bc3-4365-9eeb-c1e5c638fbb1" x="168" y="448" width="327" height="56"/>
@@ -128,7 +128,7 @@
 			<staticText>
 				<reportElement uuid="38c67a2d-cd2e-48f3-9609-59d867142393" x="0" y="448" width="170" height="56"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Times New Roman" size="14" isBold="true" pdfFontName="./ARIAL.ttf"/>
+					<font fontName="Times New Roman" size="14" isBold="true" pdfFontName="./client/src/main/resources/ARIAL.ttf"/>
 					<paragraph lineSpacing="Single" lineSpacingSize="1.0" firstLineIndent="0" leftIndent="0" rightIndent="0" spacingBefore="0" spacingAfter="0" tabStopWidth="40"/>
 				</textElement>
 				<text><![CDATA[Задачи в работе]]></text>
@@ -152,7 +152,7 @@
 			<textField isBlankWhenNull="true">
 				<reportElement uuid="3cc1ec07-9fc4-4ba3-8941-75132ed50300" x="168" y="336" width="327" height="56"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Times New Roman" size="14" pdfFontName="./ARIAL.ttf"/>
+					<font fontName="Times New Roman" size="14" pdfFontName="./client/src/main/resources/ARIAL.ttf"/>
 					<paragraph lineSpacing="Single" lineSpacingSize="1.0" firstLineIndent="0" leftIndent="0" rightIndent="0" spacingBefore="0" spacingAfter="0" tabStopWidth="40"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{failedAmount}]]></textFieldExpression>
@@ -160,7 +160,7 @@
 			<staticText>
 				<reportElement uuid="0dbdec43-db5d-4b9f-83df-16c06cb7a253" x="0" y="336" width="170" height="56"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Times New Roman" size="14" isBold="true" pdfFontName="./ARIAL.ttf"/>
+					<font fontName="Times New Roman" size="14" isBold="true" pdfFontName="./client/src/main/resources/ARIAL.ttf"/>
 					<paragraph lineSpacing="Single" lineSpacingSize="1.0" firstLineIndent="0" leftIndent="0" rightIndent="0" spacingBefore="0" spacingAfter="0" tabStopWidth="40"/>
 				</textElement>
 				<text><![CDATA[Не выполнено]]></text>
@@ -212,7 +212,7 @@
 			<staticText>
 				<reportElement uuid="aafb780d-0dd7-42a7-b78c-adce82a6363d" mode="Transparent" x="0" y="0" width="170" height="56" backcolor="#F4F4F4"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Times New Roman" size="14" isBold="true" pdfFontName="./ARIAL.ttf"/>
+					<font fontName="Times New Roman" size="14" isBold="true" pdfFontName="./client/src/main/resources/ARIAL.ttf"/>
 					<paragraph lineSpacing="Single" lineSpacingSize="1.0" firstLineIndent="0" leftIndent="0" rightIndent="0" spacingBefore="0" spacingAfter="0" tabStopWidth="40"/>
 				</textElement>
 				<text><![CDATA[Должность]]></text>
@@ -220,7 +220,7 @@
 			<staticText>
 				<reportElement uuid="6d763b1b-72b3-4d31-b1c4-46d0b0118214" mode="Transparent" x="0" y="56" width="170" height="56"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Times New Roman" size="14" isBold="true" pdfFontName="./ARIAL.ttf"/>
+					<font fontName="Times New Roman" size="14" isBold="true" pdfFontName="./client/src/main/resources/ARIAL.ttf"/>
 					<paragraph lineSpacing="Single" lineSpacingSize="1.0" firstLineIndent="0" leftIndent="0" rightIndent="0" spacingBefore="0" spacingAfter="0" tabStopWidth="40"/>
 				</textElement>
 				<text><![CDATA[Дата]]></text>
@@ -228,7 +228,7 @@
 			<staticText>
 				<reportElement uuid="5c4dfbae-d30a-4345-8c16-34639fe09571" x="0" y="112" width="170" height="56"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Times New Roman" size="14" isBold="true" pdfFontName="./ARIAL.ttf"/>
+					<font fontName="Times New Roman" size="14" isBold="true" pdfFontName="./client/src/main/resources/ARIAL.ttf"/>
 					<paragraph lineSpacing="Single" lineSpacingSize="1.0" firstLineIndent="0" leftIndent="0" rightIndent="0" spacingBefore="0" spacingAfter="0" tabStopWidth="40"/>
 				</textElement>
 				<text><![CDATA[Выполнено в срок]]></text>
@@ -236,7 +236,7 @@
 			<staticText>
 				<reportElement uuid="ab9c716f-f405-46ca-95d8-7e0e2d62eab8" x="0" y="168" width="170" height="56"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Times New Roman" size="14" isBold="true" pdfFontName="./ARIAL.ttf"/>
+					<font fontName="Times New Roman" size="14" isBold="true" pdfFontName="./client/src/main/resources/ARIAL.ttf"/>
 					<paragraph lineSpacing="Single" lineSpacingSize="1.0" firstLineIndent="0" leftIndent="0" rightIndent="0" spacingBefore="0" spacingAfter="0" tabStopWidth="40"/>
 				</textElement>
 				<text><![CDATA[Выполнено с опозданием]]></text>

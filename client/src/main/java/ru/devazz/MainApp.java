@@ -107,6 +107,7 @@ public class MainApp extends AbstractJavaFxApplicationSupport {
 				hideLine.play();
 				hideLine.setOnFinished(e -> {
 					rStage.close();
+					System.exit(0);
 				});
 			});
 
@@ -189,7 +190,7 @@ public class MainApp extends AbstractJavaFxApplicationSupport {
 				hideLine.setOnFinished(e -> {
 					primaryStage.hide();
 				});
-				Platform.runLater(() -> showRootView());
+				Platform.runLater(this::showRootView);
 			});
 
 			rootLayout.setCenter(view.getRootPane());
@@ -200,39 +201,11 @@ public class MainApp extends AbstractJavaFxApplicationSupport {
 		}
 	}
 
-	/**
-	 * @see javafx.application.Application#start(javafx.stage.Stage)
-	 */
 	@Override
 	public void start(Stage aPrimaryStage) throws Exception {
 		this.primaryStage = aPrimaryStage;
 		initRootLayout();
-		// BackGround Animation Show
-		Timeline showLine = new Timeline(
-				new KeyFrame(Duration.seconds(0.05),
-						evt -> primaryStage.setOpacity((primaryStage.getOpacity() <= 0.95)
-								? primaryStage.getOpacity() + 0.05
-								: primaryStage.getOpacity())));
-		showLine.setCycleCount(40);
-		showLine.setDelay(Duration.seconds(1.5));
-		showLine.play();
-		// BackGround Animation Hide
-		Timeline hideline = new Timeline(new KeyFrame(Duration.seconds(0.03),
-				evt -> primaryStage.setOpacity(
-						(primaryStage.getOpacity() >= 0.1) ? primaryStage.getOpacity() - 0.1
-								: primaryStage.getOpacity() - primaryStage.getOpacity())));
-		hideline.setCycleCount(15);
-		hideline.setDelay(Duration.seconds(1));
-
-		// Events of timeline
-		showLine.setOnFinished(event -> hideline.play());
-		hideline.setOnFinished(event -> {
-			primaryStage.setOpacity(0);
-			showAuthView();
-			DialogUtils.getInstance().showPushUp("Менеджер задач", "Менеджер задач запущен",
-												 PushUpTypes.HELLO_PUSH, null);
-			primaryStage.requestFocus();
-		});
+		showAuthView();
 	}
 
 }

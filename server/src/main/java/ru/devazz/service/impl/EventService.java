@@ -8,6 +8,7 @@ import ru.devazz.server.api.IEventService;
 import ru.devazz.server.api.event.EventOccurEvent;
 import ru.devazz.server.api.event.ObjectEvent;
 import ru.devazz.server.api.model.EventModel;
+import ru.devazz.server.api.model.enums.JmsQueueName;
 import ru.devazz.service.AbstractEntityService;
 import ru.devazz.service.impl.converters.EventEntityConverter;
 
@@ -38,6 +39,11 @@ public class EventService extends AbstractEntityService<EventModel, EventEntity>
 	@Override
 	protected Class<? extends ObjectEvent> getTypeEntityEvent() {
 		return EventOccurEvent.class;
+	}
+
+	@Override
+	protected String getQueueName() {
+		return JmsQueueName.EVENTS.getName();
 	}
 
 	@Override

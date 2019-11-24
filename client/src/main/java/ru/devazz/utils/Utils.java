@@ -2,7 +2,7 @@ package ru.devazz.utils;
 
 import javafx.fxml.FXMLLoader;
 import ru.devazz.entities.SubordinationElement;
-import ru.devazz.server.EJBProxyFactory;
+import ru.devazz.server.ProxyFactory;
 import ru.devazz.server.api.IRoleService;
 import ru.devazz.server.api.ISubordinationElementService;
 import ru.devazz.server.api.IUserService;
@@ -172,7 +172,7 @@ public class Utils {
 	 */
 	public String getTempDir() {
 		String systemName = System.getProperty("os.name").toLowerCase();
-		if (systemName.indexOf("win") != -1) {
+		if (systemName.contains("win")) {
 			return System.getProperty("java.io.tmpdir");
 		} else {
 			return "/tmp/";
@@ -270,7 +270,7 @@ public class Utils {
 	 * @return {@code true} - если текущий пользователь соответствует роли
 	 */
 	public boolean checkUserAccess(UserRoles aRole){
-		IRoleService roleService = EJBProxyFactory.getInstance()
+		IRoleService roleService = ProxyFactory.getInstance()
 				.getService(IRoleService.class);
 		return roleService.checkUserPrivilege(aRole, currentUser.getSuid());
 	}
@@ -285,7 +285,7 @@ public class Utils {
 	public boolean checkRoleEquals(UserRoles aRole){
 		Boolean result = false;
 		if (null != currentUser) {
-			IRoleService roleService = EJBProxyFactory.getInstance()
+			IRoleService roleService = ProxyFactory.getInstance()
 					.getService(IRoleService.class);
 			RoleModel role = roleService.get(currentUser.getIdRole());
 			UserRoles currentUserRole = UserRoles.getUserRoleByName(role.getName());
@@ -359,18 +359,20 @@ public class Utils {
 	 * @throws Exception в случае ошибки
 	 */
 	public void updateUserOnlineFlag(Boolean aOnlineFlag) {
-		new Thread(() -> {
+		Thread thread = new Thread(() -> {
 			if ((null != aOnlineFlag) && (null != currentUser)) {
 				currentUser.setOnline(aOnlineFlag);
 				try {
-					EJBProxyFactory.getInstance().getService(IUserService.class)
+					ProxyFactory.getInstance().getService(IUserService.class)
 							.update(currentUser, true);
 				} catch (Exception e) {
 					// TODO Логирование
 					e.printStackTrace();
 				}
 			}
-		}).start();
+		});
+		thread.setDaemon(true);
+		thread.start();
 
 	}
 
@@ -382,7 +384,7 @@ public class Utils {
 	public SubordinationElement getCurrentUserSubEl() {
 		if (null == currentElement) {
 			if (null != currentUser) {
-				ISubordinationElementService service = EJBProxyFactory.getInstance()
+				ISubordinationElementService service = ProxyFactory.getInstance()
 						.getService(ISubordinationElementService.class);
 				currentElement = EntityConverter.getInstatnce()
 						.convertSubElEntityToClientWrap(service.get(currentUser.getPositionSuid()));

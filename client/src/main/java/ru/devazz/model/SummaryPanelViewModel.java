@@ -8,7 +8,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.image.Image;
 import ru.devazz.entities.Task;
-import ru.devazz.server.EJBProxyFactory;
+import ru.devazz.server.ProxyFactory;
 import ru.devazz.server.api.ICommonService;
 import ru.devazz.server.api.ITaskService;
 import ru.devazz.server.api.IUserService;
@@ -303,7 +303,7 @@ public class SummaryPanelViewModel extends PresentationModel<ICommonService, IEn
 	private void loadTasks(final ReportModel aEntity) {
 		Thread threadIn = new Thread(() -> {
 			try {
-				ITaskService service = EJBProxyFactory.getInstance()
+				ITaskService service = ProxyFactory.getInstance()
 						.getService(ITaskService.class);
 				inTasks.clear();
 
@@ -324,7 +324,7 @@ public class SummaryPanelViewModel extends PresentationModel<ICommonService, IEn
 		threadIn.start();
 		Thread threadOut = new Thread(() -> {
 			try {
-				ITaskService service = EJBProxyFactory.getInstance()
+				ITaskService service = ProxyFactory.getInstance()
 						.getService(ITaskService.class);
 				outTasks.clear();
 
@@ -372,7 +372,7 @@ public class SummaryPanelViewModel extends PresentationModel<ICommonService, IEn
 	private void setUserImage(Long aSubElSuid) {
 		Thread thread = new Thread(() -> {
 			Image image = null;
-			IUserService userService = EJBProxyFactory.getInstance()
+			IUserService userService = ProxyFactory.getInstance()
 					.getService(IUserService.class);
 			Long userSuid = userService.getUserSuidBySubElSuid(aSubElSuid);
 			File file = new File(Utils.getInstance().getUserImageName(userSuid));
@@ -381,7 +381,9 @@ public class SummaryPanelViewModel extends PresentationModel<ICommonService, IEn
 			} else {
 				byte[] imageArr = userService.getUserImage(userSuid);
 				file = Utils.getInstance().createFileImage(imageArr, userSuid);
-				image = new Image(file.toURI().toString(), 145, 145, true, false, true);
+				if (null != file) {
+					image = new Image(file.toURI().toString(), 145, 145, true, false, true);
+				}
 			}
 
 			setImagePropertyValue(image);

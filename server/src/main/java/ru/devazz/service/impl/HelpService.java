@@ -48,5 +48,10 @@ public class HelpService extends AbstractEntityService<HelpModel, HelpEntity> im
 		return null;
 	}
 
+	@Override
+	protected String getQueueName() {
+		return null;
+	}
+
 
 }

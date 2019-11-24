@@ -2,14 +2,13 @@ package ru.devazz.model;
 
 import javafx.application.Platform;
 import javafx.beans.property.*;
-import javafx.beans.value.ChangeListener;
 import javafx.scene.control.Alert.AlertType;
 import org.apache.activemq.command.ActiveMQMessage;
 import org.apache.activemq.command.ActiveMQObjectMessage;
 import ru.devazz.entities.DefaultTask;
 import ru.devazz.entities.SubordinationElement;
 import ru.devazz.entities.Task;
-import ru.devazz.server.EJBProxyFactory;
+import ru.devazz.server.ProxyFactory;
 import ru.devazz.server.api.ITaskService;
 import ru.devazz.server.api.event.ObjectEvent;
 import ru.devazz.server.api.model.IEntity;
@@ -22,7 +21,6 @@ import ru.devazz.utils.Utils;
 import ru.devazz.utils.dialogs.DialogUtils;
 
 import javax.jms.JMSException;
-import javax.naming.NamingException;
 import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -108,16 +106,13 @@ public class CurrentTaskViewModel extends PresentationModel<ITaskService, TaskMo
 	private BooleanProperty visibleSelectExecutorButtonProperty;
 
 	/** Текстовое свойство цвета прогресс бара */
-	private ObjectProperty<PropegressBarColor> colorProgressBarProperty;
+	private ObjectProperty<ProgressBarColor> colorProgressBarProperty;
 
 	/** Текстовое свойство текста наименования боевого поста автора задачи */
 	private StringProperty authorTextProperty;
 
 	/** Свойство текста подсказки индикатора прогресса */
 	private StringProperty tooltipProgressBarTextProperty;
-
-	/** Исполнитель задачи */
-	private SubordinationElement subElExecutor;
 
 	/** Модель представления формы управления циклическим назначением */
 	private CycleTaskViewModel cycleModel;
@@ -128,9 +123,9 @@ public class CurrentTaskViewModel extends PresentationModel<ITaskService, TaskMo
 	/**
 	 * Перечисление цветов индикатора прогресса
 	 */
-	public enum PropegressBarColor {
+	public enum ProgressBarColor {
 
-		RED, GREEN, YELLOW;
+		RED, GREEN, YELLOW
 
 	}
 
@@ -176,10 +171,10 @@ public class CurrentTaskViewModel extends PresentationModel<ITaskService, TaskMo
 	/**
 	 * Добавляет слушатели изменения значений свойств основных параметров задачи
 	 */
-	public void addPropertyListeners() {
+	private void addPropertyListeners() {
 		if (createTaskFlag.get()) {
 			titleLabelProperty
-					.addListener((ChangeListener<String>) (observable, oldValue, newValue) -> {
+					.addListener((observable, oldValue, newValue) -> {
 						String exec = (null != getExecutorStringProperty().get())
 								? getExecutorStringProperty().get()
 								: "";
@@ -192,14 +187,14 @@ public class CurrentTaskViewModel extends PresentationModel<ITaskService, TaskMo
 						changeDetectThread.start();
 					});
 			noteLabelProperty
-					.addListener((ChangeListener<String>) (observable, oldValue, newValue) -> {
+					.addListener((observable, oldValue, newValue) -> {
 						task.setNote(newValue);
 						Thread changeDetectThread = new Thread(new ChangeExistCheckRunnable());
 						changeDetectThread.setDaemon(true);
 						changeDetectThread.start();
 					});
 			startDateProperty.addListener(
-					(ChangeListener<LocalDateTime>) (observable, oldValue, newValue) -> {
+					(observable, oldValue, newValue) -> {
 						String title = (null != getTitleLabelProperty().get())
 								? getTitleLabelProperty().get()
 								: "";
@@ -219,7 +214,7 @@ public class CurrentTaskViewModel extends PresentationModel<ITaskService, TaskMo
 
 					});
 			endDateProperty.addListener(
-					(ChangeListener<LocalDateTime>) (observable, oldValue, newValue) -> {
+					(observable, oldValue, newValue) -> {
 						String title = (null != getTitleLabelProperty().get())
 								? getTitleLabelProperty().get()
 								: "";
@@ -238,7 +233,7 @@ public class CurrentTaskViewModel extends PresentationModel<ITaskService, TaskMo
 						changeDetectThread.start();
 					});
 			executorStringProperty
-					.addListener((ChangeListener<String>) (observable, oldValue, newValue) -> {
+					.addListener((observable, oldValue, newValue) -> {
 						String title = (null != getTitleLabelProperty().get())
 								? getTitleLabelProperty().get()
 								: "";
@@ -250,7 +245,7 @@ public class CurrentTaskViewModel extends PresentationModel<ITaskService, TaskMo
 						changeDetectThread.start();
 					});
 			priorityLabelProperty
-					.addListener((ChangeListener<String>) (observable, oldValue, newValue) -> {
+					.addListener((observable, oldValue, newValue) -> {
 						TaskPriority priority = TaskPriority.getPriorityBySuid(newValue);
 						if (null != priority) {
 							task.setPriority(priority);
@@ -260,7 +255,7 @@ public class CurrentTaskViewModel extends PresentationModel<ITaskService, TaskMo
 						changeDetectThread.start();
 					});
 			documentStringProperty
-					.addListener((ChangeListener<String>) (observable, oldValue, newValue) -> {
+					.addListener((observable, oldValue, newValue) -> {
 						if (!newValue.isEmpty()) {
 							File file = new File(documentStringProperty.get());
 							task.setDocumentName(file.getName());
@@ -294,7 +289,7 @@ public class CurrentTaskViewModel extends PresentationModel<ITaskService, TaskMo
 		Thread thread = new Thread(() -> {
 			TaskModel entity;
 			try {
-				entity = EJBProxyFactory.getInstance().getService(ITaskService.class)
+				entity = ProxyFactory.getInstance().getService(ITaskService.class)
 						.get(task.getSuid());
 				Task originalTask = EntityConverter.getInstatnce()
 						.convertTaskModelToClientWrapTask(entity);
@@ -308,11 +303,6 @@ public class CurrentTaskViewModel extends PresentationModel<ITaskService, TaskMo
 		thread.start();
 	}
 
-	/**
-	 * Создает задачу
-	 *
-	 * @throws ParseException в случае ошибки
-	 */
 	public void createTaskEntity() throws Exception {
 		task.setStatus(TaskStatus.WORKING);
 		if (null == task.getType()) {
@@ -323,11 +313,6 @@ public class CurrentTaskViewModel extends PresentationModel<ITaskService, TaskMo
 				true);
 	}
 
-	/**
-	 * Возвращает {@link#task}
-	 *
-	 * @return the {@link#task}
-	 */
 	public Task getTask() {
 		return task;
 	}
@@ -337,7 +322,7 @@ public class CurrentTaskViewModel extends PresentationModel<ITaskService, TaskMo
 	 */
 	public void initTaskModel() {
 		if (null != task) {
-			SubordinationElement currentUserSubEl = null;
+			SubordinationElement currentUserSubEl;
 			currentUserSubEl = Utils.getInstance().getCurrentUserSubEl();
 
 			String title = (null != task.getName()) ? task.getName() : "";
@@ -375,11 +360,6 @@ public class CurrentTaskViewModel extends PresentationModel<ITaskService, TaskMo
 		}
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#task}
-	 *
-	 * @param {@link#task}
-	 */
 	public void setTask(Task aTask) {
 		if (null != aTask) {
 			this.task = aTask.copy();
@@ -388,128 +368,34 @@ public class CurrentTaskViewModel extends PresentationModel<ITaskService, TaskMo
 		}
 	}
 
-	/**
-	 * Возвращает {@link#titleLabelProperty}
-	 *
-	 * @return the {@link#titleLabelProperty}
-	 */
 	public StringProperty getTitleLabelProperty() {
 		return titleLabelProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#titleLabelProperty}
-	 *
-	 * @param {@link#titleLabelProperty}
-	 */
-	public void setTitleLabelProperty(StringProperty titleLabelProperty) {
-		this.titleLabelProperty = titleLabelProperty;
-	}
-
-	/**
-	 * Возвращает {@link#statusLabelProperty}
-	 *
-	 * @return the {@link#statusLabelProperty}
-	 */
 	public StringProperty getStatusLabelProperty() {
 		return statusLabelProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#statusLabelProperty}
-	 *
-	 * @param {@link#statusLabelProperty}
-	 */
-	public void setStatusLabelProperty(StringProperty statusLabelProperty) {
-		this.statusLabelProperty = statusLabelProperty;
-	}
-
-	/**
-	 * Возвращает {@link#priorityLabelProperty}
-	 *
-	 * @return the {@link#priorityLabelProperty}
-	 */
 	public StringProperty getPriorityLabelProperty() {
 		return priorityLabelProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#priorityLabelProperty}
-	 *
-	 * @param {@link#priorityLabelProperty}
-	 */
-	public void setPriorityLabelProperty(StringProperty priorityLabelProperty) {
-		this.priorityLabelProperty = priorityLabelProperty;
-	}
-
-	/**
-	 * Возвращает {@link#noteLabelProperty}
-	 *
-	 * @return the {@link#noteLabelProperty}
-	 */
 	public StringProperty getNoteLabelProperty() {
 		return noteLabelProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#noteLabelProperty}
-	 *
-	 * @param {@link#noteLabelProperty}
-	 */
-	public void setNoteLabelProperty(StringProperty noteLabelProperty) {
-		this.noteLabelProperty = noteLabelProperty;
-	}
-
-	/**
-	 * Возвращает {@link#desciprtionLabelProperty}
-	 *
-	 * @return the {@link#desciprtionLabelProperty}
-	 */
 	public StringProperty getDesciprtionLabelProperty() {
 		return desciprtionLabelProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#desciprtionLabelProperty}
-	 *
-	 * @param {@link#desciprtionLabelProperty}
-	 */
-	public void setDesciprtionLabelProperty(StringProperty desciprtionLabelProperty) {
-		this.desciprtionLabelProperty = desciprtionLabelProperty;
-	}
-
-	/**
-	 * Возвращает {@link#progressProperty}
-	 *
-	 * @return the {@link#progressProperty}
-	 */
 	public DoubleProperty getProgressProperty() {
 		return progressProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#progressProperty}
-	 *
-	 * @param {@link#progressProperty}
-	 */
-	public void setProgressProperty(DoubleProperty progressProperty) {
-		this.progressProperty = progressProperty;
-	}
-
-	/**
-	 * Возвращает {@link#createTaskFlag}
-	 *
-	 * @return the {@link#createTaskFlag}
-	 */
 	public BooleanProperty getCreateTaskFlag() {
 		return createTaskFlag;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#createTaskFlag}
-	 *
-	 * @param aValue значение поля
-	 */
 	public void setCreateFlagValue(Boolean aValue) {
 		createTaskFlag.setValue(aValue);
 		reverseCreateFlag.setValue(!aValue);
@@ -538,94 +424,32 @@ public class CurrentTaskViewModel extends PresentationModel<ITaskService, TaskMo
 		updater.updateProgress();
 	}
 
-	/**
-	 * Возвращает значение поля {@link#createTaskFlag}
-	 *
-	 * @return значение поля {@link#createTaskFlag}
-	 */
 	public Boolean getCreateFlagValue() {
 		return createTaskFlag.getValue();
 	}
 
-	/**
-	 * Возвращает {@link#reverseCreateFlag}
-	 *
-	 * @return the {@link#reverseCreateFlag}
-	 */
 	public BooleanProperty getReverseCreateFlag() {
 		return reverseCreateFlag;
 	}
 
-	/**
-	 * Возвращает {@link#createOrFinishEnabled}
-	 *
-	 * @return the {@link#createOrFinishEnabled}
-	 */
 	public BooleanProperty getOkButtonDisabledProperty() {
 		return okButtonDisabled;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#createOrFinishEnabled}
-	 *
-	 * @param aCreateOrFinishDisabled значение поля
-	 */
-	public void setOkButtonDisabledValue(Boolean aCreateOrFinishDisabled) {
+	private void setOkButtonDisabledValue(Boolean aCreateOrFinishDisabled) {
 		okButtonDisabled.setValue(aCreateOrFinishDisabled);
 	}
 
-	/**
-	 * Возвращает {@link#startDateProperty}
-	 *
-	 * @return the {@link#startDateProperty}
-	 */
 	public ObjectProperty<LocalDateTime> getStartDateProperty() {
 		return startDateProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#startDateProperty}
-	 *
-	 * @param startDateProperty значение поля
-	 */
-	public void setStartDateProperty(ObjectProperty<LocalDateTime> startDateProperty) {
-		this.startDateProperty = startDateProperty;
-	}
-
-	/**
-	 * Возвращает {@link#endDateProperty}
-	 *
-	 * @return the {@link#endDateProperty}
-	 */
 	public ObjectProperty<LocalDateTime> getEndDateProperty() {
 		return endDateProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#endDateProperty}
-	 *
-	 * @param endDateProperty значение поля
-	 */
-	public void setEndDateProperty(ObjectProperty<LocalDateTime> endDateProperty) {
-		this.endDateProperty = endDateProperty;
-	}
-
-	/**
-	 * Возвращает {@link#executorStringProperty}
-	 *
-	 * @return the {@link#executorStringProperty}
-	 */
 	public StringProperty getExecutorStringProperty() {
 		return executorStringProperty;
-	}
-
-	/**
-	 * Устанавливает значение полю {@link#executorStringProperty}
-	 *
-	 * @param executorStringProperty значение поля
-	 */
-	public void setExecutorStringProperty(StringProperty executorStringProperty) {
-		this.executorStringProperty = executorStringProperty;
 	}
 
 	@Override
@@ -633,38 +457,18 @@ public class CurrentTaskViewModel extends PresentationModel<ITaskService, TaskMo
 		return ITaskService.class;
 	}
 
-	/**
-	 * Возвращает {@link#documentStringProperty}
-	 *
-	 * @return the {@link#documentStringProperty}
-	 */
 	public StringProperty getDocumentStringProperty() {
 		return documentStringProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#documentStringProperty}
-	 *
-	 * @param documentString значение поля
-	 */
 	public void setDocumentStringPropertyValue(String documentString) {
 		this.documentStringProperty.set(documentString);
 	}
 
-	/**
-	 * Возвращает {@link#editTaskProperty}
-	 *
-	 * @return the {@link#editTaskProperty}
-	 */
 	public BooleanProperty getEditModeProperty() {
 		return editModeProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#editTaskProperty}
-	 *
-	 * @param editTaskValue значение поля
-	 */
 	public void setEditModeValue(Boolean editTaskValue) {
 		this.editModeProperty.set(editTaskValue);
 		setVisibleOkButtonValue(editTaskValue);
@@ -678,20 +482,6 @@ public class CurrentTaskViewModel extends PresentationModel<ITaskService, TaskMo
 		}
 	}
 
-	/**
-	 * Возвращает {@link#subElExecutor}
-	 *
-	 * @return the {@link#subElExecutor}
-	 */
-	public SubordinationElement getSubElExecutor() {
-		return subElExecutor;
-	}
-
-	/**
-	 * Устанавливает значение полю {@link#subElExecutor}
-	 *
-	 * @param subElExecutor значение поля
-	 */
 	public void setSubElExecutor(SubordinationElement subElExecutor) {
 		if ((Utils.getInstance().getCurrentUserSubEl().getRoleSuid() >= subElExecutor
 				.getRoleSuid())
@@ -700,7 +490,6 @@ public class CurrentTaskViewModel extends PresentationModel<ITaskService, TaskMo
 													  "Невозможно назначить исполнителем задачи выбранное должностное лицо",
 													  AlertType.WARNING);
 		} else {
-			this.subElExecutor = subElExecutor;
 			getExecutorStringProperty().set(subElExecutor.getName());
 			task.setExecutor(subElExecutor);
 		}
@@ -733,57 +522,64 @@ public class CurrentTaskViewModel extends PresentationModel<ITaskService, TaskMo
 	/**
 	 * Подключение к службе рассылки системных JMS сообщений
 	 */
-	public void connectToJMSService() {
-		EJBProxyFactory.getInstance().addMessageListener(message -> {
-			Platform.runLater(() -> {
-				try {
-					if (message instanceof ActiveMQMessage) {
-						ActiveMQMessage objectMessage = (ActiveMQMessage) message;
-						if (objectMessage instanceof ActiveMQObjectMessage) {
-							ObjectEvent event =
-									(ObjectEvent) ((ActiveMQObjectMessage) objectMessage).getObject();
+	private void connectToJMSService() {
+		ProxyFactory.getInstance()
+				.addMessageListener("currentTaskView", "tasksQueue",
+									message -> Platform.runLater(() -> {
+										try {
+											if (message instanceof ActiveMQMessage) {
+												ActiveMQMessage objectMessage =
+														(ActiveMQMessage) message;
+												if (objectMessage instanceof ActiveMQObjectMessage) {
+													ObjectEvent event =
+															(ObjectEvent) ((ActiveMQObjectMessage) objectMessage)
+																	.getObject();
 
-							IEntity entity = event.getEntity();
-							if (entity instanceof TaskModel) {
-								TaskModel taskEntity = (TaskModel) entity;
-								Task task = EntityConverter.getInstatnce()
-										.convertTaskModelToClientWrapTask(taskEntity);
-								if (task.getSuid().equals(this.task.getSuid())
-										&& getOpenViewFlag().get()) {
-									switch (event.getType()) {
-									case "updated":
-									case "done":
-									case "rework":
-									case "failed":
-									case "closed":
-									case "overdue":
-										setTask(task);
-										initTaskModel();
-										break;
-									case "deleted":
-										if (!deletedTasks.contains(task)) {
-											deletedTasks.add(task);
-											setOpenFlagValue(false);
-											DialogUtils.getInstance().showAlertDialog(
-													"Задача удалена",
-													"Задача " + task.getName() + " была удалена",
-													AlertType.INFORMATION);
-											setOpenFlagValue(false);
+													IEntity entity = event.getEntity();
+													if (entity instanceof TaskModel) {
+														TaskModel taskEntity = (TaskModel) entity;
+														Task task = EntityConverter.getInstatnce()
+																.convertTaskModelToClientWrapTask(
+																		taskEntity);
+														if (task.getSuid()
+																	.equals(this.task.getSuid())
+															&& getOpenViewFlag().get()) {
+															switch (event.getType()) {
+																case "updated":
+																case "done":
+																case "rework":
+																case "failed":
+																case "closed":
+																case "overdue":
+																	setTask(task);
+																	initTaskModel();
+																	break;
+																case "deleted":
+																	if (!deletedTasks
+																			.contains(task)) {
+																		deletedTasks.add(task);
+																		setOpenFlagValue(false);
+																		DialogUtils.getInstance()
+																				.showAlertDialog(
+																						"Задача удалена",
+																						"Задача " +
+																						task.getName() +
+																						" была удалена",
+																						AlertType.INFORMATION);
+																		setOpenFlagValue(false);
+																	}
+																	break;
+															}
+
+														}
+													}
+												}
+											}
+										} catch (JMSException e) {
+											// TODO Логирование
+											e.printStackTrace();
 										}
-										break;
-									}
-
-								}
-							}
-						}
-					}
-				} catch (JMSException e) {
-					// TODO Логирование
-					e.printStackTrace();
-				}
-			});
-
-		});
+									}));
 	}
 
 	/**
@@ -796,7 +592,7 @@ public class CurrentTaskViewModel extends PresentationModel<ITaskService, TaskMo
 		 */
 		@Override
 		public void run() {
-			TaskModel entity = EJBProxyFactory.getInstance()
+			TaskModel entity = ProxyFactory.getInstance()
 					.getService(ITaskService.class).get(task.getSuid());
 			Task originalTask = EntityConverter.getInstatnce()
 					.convertTaskModelToClientWrapTask(entity);
@@ -808,204 +604,88 @@ public class CurrentTaskViewModel extends PresentationModel<ITaskService, TaskMo
 
 	}
 
-	/**
-	 * Возвращает {@link#changeExistProperty}
-	 *
-	 * @return the {@link#changeExistProperty}
-	 */
 	public BooleanProperty getChangeExistProperty() {
 		return changeExistProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#changeExistProperty}
-	 *
-	 * @param changeExistValue значение поля
-	 */
 	public void setChangeExistValue(Boolean changeExistValue) {
 		this.changeExistProperty.set(changeExistValue);
 	}
 
-	/**
-	 * Возвращает {@link#okButtonTextProperty}
-	 *
-	 * @return the {@link#okButtonTextProperty}
-	 */
 	public StringProperty getOkButtonTextProperty() {
 		return okButtonTextProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#okButtonTextProperty}
-	 *
-	 * @param okButtonTextValue значение поля
-	 */
-	public void setOkButtonTextValue(String okButtonTextValue) {
+	private void setOkButtonTextValue(String okButtonTextValue) {
 		this.okButtonTextProperty.set(okButtonTextValue);
 	}
 
-	/**
-	 * Возвращает {@link#visibleOkButtonProperty}
-	 *
-	 * @return the {@link#visibleOkButtonProperty}
-	 */
 	public BooleanProperty getVisibleOkButtonProperty() {
 		return visibleOkButtonProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#visibleOkButtonProperty}
-	 *
-	 * @param visibleOkButtonValue значение поля
-	 */
-	public void setVisibleOkButtonValue(Boolean visibleOkButtonValue) {
+	private void setVisibleOkButtonValue(Boolean visibleOkButtonValue) {
 		this.visibleOkButtonProperty.set(visibleOkButtonValue);
 	}
 
-	/**
-	 * Возвращает {@link#editModeButtonTextProperty}
-	 *
-	 * @return the {@link#editModeButtonTextProperty}
-	 */
 	public StringProperty getEditModeButtonTextProperty() {
 		return editModeButtonTextProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#editModeButtonTextProperty}
-	 *
-	 * @param editModeButtonTextValue значение поля
-	 */
-	public void setEditModeButtonTextValue(String editModeButtonTextValue) {
+	private void setEditModeButtonTextValue(String editModeButtonTextValue) {
 		this.editModeButtonTextProperty.set(editModeButtonTextValue);
 	}
 
-	/**
-	 * Возвращает {@link#visibleEditModeButtonProperty}
-	 *
-	 * @return the {@link#visibleEditModeButtonProperty}
-	 */
 	public BooleanProperty getVisibleEditModeButtonProperty() {
 		return visibleEditModeButtonProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#visibleEditModeButtonProperty}
-	 *
-	 * @param visibleEditModeButtonValue значение поля
-	 */
 	public void setVisibleEditModeButtonValue(Boolean visibleEditModeButtonValue) {
 		this.visibleEditModeButtonProperty.set(visibleEditModeButtonValue);
 	}
 
-	/**
-	 * Возвращает {@link#visibleDecisionButtonProperty}
-	 *
-	 * @return the {@link#visibleDecisionButtonProperty}
-	 */
 	public BooleanProperty getVisibleDecisionButtonProperty() {
 		return visibleDecisionButtonProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#visibleDecisionButtonProperty}
-	 *
-	 * @param visibleDecisionButtonValue значение поля
-	 */
-	public void setVisibleDecisionButtonValue(Boolean visibleDecisionButtonValue) {
+	private void setVisibleDecisionButtonValue(Boolean visibleDecisionButtonValue) {
 		this.visibleDecisionButtonProperty.set(visibleDecisionButtonValue);
 	}
 
-	/**
-	 * Возвращает {@link#visibleDefaultTaskButtonProperty}
-	 *
-	 * @return the {@link#visibleDefaultTaskButtonProperty}
-	 */
 	public BooleanProperty getVisibleDefaultTaskButtonProperty() {
 		return visibleDefaultTaskButtonProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#visibleDefaultTaskButtonProperty}
-	 *
-	 * @param visibleDefaultTaskButtonValue значение поля
-	 */
-	public void setVisibleDefaultTaskButtonValue(Boolean visibleDefaultTaskButtonValue) {
+	private void setVisibleDefaultTaskButtonValue(Boolean visibleDefaultTaskButtonValue) {
 		this.visibleDefaultTaskButtonProperty.set(visibleDefaultTaskButtonValue);
 	}
 
-	/**
-	 * Возвращает {@link#visibleSelectExecutorButtonProperty}
-	 *
-	 * @return the {@link#visibleSelectExecutorButtonProperty}
-	 */
 	public BooleanProperty getVisibleSelectExecutorButtonProperty() {
 		return visibleSelectExecutorButtonProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#visibleSelectExecutorButtonProperty}
-	 *
-	 * @param visibleSelectExecutorButtonValue значение поля
-	 */
-	public void setVisibleSelectExecutorButtonValue(Boolean visibleSelectExecutorButtonValue) {
+	private void setVisibleSelectExecutorButtonValue(Boolean visibleSelectExecutorButtonValue) {
 		this.visibleSelectExecutorButtonProperty.set(visibleSelectExecutorButtonValue);
 	}
 
-	/**
-	 * Возвращает {@link#colorProgressBarTextProperty}
-	 *
-	 * @return the {@link#colorProgressBarTextProperty}
-	 */
-	public ObjectProperty<PropegressBarColor> getColorProgressBarTextProperty() {
+	public ObjectProperty<ProgressBarColor> getColorProgressBarTextProperty() {
 		return colorProgressBarProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#colorProgressBarTextProperty}
-	 *
-	 * @param aColor значение поля
-	 */
-	public void setColorProgressBarTextValue(PropegressBarColor aColor) {
-		Platform.runLater(() -> {
-			this.colorProgressBarProperty.set(aColor);
-		});
+	private void setColorProgressBarTextValue(ProgressBarColor aColor) {
+		Platform.runLater(() -> this.colorProgressBarProperty.set(aColor));
 	}
 
-	/**
-	 * Возвращает {@link#authorTextProperty}
-	 *
-	 * @return the {@link#authorTextProperty}
-	 */
 	public StringProperty getAuthorTextProperty() {
 		return authorTextProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#authorTextProperty}
-	 *
-	 * @param authorTextValue значение поля
-	 */
-	public void setAuthorTextValue(String authorTextValue) {
+	private void setAuthorTextValue(String authorTextValue) {
 		this.authorTextProperty.set(authorTextValue);
 	}
 
-	/**
-	 * Возвращает {@link#tooltipProgressBarTextProperty}
-	 *
-	 * @return the {@link#tooltipProgressBarTextProperty}
-	 */
 	public StringProperty getTooltipProgressBarTextProperty() {
 		return tooltipProgressBarTextProperty;
-	}
-
-	/**
-	 * Устанавливает значение полю {@link#tooltipProgressBarTextProperty}
-	 *
-	 * @param tooltipProgressBarTextValue значение поля
-	 */
-	public void setTooltipProgressBarTextValue(String tooltipProgressBarTextValue) {
-		this.tooltipProgressBarTextProperty.set(tooltipProgressBarTextValue);
 	}
 
 	/**
@@ -1013,7 +693,7 @@ public class CurrentTaskViewModel extends PresentationModel<ITaskService, TaskMo
 	 *
 	 * @return {@code true} - если текущий пользователь является исполнителем задачи
 	 */
-	public Boolean executorTaskCheck() {
+	private Boolean executorTaskCheck() {
 		Long positionUserSuid = Utils.getInstance().getCurrentUser().getPositionSuid();
 		return positionUserSuid.equals(task.getExecutor().getSuid());
 	}
@@ -1024,7 +704,7 @@ public class CurrentTaskViewModel extends PresentationModel<ITaskService, TaskMo
 	 * @return {@code true} - если текущий пользователь является автором задачи
 	 */
 	public Boolean authorTaskCheck() {
-		Boolean result = false;
+		boolean result = false;
 		if (null != task.getAuthor()) {
 			Long positionUserSuid = Utils.getInstance().getCurrentUser().getPositionSuid();
 			result = positionUserSuid.equals(task.getAuthor().getSuid());
@@ -1050,7 +730,7 @@ public class CurrentTaskViewModel extends PresentationModel<ITaskService, TaskMo
 						Thread.sleep(1000L);
 						long startDate = task.getStartDateTime().getTime();
 						long endDate = task.getEndDateTime().getTime();
-						Boolean exitCondition = new Date().getTime() <= (endDate - 10L);
+						boolean exitCondition = new Date().getTime() <= (endDate - 10L);
 						double diskret = ((endDate - startDate) / 10000);
 						double sleepTime = diskret - 5;
 						while (exitCondition) {
@@ -1058,7 +738,7 @@ public class CurrentTaskViewModel extends PresentationModel<ITaskService, TaskMo
 							endDate = task.getEndDateTime().getTime();
 							double diskretNumber = (new Date().getTime() - startDate) / diskret;
 							double result = 1 - (diskretNumber * 0.0001);
-							progressProperty.set((result < 0.01) ? 0.01 : result);
+							progressProperty.set(Math.max(result, 0.01));
 
 							setProgressBarColor(result);
 							if (!getOpenViewFlag().get()) {
@@ -1069,7 +749,7 @@ public class CurrentTaskViewModel extends PresentationModel<ITaskService, TaskMo
 
 						if (!exitCondition) {
 							progressProperty.set(1);
-							setColorProgressBarTextValue(PropegressBarColor.RED);
+							setColorProgressBarTextValue(ProgressBarColor.RED);
 						}
 
 					} catch (Exception e) {
@@ -1104,11 +784,11 @@ public class CurrentTaskViewModel extends PresentationModel<ITaskService, TaskMo
 				case CLOSED:
 				case DONE:
 					progressProperty.set(1);
-					setColorProgressBarTextValue(PropegressBarColor.GREEN);
+					setColorProgressBarTextValue(ProgressBarColor.GREEN);
 					break;
 				case FAILD:
 					progressProperty.set(1);
-					setColorProgressBarTextValue(PropegressBarColor.RED);
+					setColorProgressBarTextValue(ProgressBarColor.RED);
 					break;
 				default:
 					break;
@@ -1133,20 +813,10 @@ public class CurrentTaskViewModel extends PresentationModel<ITaskService, TaskMo
 		/** Массив форм еденицы */
 		private String[] units;
 
-		/**
-		 * Конструктор
-		 *
-		 * @param units массив форм еденицы
-		 */
-		private TimeUnitEnum(String... units) {
+		TimeUnitEnum(String... units) {
 			this.units = units;
 		}
 
-		/**
-		 * Возвращает {@link#units}
-		 *
-		 * @return the {@link#units}
-		 */
 		public String[] getUnits() {
 			return units;
 		}
@@ -1165,13 +835,12 @@ public class CurrentTaskViewModel extends PresentationModel<ITaskService, TaskMo
 		if (aCount > 0) {
 			int balance = aCount % 10;
 
-			if (((aCount >= 5) && (aCount <= 20)) || (balance == 0)
-					|| ((balance >= 5) && (balance <= 9))) {
-				result += String.valueOf(aCount) + " " + aTimeUnit.getUnits()[0] + " ";
+			if (aCount >= 5 && aCount <= 20 || balance == 0 || balance >= 5) {
+				result += aCount + " " + aTimeUnit.getUnits()[0] + " ";
 			} else if (balance == 1) {
-				result += String.valueOf(aCount) + " " + aTimeUnit.getUnits()[1] + " ";
+				result += aCount + " " + aTimeUnit.getUnits()[1] + " ";
 			} else {
-				result += String.valueOf(aCount) + " " + aTimeUnit.getUnits()[2] + " ";
+				result += aCount + " " + aTimeUnit.getUnits()[2] + " ";
 			}
 		}
 		return result;
@@ -1183,12 +852,12 @@ public class CurrentTaskViewModel extends PresentationModel<ITaskService, TaskMo
 	 *
 	 * @return текстовое представление оставшегося времени
 	 */
-	public String getTimeLeft() {
+	private String getTimeLeft() {
 		String result = "Осталось времени: ";
 		try {
 			TaskStatus status = task.getStatus();
 			if (new Date().getTime() < task.getStartDateTime().getTime()) {
-				result = new String("Задача еще не началась");
+				result = "Задача еще не началась";
 			} else {
 				if (!(TaskStatus.CLOSED.equals(status) || TaskStatus.FAILD.equals(status)
 						|| TaskStatus.DONE.equals(status) || TaskStatus.OVERDUE.equals(status))) {
@@ -1203,9 +872,9 @@ public class CurrentTaskViewModel extends PresentationModel<ITaskService, TaskMo
 					result += getTimeUnitForm(minInt - (60 * hoursInt), TimeUnitEnum.MINUTE);
 					result += getTimeUnitForm(secInt - (60 * minInt), TimeUnitEnum.SECOND);
 				} else if (!TaskStatus.OVERDUE.equals(status)) {
-					result = new String("Задача завершена");
+					result = "Задача завершена";
 				} else {
-					result = new String("Задача просрочена");
+					result = "Задача просрочена";
 				}
 			}
 		} catch (Exception e) {
@@ -1247,7 +916,7 @@ public class CurrentTaskViewModel extends PresentationModel<ITaskService, TaskMo
 			task.setPriority(TaskPriority.EVERYDAY);
 			task.setType(TaskType.DEFAULT);
 
-			parser = new SimpleDateFormat("dd.MM.yyyy hh:mm");
+			parser.applyPattern("dd.MM.yyyy hh:mm");
 			task.setStartDateTime(calendarDefaultStartDate.getTime());
 			task.setEndDateTime(calendarDefaultEndDate.getTime());
 		}
@@ -1259,31 +928,17 @@ public class CurrentTaskViewModel extends PresentationModel<ITaskService, TaskMo
 	 * @param aResult значение оставшегося времени
 	 */
 	private void setProgressBarColor(double aResult) {
-		if ((aResult > 0.5) && (!PropegressBarColor.GREEN.equals(colorProgressBarProperty.get()))) {
-			setColorProgressBarTextValue(PropegressBarColor.GREEN);
+		if ((aResult > 0.5) && (!ProgressBarColor.GREEN.equals(colorProgressBarProperty.get()))) {
+			setColorProgressBarTextValue(ProgressBarColor.GREEN);
 		} else if ((aResult < 0.5) && (aResult > 0.25)
-				&& (!PropegressBarColor.YELLOW.equals(colorProgressBarProperty.get()))) {
-			setColorProgressBarTextValue(PropegressBarColor.YELLOW);
+				&& (!ProgressBarColor.YELLOW.equals(colorProgressBarProperty.get()))) {
+			setColorProgressBarTextValue(ProgressBarColor.YELLOW);
 		} else if ((aResult < 0.25)
-				&& (!PropegressBarColor.RED.equals(colorProgressBarProperty.get()))) {
-			setColorProgressBarTextValue(PropegressBarColor.RED);
+				&& (!ProgressBarColor.RED.equals(colorProgressBarProperty.get()))) {
+			setColorProgressBarTextValue(ProgressBarColor.RED);
 		}
 	}
 
-	/**
-	 * Возвращает {@link#cycleModel}
-	 *
-	 * @return the {@link#cycleModel}
-	 */
-	public CycleTaskViewModel getCycleModel() {
-		return cycleModel;
-	}
-
-	/**
-	 * Устанавливает значение полю {@link#cycleModel}
-	 *
-	 * @param cycleModel значение поля
-	 */
 	public void setCycleModel(CycleTaskViewModel cycleModel) {
 		this.cycleModel = cycleModel;
 	}

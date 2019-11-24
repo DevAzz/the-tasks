@@ -5,7 +5,7 @@ import javafx.beans.property.StringProperty;
 import org.apache.activemq.command.ActiveMQMessage;
 import org.apache.activemq.command.ActiveMQObjectMessage;
 import ru.devazz.entities.Task;
-import ru.devazz.server.EJBProxyFactory;
+import ru.devazz.server.ProxyFactory;
 import ru.devazz.server.api.ITaskService;
 import ru.devazz.server.api.event.ObjectEvent;
 import ru.devazz.server.api.model.IEntity;
@@ -106,7 +106,7 @@ public class WorkbenchViewModel extends PresentationModel<ITaskService, TaskMode
 	 * Подключение к службе рассылки системных JMS сообщений
 	 */
 	public void connectToJMSService() {
-		EJBProxyFactory.getInstance().addMessageListener(message -> {
+		ProxyFactory.getInstance().addMessageListener("workbanchViewModel", "tasksQueue", message -> {
 			try {
 				if (message instanceof ActiveMQMessage) {
 					UserModel user = Utils.getInstance().getCurrentUser();

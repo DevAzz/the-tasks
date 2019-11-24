@@ -29,6 +29,7 @@ public class UserEntityConverter implements IEntityConverter<UserModel, UserEnti
         UserEntity entity = null;
         if (null != model) {
             entity = new UserEntity();
+            entity.setIduser(model.getSuid());
             entity.setImage(model.getImage());
             entity.setOnline(model.getOnline());
             entity.setName(model.getName());

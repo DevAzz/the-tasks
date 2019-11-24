@@ -50,10 +50,10 @@ public class ViewType {
 		typeMap.put(LegendOfIconsView.class, "/view/legendOfIcons.fxml");
 		typeMap.put(HelpView.class, "/view/helpView.fxml");
 		typeMap.put(RemoveTaskDialogView.class, "/view/dialogs/removeTaskDialogView.fxml");
-		typeMap.put(PageSettingsView.class, "/view/pageSettings.fxml");
+		typeMap.put(PageSettingsView.class, "/view/widgets/pageSettings.fxml");
 		typeMap.put(TaskHistoryView.class, "/view/historyView.fxml");
 		typeMap.put(TaskHistoryEntryPanelView.class, "/view/historyEntryView.fxml");
-		typeMap.put(CustomTimeIntervalView.class, "/view/customTimeIntervalView.fxml");
+		typeMap.put(CustomTimeIntervalView.class, "/view/widgets/customTimeIntervalView.fxml");
 		typeMap.put(CycleTaskView.class, "/view/cycleView.fxml");
 		typeMap.put(SummaryView.class, "/view/summaryView.fxml");
 		typeMap.put(SummaryPanelView.class, "/view/summaryPanelView.fxml");

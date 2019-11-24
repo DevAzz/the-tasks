@@ -83,14 +83,8 @@ public class TasksInspector {
 	 */
 	private class DefaultTasksRunnable implements Runnable {
 
-		/** Флаг завершения выполнения обработки задач */
 		private Boolean closeFlag = false;
 
-		/**
-		 * Устанавливает значение полю {@link#closeFlag}
-		 *
-		 * @param closeFlag значение поля
-		 */
 		public void setCloseFlag(Boolean closeFlag) {
 			this.closeFlag = closeFlag;
 		}
@@ -151,7 +145,7 @@ public class TasksInspector {
 								&& !(TaskStatus.OVERDUE.equals(entity.getStatus()))
 								&& nonArchiveTask) {
 							timeLeftOverTasks.add(entity.getSuid());
-							broker.convertAndSend(JmsQueueName.DEFAULT.getName(), taskService
+							broker.convertAndSend(JmsQueueName.TASKS.getName(), taskService
 									.getEventByEntity(SystemEventType.OVERDUE, entity));
 							Thread.sleep(100L);
 						}
@@ -162,7 +156,7 @@ public class TasksInspector {
 							entity.setStatus(TaskStatus.OVERDUE);
 							taskService.update(entity, false);
 
-							broker.convertAndSend(JmsQueueName.DEFAULT.getName(), taskService
+							broker.convertAndSend(JmsQueueName.TASKS.getName(), taskService
 									.getEventByEntity(SystemEventType.OVERDUE, entity));
 
 							//	@formatter:off

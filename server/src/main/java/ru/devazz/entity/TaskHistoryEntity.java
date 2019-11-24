@@ -1,7 +1,9 @@
 package ru.devazz.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import ru.devazz.server.api.model.IEntity;
 import ru.devazz.server.api.model.enums.TaskHistoryType;
 
@@ -16,6 +18,8 @@ import java.util.Date;
 @Data
 @Entity
 @Table(name = "task_history", schema = "tasksdb")
+@AllArgsConstructor
+@NoArgsConstructor
 public class TaskHistoryEntity implements IEntity {
 
 	/** Идентификатор записи */

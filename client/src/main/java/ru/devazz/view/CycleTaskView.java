@@ -223,46 +223,49 @@ public class CycleTaskView extends AbstractView<CycleTaskViewModel> {
 			@Override
 			public String toString(Month object) {
 				String result = "";
-				switch (object) {
-				case JANUARY:
-					result = "Январь";
-					break;
-				case FEBRUARY:
-					result = "Февраль";
-					break;
-				case MARCH:
-					result = "Март";
-					break;
-				case APRIL:
-					result = "Апрель";
-					break;
-				case MAY:
-					result = "Май";
-					break;
-				case JUNE:
-					result = "Июнь";
-					break;
-				case JULY:
-					result = "Июль";
-					break;
-				case AUGUST:
-					result = "Август";
-					break;
-				case SEPTEMBER:
-					result = "Сентябрь";
-					break;
-				case OCTOBER:
-					result = "Октябрь";
-					break;
-				case NOVEMBER:
-					result = "Ноябрь";
-					break;
-				case DECEMBER:
-					result = "Декабрь";
-					break;
+				if (null != object) {
+					switch (object) {
+						case JANUARY:
+							result = "Январь";
+							break;
+						case FEBRUARY:
+							result = "Февраль";
+							break;
+						case MARCH:
+							result = "Март";
+							break;
+						case APRIL:
+							result = "Апрель";
+							break;
+						case MAY:
+							result = "Май";
+							break;
+						case JUNE:
+							result = "Июнь";
+							break;
+						case JULY:
+							result = "Июль";
+							break;
+						case AUGUST:
+							result = "Август";
+							break;
+						case SEPTEMBER:
+							result = "Сентябрь";
+							break;
+						case OCTOBER:
+							result = "Октябрь";
+							break;
+						case NOVEMBER:
+							result = "Ноябрь";
+							break;
+						case DECEMBER:
+							result = "Декабрь";
+							break;
+					}
 				}
 				return result;
 			}
+
 
 			/**
 			 * @see javafx.util.StringConverter#fromString(String)

@@ -6,7 +6,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import ru.devazz.server.EJBProxyFactory;
+import ru.devazz.server.ProxyFactory;
 import ru.devazz.server.api.ISubordinationElementService;
 import ru.devazz.server.api.IUserService;
 import ru.devazz.server.api.model.SubordinationElementModel;
@@ -15,8 +15,6 @@ import ru.devazz.utils.PushUpTypes;
 import ru.devazz.utils.SubElType;
 import ru.devazz.utils.Utils;
 import ru.devazz.utils.dialogs.DialogUtils;
-
-import javax.jms.JMSException;
 
 /**
  * Модель регистрации пользователей
@@ -318,7 +316,7 @@ public class RegistryModel extends PresentationModel<IUserService, UserModel> {
 	 * @throws Exception в случае ошибки
 	 */
 	public void loadInDB(byte[] image) throws Exception {
-		ISubordinationElementService subElService = EJBProxyFactory.getInstance()
+		ISubordinationElementService subElService = ProxyFactory.getInstance()
 				.getService(ISubordinationElementService.class);
 		SubordinationElementModel subordinationElementEntity = subElService
 				.get(selectedSubElType.getSubElSuid());

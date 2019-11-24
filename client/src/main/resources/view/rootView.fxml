@@ -16,7 +16,7 @@
 
 <AnchorPane fx:id="rootComposite" focusTraversable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefHeight="703.0" prefWidth="1007.0" styleClass="rootBorder" stylesheets="@/css/main.css" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.devazz.view.RootView">
    <children>
-      <AnchorPane fx:id="windowBorder" focusTraversable="true" layoutX="5.0" layoutY="3.0" onMousePressed="#moveWindowMousePress" prefHeight="20.0" prefWidth="999.0" styleClass="army" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="2.0">
+      <AnchorPane fx:id="windowBorder" focusTraversable="true" layoutX="5.0" layoutY="3.0" onMousePressed="#moveWindowMousePress" prefHeight="20.0" prefWidth="999.0"  AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="2.0">
          <children>
             <Button fx:id="closeStage" layoutX="1029.0" layoutY="-1.0" mnemonicParsing="false" onMouseClicked="#close" styleClass="ButtonClose" AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="-1.0" />
             <Button fx:id="maximizedStage" layoutX="1012.0" layoutY="-1.0" mnemonicParsing="false" onMouseClicked="#setMaximized" styleClass="ButtonMaximize" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="-1.0" />

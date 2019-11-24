@@ -15,8 +15,8 @@ public class SubElEntityConverter implements IEntityConverter<SubordinationEleme
         if (null != entity) {
             model = new SubordinationElementModel();
             model.setRootElement(entity.getRootElement());
-//            model.setSubordinates(entity.getSubordinates().stream().map(this::entityToModel).collect(
-//                    Collectors.toList()));
+            model.setSubordinates(entity.getSubordinates().stream().map(this::entityToModel).collect(
+                    Collectors.toList()));
             model.setName(entity.getName());
             model.setRoleSuid(entity.getRoleSuid());
             model.setSuid(entity.getSuid());
@@ -30,8 +30,8 @@ public class SubElEntityConverter implements IEntityConverter<SubordinationEleme
         if (null != model) {
             entity = new SubordinationElementEntity();
             entity.setRootElement(model.getRootElement());
-//            entity.setSubordinates(model.getSubordinates().stream().map(this::modelToEntity).collect(
-//                    Collectors.toList()));
+            entity.setSubordinates(model.getSubordinates().stream().map(this::modelToEntity).collect(
+                    Collectors.toList()));
             entity.setName(model.getName());
             entity.setRoleSuid(model.getRoleSuid());
         }

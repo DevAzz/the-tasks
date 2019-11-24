@@ -23,6 +23,7 @@ public class RoleEntityConverter implements IEntityConverter<RoleModel, RoleEnti
         RoleEntity entity = null;
         if (null != model) {
             entity = new RoleEntity();
+            entity.setIdRole(model.getSuid());
             entity.setName(entity.getName());
         }
         return entity;

@@ -27,15 +27,9 @@ public abstract class AbstractRepository<T extends IEntity> {
     @Transactional
     public void delete(Long aSuid) {
         try {
-            if (!em.getTransaction().isActive()) {
-                em.getTransaction().begin();
-                em.remove(get(aSuid));
-            }
+            em.remove(get(aSuid));
         } catch (Exception e) {
             e.printStackTrace();
-            if (em.getTransaction().isActive()) {
-                em.getTransaction().rollback();
-            }
         }
 
     }

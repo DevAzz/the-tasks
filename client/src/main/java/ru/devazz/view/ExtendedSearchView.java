@@ -18,7 +18,7 @@ import javafx.scene.layout.VBox;
 import ru.devazz.entities.ExtSearchRes;
 import ru.devazz.entities.SubordinationElement;
 import ru.devazz.model.ExtendedSearchViewModel;
-import ru.devazz.server.EJBProxyFactory;
+import ru.devazz.server.ProxyFactory;
 import ru.devazz.server.api.ISubordinationElementService;
 import ru.devazz.server.api.model.SubordinationElementModel;
 import ru.devazz.utils.EntityConverter;
@@ -176,7 +176,7 @@ public class ExtendedSearchView extends AbstractView<ExtendedSearchViewModel> {
 	@FXML
 	private void selectAuthor() {
 		ISubordinationElementService subElsService;
-		subElsService = EJBProxyFactory.getInstance()
+		subElsService = ProxyFactory.getInstance()
 				.getService(ISubordinationElementService.class);
 
 		ObservableList<SubordinationElement> listSubEls = FXCollections.observableArrayList();
@@ -205,7 +205,7 @@ public class ExtendedSearchView extends AbstractView<ExtendedSearchViewModel> {
 	@FXML
 	private void selectExecutor() {
 		ISubordinationElementService subElsService;
-		subElsService = EJBProxyFactory.getInstance()
+		subElsService = ProxyFactory.getInstance()
 				.getService(ISubordinationElementService.class);
 
 		ObservableList<SubordinationElement> listSubEls = FXCollections.observableArrayList();

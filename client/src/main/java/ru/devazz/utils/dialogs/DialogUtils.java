@@ -411,7 +411,7 @@ public class DialogUtils {
 				showLine.setCycleCount(91);
 				showLine.play();
 				showLine.setOnFinished(e2 -> {
-					new Thread(() -> {
+					Thread showThread = new Thread(() -> {
 						try {
 							Thread.currentThread().setName("Popup close thread");
 							Thread.sleep(6000);
@@ -420,7 +420,9 @@ public class DialogUtils {
 							// TODO Логирование
 							e1.printStackTrace();
 						}
-					}).start();
+					});
+					showThread.setDaemon(true);
+					showThread.start();
 				});
 			} catch (Exception e3) {
 				e3.printStackTrace();
