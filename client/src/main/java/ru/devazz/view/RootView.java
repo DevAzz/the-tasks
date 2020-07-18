@@ -451,7 +451,7 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 				try {
 					Boolean doneFlag = (null != workbenchView.getSelectedTask()) && TaskStatus.DONE
 							.equals(workbenchView.getSelectedTask().getStatus());
-					showCurrentTaskView(workbenchView.getSelectedTask(), false, doneFlag);
+					showCurrentTaskView(workbenchView.getSelectedTask(), false);
 				} catch (Exception e) {
 					// TODO Логирование
 					e.printStackTrace();
@@ -505,7 +505,7 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 						TaskModel task = ProxyFactory.getInstance()
 								.getService(ITaskService.class).get(entity.getSuid());
 						showCurrentTaskView(EntityConverter.getInstatnce()
-								.convertTaskModelToClientWrapTask(task), false, false);
+								.convertTaskModelToClientWrapTask(task), false);
 					} catch (Exception e) {
 						// TODO Логирование
 						e.printStackTrace();
@@ -575,10 +575,9 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 	 *
 	 * @param aTask задача
 	 * @param aCreateFlag флаг создания задачи
-	 * @param aDoneFlag флаг завершения задачи
 	 * @throws Exception в случае ошибки
 	 */
-	public void showCurrentTaskView(Task aTask, Boolean aCreateFlag, Boolean aDoneFlag)
+	private void showCurrentTaskView(Task aTask, Boolean aCreateFlag)
 			throws Exception {
 		if (null != aTask) {
 			if (!openTaskMap.containsKey(aTask.getSuid())) {
@@ -685,7 +684,7 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 											 (double) 0, null, null);
 						task.setExecutor(subInfoView.getModel().getSelectionSub());
 						try {
-							showCurrentTaskView(task, true, false);
+							showCurrentTaskView(task, true);
 						} catch (Exception e) {
 							// TODO Логирование
 							e.printStackTrace();
@@ -913,9 +912,9 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 										.get(eventValue.getTaskId()));
 						if (null != eventValue.getEventType()) {
 							if (eventValue.getEventType() == EventType.DONE) {
-								showCurrentTaskView(task, false, true);
+								showCurrentTaskView(task, false);
 							} else {
-								showCurrentTaskView(task, false, false);
+								showCurrentTaskView(task, false);
 							}
 						}
 					} catch (Exception e) {
@@ -1370,10 +1369,10 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 	 */
 	@FXML
 	private void showCreateTaskView() {
-		Task task = new Task(0L, "", "", "Описание", null, TaskPriority.CRITICAL, new Double(0),
-				null, null);
+		Task task = new Task(0L, "", "", "Описание", null, TaskPriority.CRITICAL, (double) 0,
+							 null, null);
 		try {
-			showCurrentTaskView(task, true, false);
+			showCurrentTaskView(task, true);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -1396,11 +1395,6 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 		reportView = Utils.getInstance().loadView(ReportView.class);
 	}
 
-	/**
-	 * Возвращает {@link#rootComposite}
-	 *
-	 * @return the {@link#rootComposite}
-	 */
 	public AnchorPane getRootComposite() {
 		return rootComposite;
 	}
@@ -1423,7 +1417,7 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 		 * @param label - объект
 		 * @param cursorType - стиль курсора
 		 */
-		public CursorTypeChangeListner(Label label, String cursorType) {
+		CursorTypeChangeListner(Label label, String cursorType) {
 			super();
 			this.label = label;
 			this.cursorType = cursorType;
@@ -1452,11 +1446,6 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 		/** Идентификатор задачи */
 		private Task task;
 
-		/**
-		 * Устанавливает значение полю {@link#task}
-		 *
-		 * @param task значение поля
-		 */
 		public void setTask(Task task) {
 			this.task = task;
 		}
@@ -1467,7 +1456,7 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 		public void goOver() {
 			if (null != task) {
 				try {
-					showCurrentTaskView(task, false, false);
+					showCurrentTaskView(task, false);
 				} catch (Exception e) {
 					// TODO Логирование
 					e.printStackTrace();
@@ -1486,21 +1475,7 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 		/** Идентификатор задачи */
 		private Long taskSuid;
 
-		/**
-		 * Возвращает {@link#taskSuid}
-		 *
-		 * @return the {@link#taskSuid}
-		 */
-		public Long getTaskSuid() {
-			return taskSuid;
-		}
-
-		/**
-		 * Устанавливает значение полю {@link#taskSuid}
-		 *
-		 * @param taskSuid значение поля
-		 */
-		public void setTaskSuid(Long taskSuid) {
+		void setTaskSuid(Long taskSuid) {
 			this.taskSuid = taskSuid;
 		}
 
@@ -1509,17 +1484,14 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 		 *
 		 * @return экземпляр класса
 		 */
-		public OpenTaskInSummaryHandler copy() {
+		OpenTaskInSummaryHandler copy() {
 			OpenTaskInSummaryHandler handler = new OpenTaskInSummaryHandler();
 			if (null != taskSuid) {
-				handler.setTaskSuid(new Long(taskSuid));
+				handler.setTaskSuid(taskSuid);
 			}
 			return handler;
 		}
 
-		/**
-		 * @see javafx.event.EventHandler#handle(javafx.event.Event)
-		 */
 		@Override
 		public void handle(MouseEvent event) {
 			if ((2 == event.getClickCount()) && (null != taskSuid)) {
@@ -1533,7 +1505,7 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 									showCurrentTaskView(
 											EntityConverter.getInstatnce()
 													.convertTaskModelToClientWrapTask(entity),
-											false, false);
+											false);
 								} catch (Exception e) {
 									// TODO Логирование
 									e.printStackTrace();
