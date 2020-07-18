@@ -101,10 +101,6 @@ public class CurrentTaskView extends AbstractView<CurrentTaskViewModel> {
 	@FXML
 	private TitledPane cycleTitledPane;
 
-	/** Панель дополнительных параметров */
-	@FXML
-	private TitledPane extendedTitledPane;
-
 	/** Панель истории задачи */
 	@FXML
 	private TitledPane historyTitledPane;
@@ -124,10 +120,6 @@ public class CurrentTaskView extends AbstractView<CurrentTaskViewModel> {
 	/** Кнопка принятия решения по задаче */
 	@FXML
 	private Button decisionButton;
-
-	/** Компонент кнопок создания и отмены создания задачи */
-	@FXML
-	private ButtonBar createTaskButtonBar;
 
 	/** Контейнер вкладок */
 	@FXML
@@ -177,19 +169,13 @@ public class CurrentTaskView extends AbstractView<CurrentTaskViewModel> {
 		priority.setItems(values);
 
 		priority.setPromptText(TaskPriority.CRITICAL.getName());
-		priority.setConverter(new StringConverter<TaskPriority>() {
+		priority.setConverter(new StringConverter<>() {
 
-			/**
-			 * @see javafx.util.StringConverter#toString(Object)
-			 */
 			@Override
 			public String toString(TaskPriority object) {
 				return object.getName();
 			}
 
-			/**
-			 * @see javafx.util.StringConverter#fromString(String)
-			 */
 			@Override
 			public TaskPriority fromString(String string) {
 				return null;
@@ -205,7 +191,7 @@ public class CurrentTaskView extends AbstractView<CurrentTaskViewModel> {
 		timeLeftTaskLabel.setFont(new Font(15));
 
 		model.getOpenViewFlag()
-				.addListener((ChangeListener<Boolean>) (observable, oldValue, newValue) -> {
+				.addListener((observable, oldValue, newValue) -> {
 					if (!newValue) {
 						closeTabView();
 					}
@@ -217,7 +203,7 @@ public class CurrentTaskView extends AbstractView<CurrentTaskViewModel> {
 	/**
 	 * Инициализация представления управления цикилическим назначением
 	 */
-	public void initCycleView() {
+	void initCycleView() {
 		try {
 			cycleView = Utils.getInstance().loadView(CycleTaskView.class);
 			model.setCycleModel(cycleView.getModel());
@@ -290,11 +276,10 @@ public class CurrentTaskView extends AbstractView<CurrentTaskViewModel> {
 			}
 		});
 		model.getStatusLabelProperty()
-				.addListener((ChangeListener<String>) (observable, oldValue, newValue) -> {
-					setStatusImage(model.getTask().getStatus());
-				});
+				.addListener((observable, oldValue, newValue) -> setStatusImage(
+						model.getTask().getStatus()));
 		model.getCreateTaskFlag()
-				.addListener((ChangeListener<Boolean>) (observable, oldValue, newValue) -> {
+				.addListener((observable, oldValue, newValue) -> {
 					if (!newValue) {
 						tooltipDocument.setText("Посмотреть документ");
 						description.getStyleClass().add("htmlEditorViewMode");
@@ -310,7 +295,7 @@ public class CurrentTaskView extends AbstractView<CurrentTaskViewModel> {
 				});
 
 		model.getTitleLabelProperty()
-				.addListener((ChangeListener<String>) (observable, oldValue, newValue) -> {
+				.addListener((observable, oldValue, newValue) -> {
 					String errStyle = "textFieldErr";
 					if (newValue.isEmpty()) {
 						title.getStyleClass().add(errStyle);
@@ -322,7 +307,7 @@ public class CurrentTaskView extends AbstractView<CurrentTaskViewModel> {
 		startDate.getStyleClass().add("dateTimeTextFieldErr");
 		endDate.getStyleClass().add("dateTimeTextFieldErr");
 		model.getStartDateProperty()
-				.addListener((ChangeListener<LocalDateTime>) (observable, oldValue, newValue) -> {
+				.addListener((observable, oldValue, newValue) -> {
 					String errStyle = "dateTimeTextFieldErr";
 					String normal = "dateTimeTextFieldNormal";
 					if (null == newValue) {
@@ -345,35 +330,32 @@ public class CurrentTaskView extends AbstractView<CurrentTaskViewModel> {
 				});
 
 		model.getEndDateProperty()
-				.addListener((ChangeListener<LocalDateTime>) (observable, oldValue, newValue) -> {
-					Platform.runLater(() -> {
-						String errStyle = "dateTimeTextFieldErr";
-						String normal = "dateTimeTextFieldNormal";
+				.addListener((observable, oldValue, newValue) -> Platform.runLater(() -> {
+					String errStyle = "dateTimeTextFieldErr";
+					String normal = "dateTimeTextFieldNormal";
 
-						if (null == newValue) {
-							endDate.getStyleClass().add(errStyle);
-							for (String value : new ArrayList<>(endDate.getStyleClass())) {
-								if (value.equals(normal)) {
-									endDate.getStyleClass().remove(value);
-								}
-							}
-							endDate.getStyleClass().remove(normal);
-						} else {
-							endDate.getStyleClass().remove(errStyle);
-							endDate.getStyleClass().add(normal);
-							for (String value : endDate.getStyleClass()) {
-								if (value.equals(errStyle)) {
-									endDate.getStyleClass().remove(errStyle);
-								}
+					if (null == newValue) {
+						endDate.getStyleClass().add(errStyle);
+						for (String value : new ArrayList<>(endDate.getStyleClass())) {
+							if (value.equals(normal)) {
+								endDate.getStyleClass().remove(value);
 							}
 						}
+						endDate.getStyleClass().remove(normal);
+					} else {
+						endDate.getStyleClass().remove(errStyle);
+						endDate.getStyleClass().add(normal);
+						for (String value : endDate.getStyleClass()) {
+							if (value.equals(errStyle)) {
+								endDate.getStyleClass().remove(errStyle);
+							}
+						}
+					}
 
-					});
-
-				});
+				}));
 
 		model.getExecutorStringProperty()
-				.addListener((ChangeListener<String>) (observable, oldValue, newValue) -> {
+				.addListener((observable, oldValue, newValue) -> {
 					String errStyle = "textFieldErr";
 					if (newValue.isEmpty()) {
 						executorTextField.getStyleClass().add(errStyle);
@@ -387,22 +369,18 @@ public class CurrentTaskView extends AbstractView<CurrentTaskViewModel> {
 				});
 
 		model.getDesciprtionLabelProperty()
-				.addListener((ChangeListener<String>) (observable, oldValue, newValue) -> {
-					Platform.runLater(() -> description.setHtmlText(newValue));
-
-				});
+				.addListener((observable, oldValue, newValue) -> Platform
+						.runLater(() -> description.setHtmlText(newValue)));
 
 		model.getPriorityLabelProperty()
-				.addListener((ChangeListener<String>) (observable, oldValue, newValue) -> {
+				.addListener((observable, oldValue, newValue) -> {
 					if ((null != newValue) && (!newValue.isEmpty())) {
 						priority.getSelectionModel()
 								.select(TaskPriority.getPriorityBySuid(newValue));
 					}
 				});
 
-		buttonCancelCreateTask.setOnMouseClicked(event -> {
-			closeTabView();
-		});
+		buttonCancelCreateTask.setOnMouseClicked(event -> closeTabView());
 		buttonDoc.setOnMouseClicked(e -> {
 			if (model.getCreateFlagValue()) {
 				// Отправка документа на сервер
@@ -455,9 +433,7 @@ public class CurrentTaskView extends AbstractView<CurrentTaskViewModel> {
 
 		decisionButton.setOnMouseClicked(event -> {
 			try {
-				Consumer<Task> consumer = t -> {
-					closeTabView();
-				};
+				Consumer<Task> consumer = t -> closeTabView();
 				DialogUtils.getInstance().showDecisionDialog(getStage(), consumer, model.getTask());
 
 			} catch (IOException e1) {
@@ -476,18 +452,15 @@ public class CurrentTaskView extends AbstractView<CurrentTaskViewModel> {
 
 		// добавляет признак того, что содержание представления было изменено
 		model.getChangeExistProperty()
-				.addListener((observable, oldValue, newValue) -> {
-					Platform.runLater(() -> {
-						if (null != getTab()) {
-							if (newValue) {
-								getTab().setText("* " + getTab().getText());
-							} else {
-								getTab().setText(model.getTask().getName());
-							}
+				.addListener((observable, oldValue, newValue) -> Platform.runLater(() -> {
+					if (null != getTab()) {
+						if (newValue) {
+							getTab().setText("* " + getTab().getText());
+						} else {
+							getTab().setText(model.getTask().getName());
 						}
-					});
-
-				});
+					}
+				}));
 		model.getColorProgressBarTextProperty().addListener(
 				(observable, oldValue, newValue) -> {
 					switch (newValue) {
@@ -523,20 +496,19 @@ public class CurrentTaskView extends AbstractView<CurrentTaskViewModel> {
 	 */
 	@Override
 	public Tab getTab() {
-		Tab tab = (!currentTaskTabPane.getTabs().isEmpty()) ? currentTaskTabPane.getTabs().get(0)
+		return (!currentTaskTabPane.getTabs().isEmpty()) ? currentTaskTabPane.getTabs().get(0)
 				: null;
-		return tab;
 	}
 
 	@Override
-	protected CurrentTaskViewModel createPresentaionModel() {
+	protected CurrentTaskViewModel createPresentationModel() {
 		return new CurrentTaskViewModel();
 	}
 
 	/**
 	 * Инициализирует контент представления
 	 */
-	public void initContent() {
+	void initContent() {
 		Task task = model.getTask();
 		setStatusImage(task.getStatus());
 		setImagePriority(task.getPriority());
@@ -554,6 +526,7 @@ public class CurrentTaskView extends AbstractView<CurrentTaskViewModel> {
 				historyView.getModel().setTask(task);
 				historyView.getModel().setInitialSortType(SortType.SORT_BY_DATE_FIRST_OLD);
 				historyView.loadPageEntries(0);
+				historyView.addCloseListener(() -> getModel().deleteJmsListener());
 				historyTitledPane.setContent(historyView.getRootPane());
 			} catch (IOException e) {
 				// TODO логирование
@@ -645,7 +618,6 @@ public class CurrentTaskView extends AbstractView<CurrentTaskViewModel> {
 					try {
 						model.getTask().setDescription(description.getHtmlText());
 						model.createTaskEntity();
-						fireUpdate();
 					} catch (Exception e) {
 						// TODO Логирование
 						e.printStackTrace();
@@ -674,9 +646,7 @@ public class CurrentTaskView extends AbstractView<CurrentTaskViewModel> {
 		} else {
 			// Завершение задачи
 			try {
-				Consumer<Task> consumer = t -> {
-					closeTabView();
-				};
+				Consumer<Task> consumer = t -> closeTabView();
 				DialogUtils.getInstance().showCompletionTaskDialog(getStage(), consumer,
 						model.getTask());
 
@@ -713,21 +683,7 @@ public class CurrentTaskView extends AbstractView<CurrentTaskViewModel> {
 		cycleView.setEditMode(editMode);
 	}
 
-	/**
-	 * Возвращает {@link#commonTabPane}
-	 *
-	 * @return the {@link#commonTabPane}
-	 */
-	public TabPane getCommonTabPane() {
-		return commonTabPane;
-	}
-
-	/**
-	 * Устанавливает значение полю {@link#commonTabPane}
-	 *
-	 * @param commonTabPane значение поля
-	 */
-	public void setCommonTabPane(TabPane commonTabPane) {
+	void setCommonTabPane(TabPane commonTabPane) {
 		this.commonTabPane = commonTabPane;
 	}
 
@@ -790,9 +746,6 @@ public class CurrentTaskView extends AbstractView<CurrentTaskViewModel> {
 		DialogUtils.getInstance().showSelectSubElsDialog(getStage(), consumer, false, false);
 	}
 
-	/**
-	 * @see Object#hashCode()
-	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -801,9 +754,6 @@ public class CurrentTaskView extends AbstractView<CurrentTaskViewModel> {
 		return result;
 	}
 
-	/**
-	 * @see Object#equals(Object)
-	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
@@ -817,13 +767,8 @@ public class CurrentTaskView extends AbstractView<CurrentTaskViewModel> {
 		}
 		CurrentTaskView other = (CurrentTaskView) obj;
 		if (model.getTask() == null) {
-			if (other.model.getTask() != null) {
-				return false;
-			}
-		} else if (!model.getTask().equals(other.model.getTask())) {
-			return false;
-		}
-		return true;
+			return other.model.getTask() == null;
+		} else return model.getTask().equals(other.model.getTask());
 	}
 
 }

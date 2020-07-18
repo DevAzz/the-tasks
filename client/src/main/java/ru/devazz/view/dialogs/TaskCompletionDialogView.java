@@ -105,7 +105,7 @@ public class TaskCompletionDialogView extends AbstractView<TaskCompletionDialogV
 	}
 
 	@Override
-	protected TaskCompletionDialogViewModel createPresentaionModel() {
+	protected TaskCompletionDialogViewModel createPresentationModel() {
 		return new TaskCompletionDialogViewModel();
 	}
 

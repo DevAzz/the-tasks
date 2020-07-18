@@ -474,7 +474,7 @@ public class CycleTaskView extends AbstractView<CycleTaskViewModel> {
 	}
 
 	@Override
-	protected CycleTaskViewModel createPresentaionModel() {
+	protected CycleTaskViewModel createPresentationModel() {
 		return new CycleTaskViewModel();
 	}
 

@@ -216,7 +216,7 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 	}
 
 	@Override
-	protected RootViewPresentationModel createPresentaionModel() {
+	protected RootViewPresentationModel createPresentationModel() {
 		return new RootViewPresentationModel();
 	}
 
@@ -607,6 +607,7 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 				commonCentralTabPane.getSelectionModel().select(currentTaskView.getTab());
 
 				currentTaskView.addCloseListener(() -> {
+					currentTaskView.getModel().deleteJmsListener();
 					openTaskMap.remove(aTask.getSuid());
 				});
 

@@ -8,7 +8,6 @@ import javafx.stage.Stage;
 import ru.devazz.interfaces.CloseListener;
 import ru.devazz.interfaces.SelectableObject;
 import ru.devazz.interfaces.SelectionListener;
-import ru.devazz.interfaces.UpdateListener;
 import ru.devazz.model.PresentationModel;
 import ru.devazz.server.api.ICommonService;
 import ru.devazz.server.api.model.IEntity;
@@ -42,23 +41,17 @@ public abstract class AbstractView<T extends PresentationModel<? extends ICommon
 	/** Модель представления */
 	protected T model;
 
-	/** Выделенный объект */
-	protected SelectableObject selection;
-
 	/** Список слушателей закрытия окна */
-	private List<CloseListener> listCloseListeneres = new ArrayList<>();
+	private List<CloseListener> listCloseListeners = new ArrayList<>();
 
 	/** Список слушателей селекшена */
-	private List<SelectionListener> listSelectionListeneres = new ArrayList<>();
-
-	/** Список слушателей обновления */
-	private List<UpdateListener> listUpdateListeners = new ArrayList<>();
+	private List<SelectionListener> listSelectionListeners = new ArrayList<>();
 
 	/**
 	 * Конструктор
 	 */
 	public AbstractView() {
-		model = createPresentaionModel();
+		model = createPresentationModel();
 	}
 
 	/**
@@ -71,22 +64,12 @@ public abstract class AbstractView<T extends PresentationModel<? extends ICommon
 	 *
 	 * @return модель преддставления
 	 */
-	protected abstract T createPresentaionModel();
+	protected abstract T createPresentationModel();
 
-	/**
-	 * Возвращает {@link#stage}
-	 *
-	 * @return the {@link#stage}
-	 */
 	public Stage getStage() {
 		return stage;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#stage}
-	 *
-	 * @param {@link#stage}
-	 */
 	public void setStage(Stage stage) {
 		this.stage = stage;
 	}
@@ -121,74 +104,36 @@ public abstract class AbstractView<T extends PresentationModel<? extends ICommon
 		}
 	}
 
-	/**
-	 * Добавляет слушателя закрытия представления
-	 *
-	 * @param aListener
-	 */
 	public void addCloseListener(CloseListener aListener) {
-		listCloseListeneres.add(aListener);
+		listCloseListeners.add(aListener);
 	}
 
 	/**
 	 * Уведомляет слушателей о закрытии представления
 	 */
-	public void fireClose() {
-		for (CloseListener listener : listCloseListeneres) {
+	void fireClose() {
+		for (CloseListener listener : listCloseListeners) {
 			listener.closeWindow();
 		}
 	}
 
-	/**
-	 * Добавляет слушателя закрытия представления
-	 *
-	 * @param aListener
-	 */
-	public void addSelectionListener(SelectionListener aListener) {
-		listSelectionListeneres.add(aListener);
+	void addSelectionListener(SelectionListener aListener) {
+		listSelectionListeners.add(aListener);
 	}
 
 	/**
 	 * Уведомляет слушателей о закрытии представления
 	 */
-	public void fireSelect(SelectableObject aObject) {
-		for (SelectionListener listener : listSelectionListeneres) {
+	void fireSelect(SelectableObject aObject) {
+		for (SelectionListener listener : listSelectionListeners) {
 			listener.fireSelect(aObject);
 		}
 	}
 
-	/**
-	 * Добавляет слушателя обновления представления
-	 *
-	 * @param aListener слушатель обновления представления
-	 */
-	public void addUpdateListener(UpdateListener aListener) {
-		listUpdateListeners.add(aListener);
-	}
-
-	/**
-	 * Уведомляет слушателей об обновлении
-	 */
-	public void fireUpdate() {
-		for (UpdateListener listener : listUpdateListeners) {
-			listener.fireUpdateView();
-		}
-	}
-
-	/**
-	 * Возвращает {@link#model}
-	 *
-	 * @return the {@link#model}
-	 */
 	public T getModel() {
 		return model;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#model}
-	 *
-	 * @param {@link#model}
-	 */
 	public void setModel(T model) {
 		this.model = model;
 	}
@@ -214,7 +159,7 @@ public abstract class AbstractView<T extends PresentationModel<? extends ICommon
 	/**
 	 * Закрывает вкладку
 	 */
-	public void closeTab() {
+	private void closeTab() {
 		TabPane tabPane = getTabPane();
 		if (null != tabPane) {
 			tabPane.getTabs().remove(getTab());
@@ -236,7 +181,7 @@ public abstract class AbstractView<T extends PresentationModel<? extends ICommon
 	 *
 	 * @return признак
 	 */
-	public boolean isViewOpen() {
+	boolean isViewOpen() {
 		return model.getOpenViewFlag().get();
 	}
 

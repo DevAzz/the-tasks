@@ -34,10 +34,6 @@ public class TaskHistoryView extends AbstractView<TaskHistoryViewModel> {
 	@FXML
 	private Menu dateFilterMenu;
 
-	/** Пункт меню - "Отобразить все задачи" */
-	@FXML
-	private MenuItem showAll;
-
 	/** Пункт меню "Сортировка записей" -> "По дате" -> "Сначала новые" */
 	@FXML
 	private CheckMenuItem sortByDateFirstNewItem;
@@ -49,10 +45,6 @@ public class TaskHistoryView extends AbstractView<TaskHistoryViewModel> {
 	/** Пункт меню фильтра по дате "Выбрать промежуток времени" */
 	@FXML
 	private CustomMenuItem timeIntervalFilterItem;
-
-	/** Меню сортировки по дате */
-	@FXML
-	private Menu sortByDateMenu;
 
 	/** Меню фильтрации по типу записей */
 	@FXML
@@ -80,11 +72,9 @@ public class TaskHistoryView extends AbstractView<TaskHistoryViewModel> {
 				model.getCurrentPageProperty());
 		menuBin();
 
-		pagination.setPageFactory(param -> createPage(param));
+		pagination.setPageFactory(this::createPage);
 		pagination.currentPageIndexProperty()
-				.addListener((observable, oldValue, newValue) -> {
-					loadPageEntries(pagination.getCurrentPageIndex());
-				});
+				.addListener((observable, oldValue, newValue) -> loadPageEntries(pagination.getCurrentPageIndex()));
 
 		try {
 			CustomTimeIntervalView customTimeView = Utils.getInstance()
@@ -99,38 +89,37 @@ public class TaskHistoryView extends AbstractView<TaskHistoryViewModel> {
 			e.printStackTrace();
 		}
 
-		model.getVisibleEntries().addListener((ListChangeListener<TaskHistoryModel>) c -> {
-			Platform.runLater(() -> {
-				int oldPageCount = pagination.getPageCount();
-				int newPageCount = model.getCountPages();
-				int currentPageIndex = pagination.getCurrentPageIndex();
-				if (oldPageCount < newPageCount) {
-					pagination.setPageCount(newPageCount);
-					pagination.setCurrentPageIndex(currentPageIndex);
-				} else if (oldPageCount > newPageCount) {
-					pagination.setPageCount(newPageCount);
-					if (currentPageIndex == newPageCount) {
-						currentPageIndex--;
-						currentPageIndex = (0 > currentPageIndex) ? 0 : currentPageIndex;
+		model.getVisibleEntries()
+				.addListener((ListChangeListener<TaskHistoryModel>) c -> Platform.runLater(() -> {
+					int oldPageCount = pagination.getPageCount();
+					int newPageCount = model.getCountPages();
+					int currentPageIndex = pagination.getCurrentPageIndex();
+					if (oldPageCount < newPageCount) {
+						pagination.setPageCount(newPageCount);
+						pagination.setCurrentPageIndex(currentPageIndex);
+					} else if (oldPageCount > newPageCount) {
+						pagination.setPageCount(newPageCount);
+						if (currentPageIndex == newPageCount) {
+							currentPageIndex--;
+							currentPageIndex = Math.max(0, currentPageIndex);
+						}
+						pagination.setCurrentPageIndex(currentPageIndex);
 					}
-					pagination.setCurrentPageIndex(currentPageIndex);
-				}
 
-				while (c.next()) {
-					if (c.wasAdded()) {
-						for (TaskHistoryModel entity : FXCollections.synchronizedObservableList(
-								FXCollections.observableArrayList(c.getAddedSubList()))) {
-							createHistoryEntryPanel(entity);
-						}
-					} else if (c.wasRemoved()) {
-						VBox box = getPageNode(pagination.getCurrentPageIndex());
-						if (null != box) {
-							box.getChildren().clear();
+					while (c.next()) {
+						if (c.wasAdded()) {
+							for (TaskHistoryModel entity : FXCollections.synchronizedObservableList(
+									FXCollections.observableArrayList(c.getAddedSubList()))) {
+								createHistoryEntryPanel(entity);
+							}
+						} else if (c.wasRemoved()) {
+							VBox box = getPageNode(pagination.getCurrentPageIndex());
+							if (null != box) {
+								box.getChildren().clear();
+							}
 						}
 					}
-				}
-			});
-		});
+				}));
 
 		initPageSettingsView();
 
@@ -144,12 +133,8 @@ public class TaskHistoryView extends AbstractView<TaskHistoryViewModel> {
 				model.getSortByDateFirstNew());
 		Bindings.bindBidirectional(sortByDateFirstOldItem.selectedProperty(),
 				model.getSortByDateFirstOld());
-		sortByDateFirstNewItem.setOnAction(event -> {
-			model.sort(sortByDateFirstNewItem.getId());
-		});
-		sortByDateFirstOldItem.setOnAction(event -> {
-			model.sort(sortByDateFirstOldItem.getId());
-		});
+		sortByDateFirstNewItem.setOnAction(event -> model.sort(sortByDateFirstNewItem.getId()));
+		sortByDateFirstOldItem.setOnAction(event -> model.sort(sortByDateFirstOldItem.getId()));
 
 		for (MenuItem item : dateFilterMenu.getItems()) {
 			if ((null != item.getId()) && (item instanceof CheckMenuItem)) {
@@ -256,7 +241,7 @@ public class TaskHistoryView extends AbstractView<TaskHistoryViewModel> {
 				Integer countPageEntries = pageSettingsView.getModel().getCountPageEntriesProperty()
 						.get();
 				pagination.setMaxPageIndicatorCount(countPages);
-				if (countPageEntries != model.getCountPageEntries()) {
+				if (!countPageEntries.equals(model.getCountPageEntries())) {
 					model.setCountPageEntries(countPageEntries);
 					loadPageEntries(pagination.getCurrentPageIndex());
 				}
@@ -338,9 +323,7 @@ public class TaskHistoryView extends AbstractView<TaskHistoryViewModel> {
 						}
 					}
 				}
-				if (flag) {
-					box.getChildren().add(taskRoot);
-				}
+				box.getChildren().add(taskRoot);
 			}
 
 		} catch (IOException e) {
@@ -350,15 +333,10 @@ public class TaskHistoryView extends AbstractView<TaskHistoryViewModel> {
 	}
 
 	@Override
-	protected TaskHistoryViewModel createPresentaionModel() {
+	protected TaskHistoryViewModel createPresentationModel() {
 		return new TaskHistoryViewModel();
 	}
 
-	/**
-	 * Возвращает {@link#rootScrollPane}
-	 *
-	 * @return the {@link#rootScrollPane}
-	 */
 	public AnchorPane getRootPane() {
 		return rootPane;
 	}
@@ -397,7 +375,7 @@ public class TaskHistoryView extends AbstractView<TaskHistoryViewModel> {
 	 *
 	 * @param aPageNumber номер страницы записей
 	 */
-	public void loadPageEntries(Integer aPageNumber) {
+	void loadPageEntries(Integer aPageNumber) {
 		VBox box = getPageNode(aPageNumber);
 		if (null != box) {
 			box.getChildren().clear();

@@ -107,7 +107,7 @@ public class LegendOfIconsView extends AbstractView<LegendOfIconsViewModel> {
 	}
 
 	@Override
-	protected LegendOfIconsViewModel createPresentaionModel() {
+	protected LegendOfIconsViewModel createPresentationModel() {
 		// TODO Auto-generated method stub
 		return new LegendOfIconsViewModel();
 	}

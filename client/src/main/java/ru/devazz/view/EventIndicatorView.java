@@ -99,7 +99,7 @@ public class EventIndicatorView extends AbstractView<EventIndicatorViewModel> {
 	}
 
 	@Override
-	protected EventIndicatorViewModel createPresentaionModel() {
+	protected EventIndicatorViewModel createPresentationModel() {
 		return new EventIndicatorViewModel();
 	}
 

@@ -40,7 +40,7 @@ public class TaskPanelView extends AbstractView<TaskPanelViewModel> {
 	}
 
 	@Override
-	protected TaskPanelViewModel createPresentaionModel() {
+	protected TaskPanelViewModel createPresentationModel() {
 		return new TaskPanelViewModel();
 	}
 

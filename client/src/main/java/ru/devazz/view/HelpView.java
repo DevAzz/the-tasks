@@ -92,7 +92,7 @@ public class HelpView extends AbstractView<HelpViewModel> {
 	}
 
 	@Override
-	protected HelpViewModel createPresentaionModel() {
+	protected HelpViewModel createPresentationModel() {
 		// TODO Auto-generated method stub
 		return new HelpViewModel();
 	}

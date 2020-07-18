@@ -389,7 +389,7 @@ public class TasksView extends AbstractView<TasksViewModel> {
 	}
 
 	@Override
-	protected TasksViewModel createPresentaionModel() {
+	protected TasksViewModel createPresentationModel() {
 		return new TasksViewModel();
 	}
 

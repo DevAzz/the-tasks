@@ -59,7 +59,7 @@ public class SummaryTaskView extends AbstractView<SummaryTaskViewModel> {
 	}
 
 	@Override
-	protected SummaryTaskViewModel createPresentaionModel() {
+	protected SummaryTaskViewModel createPresentationModel() {
 		return new SummaryTaskViewModel();
 	}
 

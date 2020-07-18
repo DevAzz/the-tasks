@@ -109,7 +109,7 @@ public class SubFilterDialogView extends AbstractView<SubFilterDialogModel> {
 	}
 
 	@Override
-	protected SubFilterDialogModel createPresentaionModel() {
+	protected SubFilterDialogModel createPresentationModel() {
 		return new SubFilterDialogModel();
 	}
 

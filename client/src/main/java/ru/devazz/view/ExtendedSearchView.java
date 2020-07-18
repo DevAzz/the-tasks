@@ -153,7 +153,7 @@ public class ExtendedSearchView extends AbstractView<ExtendedSearchViewModel> {
 	}
 
 	@Override
-	protected ExtendedSearchViewModel createPresentaionModel() {
+	protected ExtendedSearchViewModel createPresentationModel() {
 		return new ExtendedSearchViewModel();
 	}
 

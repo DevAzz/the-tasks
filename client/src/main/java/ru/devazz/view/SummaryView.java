@@ -180,7 +180,7 @@ public class SummaryView extends AbstractView<SummaryViewModel> {
 	}
 
 	@Override
-	protected SummaryViewModel createPresentaionModel() {
+	protected SummaryViewModel createPresentationModel() {
 		return new SummaryViewModel();
 	}
 

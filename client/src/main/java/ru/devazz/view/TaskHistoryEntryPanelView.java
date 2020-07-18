@@ -47,7 +47,7 @@ public class TaskHistoryEntryPanelView extends AbstractView<TaskHistoryEntryPane
 	}
 
 	@Override
-	protected TaskHistoryEntryPanelModel createPresentaionModel() {
+	protected TaskHistoryEntryPanelModel createPresentationModel() {
 		return new TaskHistoryEntryPanelModel();
 	}
 

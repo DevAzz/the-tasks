@@ -133,7 +133,7 @@ public class EventJournalView extends AbstractView<EventJournalModel> {
 	}
 
 	@Override
-	protected EventJournalModel createPresentaionModel() {
+	protected EventJournalModel createPresentationModel() {
 		return new EventJournalModel();
 	}
 

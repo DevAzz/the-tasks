@@ -558,7 +558,7 @@ public class WorkbenchView extends AbstractView<WorkbenchViewModel> {
 	}
 
 	@Override
-	protected WorkbenchViewModel createPresentaionModel() {
+	protected WorkbenchViewModel createPresentationModel() {
 		return new WorkbenchViewModel();
 	}
 

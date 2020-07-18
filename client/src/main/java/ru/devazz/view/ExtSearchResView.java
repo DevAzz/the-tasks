@@ -27,7 +27,7 @@ public class ExtSearchResView extends AbstractView<ExtSearchResModel> {
 	}
 
 	@Override
-	protected ExtSearchResModel createPresentaionModel() {
+	protected ExtSearchResModel createPresentationModel() {
 		return new ExtSearchResModel();
 	}
 

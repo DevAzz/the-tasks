@@ -219,7 +219,7 @@ public class SummaryPanelView extends AbstractView<SummaryPanelViewModel> {
 	}
 
 	@Override
-	protected SummaryPanelViewModel createPresentaionModel() {
+	protected SummaryPanelViewModel createPresentationModel() {
 		return new SummaryPanelViewModel();
 	}
 

@@ -112,7 +112,7 @@ public class AuthView extends AbstractView<AuthPresentationModel> {
 	}
 
 	@Override
-	protected AuthPresentationModel createPresentaionModel() {
+	protected AuthPresentationModel createPresentationModel() {
 		return new AuthPresentationModel();
 	}
 

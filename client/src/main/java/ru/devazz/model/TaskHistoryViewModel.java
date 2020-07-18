@@ -21,6 +21,7 @@ import ru.devazz.server.api.model.enums.TaskHistoryType;
 import ru.devazz.server.api.model.enums.TaskTimeInterval;
 
 import javax.jms.JMSException;
+import javax.jms.MessageListener;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -97,7 +98,7 @@ public class TaskHistoryViewModel
 		currentPageProperty = new SimpleIntegerProperty(this, "currentPageProperty", 0);
 		pageCountProperty = new SimpleIntegerProperty(this, "pageCountProperty", 1);
 
-		connectToJMSService();
+		addJmsListener("taskHistoryQueue", getMessageListener());
 	}
 
 	/**
@@ -232,7 +233,7 @@ public class TaskHistoryViewModel
 	/**
 	 * Обновление наименования активного фильтра
 	 */
-	public void updateNameFilterLabel() {
+	private void updateNameFilterLabel() {
 		nameActiveFiltersList.clear();
 		List<String> listTypeFilter = filter.getFilterTypeMap()
 				.get(FilterType.FILTER_BY_HISTORY_TYPE);
@@ -276,7 +277,7 @@ public class TaskHistoryViewModel
 			for (String value : listTypeDate) {
 				TaskTimeInterval interval = TaskTimeInterval.getTimeIntervalBySuid(value);
 				if (null != interval) {
-					String name = "";
+					String name;
 					if (TaskTimeInterval.CUSTOM_TIME_INTERVAL.equals(interval)) {
 						SimpleDateFormat parser = new SimpleDateFormat("HH:mm dd.MM.yyyy");
 						name = "От " + parser.format(filter.getStartDate()) + " до "
@@ -354,110 +355,50 @@ public class TaskHistoryViewModel
 		return ITaskHistoryService.class;
 	}
 
-	/**
-	 * Возвращает {@link#currentPageProperty}
-	 *
-	 * @return the {@link#currentPageProperty}
-	 */
 	public IntegerProperty getCurrentPageProperty() {
 		return currentPageProperty;
 	}
 
-	/**
-	 * Возвращает {@link#sortByDateFirstOld}
-	 *
-	 * @return the {@link#sortByDateFirstOld}
-	 */
 	public BooleanProperty getSortByDateFirstOld() {
 		return sortByDateFirstOld;
 	}
 
-	/**
-	 * Возвращает {@link#sortByDateFirstNew}
-	 *
-	 * @return the {@link#sortByDateFirstNew}
-	 */
 	public BooleanProperty getSortByDateFirstNew() {
 		return sortByDateFirstNew;
 	}
 
-	/**
-	 * Возвращает {@link#dayFilterSelectedProperty}
-	 *
-	 * @return the {@link#dayFilterSelectedProperty}
-	 */
 	public BooleanProperty getDayFilterSelectedProperty() {
 		return dayFilterSelectedProperty;
 	}
 
-	/**
-	 * Возвращает {@link#weekFilterSelectedProperty}
-	 *
-	 * @return the {@link#weekFilterSelectedProperty}
-	 */
 	public BooleanProperty getWeekFilterSelectedProperty() {
 		return weekFilterSelectedProperty;
 	}
 
-	/**
-	 * Возвращает {@link#monthFilterSelectedProperty}
-	 *
-	 * @return the {@link#monthFilterSelectedProperty}
-	 */
 	public BooleanProperty getMonthFilterSelectedProperty() {
 		return monthFilterSelectedProperty;
 	}
 
-	/**
-	 * Возвращает {@link#allTimeFilterSelectedProperty}
-	 *
-	 * @return the {@link#allTimeFilterSelectedProperty}
-	 */
 	public BooleanProperty getAllTimeFilterSelectedProperty() {
 		return allTimeFilterSelectedProperty;
 	}
 
-	/**
-	 * Возвращает {@link#pageCountProperty}
-	 *
-	 * @return the {@link#pageCountProperty}
-	 */
 	public IntegerProperty getPageCountProperty() {
 		return pageCountProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#pageCountProperty}
-	 *
-	 * @param pageCountValue значение поля
-	 */
-	public void setPageCountPropertValue(Integer pageCountValue) {
+	private void setPageCountPropertValue(Integer pageCountValue) {
 		this.pageCountProperty.set(pageCountValue);
 	}
 
-	/**
-	 * Возвращает {@link#countPageEntries}
-	 *
-	 * @return the {@link#countPageEntries}
-	 */
 	public Integer getCountPageEntries() {
 		return countPageEntries;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#countPageEntries}
-	 *
-	 * @param countPageEntries значение поля
-	 */
 	public void setCountPageEntries(Integer countPageEntries) {
 		this.countPageEntries = countPageEntries;
 	}
 
-	/**
-	 * Возвращает {@link#visibleEntries}
-	 *
-	 * @return the {@link#visibleEntries}
-	 */
 	public ObservableList<TaskHistoryModel> getVisibleEntries() {
 		return visibleEntries;
 	}
@@ -487,20 +428,10 @@ public class TaskHistoryViewModel
 		thread.start();
 	}
 
-	/**
-	 * Возвращает {@link#task}
-	 *
-	 * @return the {@link#task}
-	 */
 	public Task getTask() {
 		return task;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#task}
-	 *
-	 * @param task значение поля
-	 */
 	public void setTask(Task task) {
 		this.task = task;
 		setPageCountPropertValue(getCountPages());
@@ -541,12 +472,8 @@ public class TaskHistoryViewModel
 		return result;
 	}
 
-	/**
-	 * Подключение к службе рассылки JMS сообщений
-	 */
-	private void connectToJMSService() {
-		ProxyFactory.getInstance().addMessageListener("taskHistoryViewModel", "taskHistoryQueue",
-														 message -> {
+	private MessageListener getMessageListener() {
+		return message -> {
 			try {
 				if (message instanceof ActiveMQMessage) {
 					ActiveMQMessage objectMessage = (ActiveMQMessage) message;
@@ -566,23 +493,13 @@ public class TaskHistoryViewModel
 				// TODO Логирование
 				e.printStackTrace();
 			}
-		});
+		};
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#customTimeIntervalModel}
-	 *
-	 * @param customTimeIntervalModel значение поля
-	 */
 	public void setCustomTimeIntervalModel(CustomTimeIntervalModel customTimeIntervalModel) {
 		this.customTimeIntervalModel = customTimeIntervalModel;
 	}
 
-	/**
-	 * Возвращает {@link#nameActiveFiltersList}
-	 *
-	 * @return the {@link#nameActiveFiltersList}
-	 */
 	public ObservableList<String> getNameActiveFiltersList() {
 		return nameActiveFiltersList;
 	}
@@ -593,7 +510,7 @@ public class TaskHistoryViewModel
 	 * @return поток поиска записей по заданному промежутку времени
 	 */
 	public Runnable createSearchRunnable() {
-		Runnable runnable = () -> {
+		return () -> {
 			try {
 				Date startDate = customTimeIntervalModel.getStartDate();
 				Date endDate = customTimeIntervalModel.getEndDate();
@@ -611,7 +528,6 @@ public class TaskHistoryViewModel
 				e.printStackTrace();
 			}
 		};
-		return runnable;
 
 	}
 

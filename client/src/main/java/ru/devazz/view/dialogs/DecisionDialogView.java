@@ -128,7 +128,7 @@ public class DecisionDialogView extends AbstractView<DecisionDialogViewModel> {
 	}
 
 	@Override
-	protected DecisionDialogViewModel createPresentaionModel() {
+	protected DecisionDialogViewModel createPresentationModel() {
 		return new DecisionDialogViewModel();
 	}
 

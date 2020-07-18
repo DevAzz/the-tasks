@@ -96,7 +96,7 @@ public class RemoveTaskDialogView extends AbstractView<RemoveTaskDialogModel> {
 	}
 
 	@Override
-	protected RemoveTaskDialogModel createPresentaionModel() {
+	protected RemoveTaskDialogModel createPresentationModel() {
 		return new RemoveTaskDialogModel();
 	}
 

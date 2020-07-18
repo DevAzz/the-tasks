@@ -11,12 +11,16 @@ import ru.devazz.server.api.model.IEntity;
 import ru.devazz.server.api.model.UserModel;
 import ru.devazz.utils.Utils;
 
+import javax.jms.MessageListener;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Абстрактная модель представления
  */
 public abstract class PresentationModel<T extends ICommonService, E extends IEntity> {
+
+	private UUID viewModelId;
 
 	/** Признак того, что представление открыто */
 	private BooleanProperty openViewFlag;
@@ -25,7 +29,7 @@ public abstract class PresentationModel<T extends ICommonService, E extends IEnt
 	protected T service;
 
 	/** Список сущностей задач */
-	protected ObservableList<E> listDataModelEntities;
+	ObservableList<E> listDataModelEntities;
 
 	/**
 	 * Инициализация модели
@@ -36,12 +40,11 @@ public abstract class PresentationModel<T extends ICommonService, E extends IEnt
 	 * Конструктор
 	 */
 	public PresentationModel() {
+		viewModelId = UUID.randomUUID();
 		openViewFlag = new SimpleBooleanProperty(this, "openViewFlag", false);
 
-		if (null == listDataModelEntities) {
-			listDataModelEntities = FXCollections
-					.synchronizedObservableList(FXCollections.observableArrayList());
-		}
+		listDataModelEntities = FXCollections
+				.synchronizedObservableList(FXCollections.observableArrayList());
 
 		try {
 			service = getService();
@@ -53,20 +56,22 @@ public abstract class PresentationModel<T extends ICommonService, E extends IEnt
 		}
 	}
 
+	public void deleteJmsListener() {
+		ProxyFactory.getInstance().deleteMessageListener(viewModelId.toString());
+	}
+
 	/**
-	 * Возвращает {@link#openViewFlag}
-	 *
-	 * @return the {@link#openViewFlag}
+	 * Подключение к службе рассылки системных JMS сообщений
 	 */
+	public void addJmsListener(String queueName, MessageListener listener) {
+		ProxyFactory.getInstance()
+				.addMessageListener(viewModelId.toString(), queueName, listener);
+	}
+
 	public BooleanProperty getOpenViewFlag() {
 		return openViewFlag;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#openViewFlag}
-	 *
-	 * @param aFlag значение поля
-	 */
 	public void setOpenFlagValue(Boolean aFlag) {
 		if ((null != aFlag) && (null != openViewFlag)) {
 			openViewFlag.set(aFlag);
@@ -74,19 +79,9 @@ public abstract class PresentationModel<T extends ICommonService, E extends IEnt
 	}
 
 	/**
-	 * Устанавливает значение полю {@link#openViewFlag}
-	 *
-	 * @param openViewFlag значение поля
-	 */
-	public void setOpenViewFlag(BooleanProperty openViewFlag) {
-		this.openViewFlag = openViewFlag;
-	}
-
-	/**
 	 * Возвращает сервис работы с сущностями
 	 *
 	 * @return сервис работы с сущностями
-	 * @exception Exception в случае ошибки получения сервиса
 	 */
 	public T getService() {
 		Class<T> type = getTypeService();
@@ -126,11 +121,6 @@ public abstract class PresentationModel<T extends ICommonService, E extends IEnt
 		}
 	}
 
-	/**
-	 * Возвращает {@link#listEntities}
-	 *
-	 * @return the {@link#listEntities}
-	 */
 	public ObservableList<E> getListEntities() {
 		return listDataModelEntities;
 	}

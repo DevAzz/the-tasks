@@ -177,7 +177,7 @@ public class PushUpMessageView extends AbstractView<PushUpMessageViewModel> {
 	}
 
 	@Override
-	protected PushUpMessageViewModel createPresentaionModel() {
+	protected PushUpMessageViewModel createPresentationModel() {
 		return new PushUpMessageViewModel();
 	}
 

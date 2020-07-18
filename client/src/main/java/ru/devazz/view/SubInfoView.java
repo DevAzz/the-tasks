@@ -128,7 +128,7 @@ public class SubInfoView extends AbstractView<SubInfoViewModel> {
 	}
 
 	@Override
-	protected SubInfoViewModel createPresentaionModel() {
+	protected SubInfoViewModel createPresentationModel() {
 		return new SubInfoViewModel();
 	}
 

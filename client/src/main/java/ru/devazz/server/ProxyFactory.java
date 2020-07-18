@@ -21,6 +21,8 @@ public class ProxyFactory {
 	/** Карта соответствия типов и имен сервисов */
 	private Map<Class<? extends ICommonService>, Object> mapServiceType = new HashMap<>();
 
+	private Map<String, Subscriber> subscriberMap = new HashMap<>();
+
 	@Autowired
 	private IUserService userService;
 
@@ -94,6 +96,10 @@ public class ProxyFactory {
 		return service;
 	}
 
+	public void deleteMessageListener(String clientName) {
+		subscriberMap.remove(clientName);
+	}
+
 	/**
 	 * Добавляет слушателя JMS сообщений
 	 *
@@ -104,6 +110,7 @@ public class ProxyFactory {
 			Subscriber subscriber =
 					new Subscriber("tcp://127.0.0.1:61616", "admin", "password");
 			subscriber.run(clientName, queueName, aListener);
+			subscriberMap.put(clientName, subscriber);
 		} catch (Exception e) {
 			// TODO Логирование
 			e.printStackTrace();

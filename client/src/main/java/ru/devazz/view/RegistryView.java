@@ -510,7 +510,7 @@ public class RegistryView extends AbstractView<RegistryModel> {
 	}
 
 	@Override
-	protected RegistryModel createPresentaionModel() {
+	protected RegistryModel createPresentationModel() {
 		return new RegistryModel();
 	}
 

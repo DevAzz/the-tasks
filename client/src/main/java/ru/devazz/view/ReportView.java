@@ -368,7 +368,7 @@ public class ReportView extends AbstractView<ReportViewModel> {
 	}
 
 	@Override
-	protected ReportViewModel createPresentaionModel() {
+	protected ReportViewModel createPresentationModel() {
 		return new ReportViewModel();
 	}
 

@@ -103,7 +103,7 @@ public class PositionBookView extends AbstractView<PositionBookViewModel> {
 	}
 
 	@Override
-	protected PositionBookViewModel createPresentaionModel() {
+	protected PositionBookViewModel createPresentationModel() {
 		return new PositionBookViewModel();
 	}
 

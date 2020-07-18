@@ -142,7 +142,7 @@ public class CustomTimeIntervalView extends AbstractView<CustomTimeIntervalModel
 	}
 
 	@Override
-	protected CustomTimeIntervalModel createPresentaionModel() {
+	protected CustomTimeIntervalModel createPresentationModel() {
 		return new CustomTimeIntervalModel();
 	}
 

@@ -75,7 +75,7 @@ public class SubordinationTreeView extends AbstractView<SubordinationViewModel>
 	}
 
 	@Override
-	protected SubordinationViewModel createPresentaionModel() {
+	protected SubordinationViewModel createPresentationModel() {
 		return new SubordinationViewModel();
 	}
 

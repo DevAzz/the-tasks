@@ -194,7 +194,7 @@ public class PageSettingsView extends AbstractView<PageSettingsModel> {
 	}
 
 	@Override
-	protected PageSettingsModel createPresentaionModel() {
+	protected PageSettingsModel createPresentationModel() {
 		return new PageSettingsModel();
 	}
 

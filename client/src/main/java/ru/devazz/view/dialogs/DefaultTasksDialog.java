@@ -46,7 +46,7 @@ public class DefaultTasksDialog extends AbstractView<DefaultTaskDialogModel> {
 	}
 
 	@Override
-	protected DefaultTaskDialogModel createPresentaionModel() {
+	protected DefaultTaskDialogModel createPresentationModel() {
 		return new DefaultTaskDialogModel();
 	}
 

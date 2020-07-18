@@ -11,7 +11,7 @@ import ru.devazz.utils.Utils;
 public class AppConfiguration {
 
     @Bean
-    ProxyFactory proxyFactory() {
+    ProxyFactory taskProxyFactory() {
         return ProxyFactory.getInstance();
     }
 

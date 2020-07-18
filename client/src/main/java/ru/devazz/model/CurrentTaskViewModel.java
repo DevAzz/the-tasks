@@ -21,15 +21,13 @@ import ru.devazz.utils.Utils;
 import ru.devazz.utils.dialogs.DialogUtils;
 
 import javax.jms.JMSException;
+import javax.jms.MessageListener;
 import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Модель представления конкретной задачи
@@ -408,7 +406,7 @@ public class CurrentTaskViewModel extends PresentationModel<ITaskService, TaskMo
 			setVisibleDecisionButtonValue(false);
 
 		} else {
-			connectToJMSService();
+			addJmsListener("tasksQueue", getMessageListener());
 			Boolean visibleOkButton = executorTaskCheck()
 					&& (TaskStatus.REWORK.equals(task.getStatus())
 							|| TaskStatus.WORKING.equals(task.getStatus())
@@ -519,67 +517,62 @@ public class CurrentTaskViewModel extends PresentationModel<ITaskService, TaskMo
 		return result;
 	}
 
-	/**
-	 * Подключение к службе рассылки системных JMS сообщений
-	 */
-	private void connectToJMSService() {
-		ProxyFactory.getInstance()
-				.addMessageListener("currentTaskView", "tasksQueue",
-									message -> Platform.runLater(() -> {
-										try {
-											if (message instanceof ActiveMQMessage) {
-												ActiveMQMessage objectMessage =
-														(ActiveMQMessage) message;
-												if (objectMessage instanceof ActiveMQObjectMessage) {
-													ObjectEvent event =
-															(ObjectEvent) ((ActiveMQObjectMessage) objectMessage)
-																	.getObject();
+	private MessageListener getMessageListener() {
+		return message -> Platform.runLater(() -> {
+			try {
+				if (message instanceof ActiveMQMessage) {
+					ActiveMQMessage objectMessage =
+							(ActiveMQMessage) message;
+					if (objectMessage instanceof ActiveMQObjectMessage) {
+						ObjectEvent event =
+								(ObjectEvent) ((ActiveMQObjectMessage) objectMessage)
+										.getObject();
 
-													IEntity entity = event.getEntity();
-													if (entity instanceof TaskModel) {
-														TaskModel taskEntity = (TaskModel) entity;
-														Task task = EntityConverter.getInstatnce()
-																.convertTaskModelToClientWrapTask(
-																		taskEntity);
-														if (task.getSuid()
-																	.equals(this.task.getSuid())
-															&& getOpenViewFlag().get()) {
-															switch (event.getType()) {
-																case "updated":
-																case "done":
-																case "rework":
-																case "failed":
-																case "closed":
-																case "overdue":
-																	setTask(task);
-																	initTaskModel();
-																	break;
-																case "deleted":
-																	if (!deletedTasks
-																			.contains(task)) {
-																		deletedTasks.add(task);
-																		setOpenFlagValue(false);
-																		DialogUtils.getInstance()
-																				.showAlertDialog(
-																						"Задача удалена",
-																						"Задача " +
-																						task.getName() +
-																						" была удалена",
-																						AlertType.INFORMATION);
-																		setOpenFlagValue(false);
-																	}
-																	break;
-															}
-
-														}
-													}
-												}
-											}
-										} catch (JMSException e) {
-											// TODO Логирование
-											e.printStackTrace();
+						IEntity entity = event.getEntity();
+						if (entity instanceof TaskModel) {
+							TaskModel taskEntity = (TaskModel) entity;
+							Task task = EntityConverter.getInstatnce()
+									.convertTaskModelToClientWrapTask(
+											taskEntity);
+							if (task.getSuid()
+										.equals(this.task.getSuid())
+								&& getOpenViewFlag().get()) {
+								switch (event.getType()) {
+									case "updated":
+									case "done":
+									case "rework":
+									case "failed":
+									case "closed":
+									case "overdue":
+										setTask(task);
+										initTaskModel();
+										break;
+									case "deleted":
+										if (!deletedTasks
+												.contains(task)) {
+											deletedTasks.add(task);
+											setOpenFlagValue(false);
+											DialogUtils.getInstance()
+													.showAlertDialog(
+															"Задача удалена",
+															"Задача " +
+															task.getName() +
+															" была удалена",
+															AlertType.INFORMATION);
+											setOpenFlagValue(false);
 										}
-									}));
+										break;
+								}
+
+							}
+						}
+					}
+				}
+			} catch (JMSException e) {
+				// TODO Логирование
+				e.printStackTrace();
+			}
+		});
 	}
 
 	/**
