@@ -1,6 +1,3 @@
-/**
- *
- */
 package ru.devazz.service.impl;
 
 import org.springframework.jms.core.JmsTemplate;
@@ -111,7 +108,7 @@ public class TaskService extends AbstractEntityService<TaskModel, TaskEntity>
                 .build();
         //	@formatter:on
 
-        SubordinationElementModel subEl = null;
+        SubordinationElementModel subEl;
         switch (aEntity.getStatus()) {
             case DONE:
                 if (aNeedPublishEvent) {

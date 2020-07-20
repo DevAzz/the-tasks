@@ -28,9 +28,6 @@ public class TasksViewModel extends PresentationModel<ITaskService, TaskModel> {
 	/** Свойство количества страниц */
 	private IntegerProperty pageCountProperty;
 
-	/** Свойство видимости компонента паджинации */
-	private BooleanProperty paginationVisibleProperty;
-
 	/** Модель виджета выбора временного промежутка */
 	private CustomTimeIntervalModel customTimeIntervalModel;
 
@@ -87,8 +84,6 @@ public class TasksViewModel extends PresentationModel<ITaskService, TaskModel> {
 					.synchronizedObservableList(FXCollections.observableArrayList());
 		}
 		colorTaskPropertyMap = new HashMap<>();
-		paginationVisibleProperty = new SimpleBooleanProperty(this, "paginationVisibleProperty",
-				true);
 		pageCountProperty = new SimpleIntegerProperty(this, "pageCountProperty", 1);
 		currentPageProperty = new SimpleIntegerProperty(this, "currentPageProperty", 0);
 		currentUserPositionSuid = Utils.getInstance().getCurrentUser().getPositionSuid();
@@ -105,14 +100,14 @@ public class TasksViewModel extends PresentationModel<ITaskService, TaskModel> {
 		isActiveProperty = new SimpleBooleanProperty(this, "isActiveProperty", false);
 		illEnableCheckProperty = new SimpleBooleanProperty(this, "illumnationEnableCheckMenuItem",
 				true);
-		isActiveProperty.addListener((ChangeListener<Boolean>) (observable, oldValue, newValue) -> {
+		isActiveProperty.addListener((observable, oldValue, newValue) -> {
 			if (newValue) {
 				startComputeProgress();
 			}
 
 		});
 		illEnableCheckProperty
-				.addListener((ChangeListener<Boolean>) (observable, oldValue, newValue) -> {
+				.addListener((observable, oldValue, newValue) -> {
 					if (newValue) {
 						startComputeProgress();
 					}
@@ -218,47 +213,22 @@ public class TasksViewModel extends PresentationModel<ITaskService, TaskModel> {
 		}
 	}
 
-	/**
-	 * Возвращает {@link#nameActiveFiltersList}
-	 *
-	 * @return the {@link#nameActiveFiltersList}
-	 */
 	public ObservableList<String> getNameActiveFiltersList() {
 		return nameActiveFiltersList;
 	}
 
-	/**
-	 * Возвращает {@link#sortByPriorityDescendingProperty}
-	 *
-	 * @return the {@link#sortByPriorityDescendingProperty}
-	 */
 	public BooleanProperty getSortByPriorityDescendingProperty() {
 		return sortByPriorityDescendingProperty;
 	}
 
-	/**
-	 * Возвращает {@link#sortByPriorityAscendingProperty}
-	 *
-	 * @return the {@link#sortByPriorityAscendingProperty}
-	 */
 	public BooleanProperty getSortByPriorityAscendingProperty() {
 		return sortByPriorityAscendingProperty;
 	}
 
-	/**
-	 * Возвращает {@link#sortByDateFirstNewItemProperty}
-	 *
-	 * @return the {@link#sortByDateFirstNewItemProperty}
-	 */
 	public BooleanProperty getSortByDateFirstNewItemProperty() {
 		return sortByDateFirstNewItemProperty;
 	}
 
-	/**
-	 * Возвращает {@link#sortByDateFirstOldItem}
-	 *
-	 * @return the {@link#sortByDateFirstOldItem}
-	 */
 	public BooleanProperty getSortByDateFirstOldItemProperty() {
 		return sortByDateFirstOldItemProperty;
 	}
@@ -276,7 +246,7 @@ public class TasksViewModel extends PresentationModel<ITaskService, TaskModel> {
 	/**
 	 * Обновление наименования активного фильтра
 	 */
-	public void updateNameFilterLabel() {
+	private void updateNameFilterLabel() {
 		nameActiveFiltersList.clear();
 		List<String> listPriorityFilter = filter.getFilterTypeMap()
 				.get(FilterType.FILTER_BY_PRIORITY);
@@ -306,7 +276,7 @@ public class TasksViewModel extends PresentationModel<ITaskService, TaskModel> {
 			for (String value : listDateFilter) {
 				TaskTimeInterval interval = TaskTimeInterval.getTimeIntervalBySuid(value);
 				if (null != interval) {
-					String name = "";
+					String name;
 					if (TaskTimeInterval.CUSTOM_TIME_INTERVAL.equals(interval)) {
 						SimpleDateFormat parser = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 						name = "От " + parser.format(filter.getStartDate()) + " до "
@@ -465,34 +435,8 @@ public class TasksViewModel extends PresentationModel<ITaskService, TaskModel> {
 		paramLoad(typeView, currentPageProperty.get());
 	}
 
-	/**
-	 * Удаляет задачу
-	 *
-	 * @param aTask удаляемая задача
-	 */
-	public void deleteTask(Task aTask) {
-		visibleTasks.remove(aTask);
-		getService().delete(aTask.getSuid(), true);
-	}
-
-	/**
-	 * Возвращает {@link#visibleTasks}
-	 *
-	 * @return the {@link#visibleTasks}
-	 */
 	public ObservableList<Task> getVisibleTasks() {
 		return visibleTasks;
-	}
-
-	/**
-	 *
-	 * Возвращает задачу по ее иднетификатору
-	 *
-	 * @param aSuid идентификатор задачи
-	 * @return задача
-	 */
-	public Task getTaskBySuid(Long aSuid) {
-		return getTaskBySuid(String.valueOf(aSuid));
 	}
 
 	/**
@@ -616,20 +560,10 @@ public class TasksViewModel extends PresentationModel<ITaskService, TaskModel> {
 		thread.start();
 	}
 
-	/**
-	 * Возвращает {@link#countPageEntries}
-	 *
-	 * @return the {@link#countPageEntries}
-	 */
 	public Integer getCountPageEntries() {
 		return countPageEntries;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#countPageEntries}
-	 *
-	 * @param countPageEntries значение поля
-	 */
 	public void setCountPageEntries(Integer countPageEntries) {
 		this.countPageEntries = countPageEntries;
 	}
@@ -640,7 +574,7 @@ public class TasksViewModel extends PresentationModel<ITaskService, TaskModel> {
 	 * @param aEventType тип события
 	 * @param aTask обновляемая задача
 	 */
-	public void updateTaskList(String aEventType, TaskModel aTask) {
+	void updateTaskList(String aEventType, TaskModel aTask) {
 		if (!"time_left_over".equals(aEventType)) {
 			for (TaskModel entity : new ArrayList<>(listDataModelEntities)) {
 				if (entity.getSuid().equals(aTask.getSuid())) {
@@ -752,112 +686,32 @@ public class TasksViewModel extends PresentationModel<ITaskService, TaskModel> {
 		}
 	}
 
-	/**
-	 * Возвращает {@link#positionSuid}
-	 *
-	 * @return the {@link#positionSuid}
-	 */
 	public Long getPositionSuid() {
 		return positionSuid;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#positionSuid}
-	 *
-	 * @param positionSuid значение поля
-	 */
 	public void setPositionSuid(Long positionSuid) {
 		this.positionSuid = positionSuid;
 		setPageCountPropertValue(getCountPages());
 	}
 
-	/**
-	 * Возвращает {@link#currentUserPositionSuid}
-	 *
-	 * @return the {@link#currentUserPositionSuid}
-	 */
-	public Long getCurrentUserPositionSuid() {
-		return currentUserPositionSuid;
-	}
-
-	/**
-	 * Устанавливает значение полю {@link#currentUserPositionSuid}
-	 *
-	 * @param currentUserPositionSuid значение поля
-	 */
-	public void setCurrentUserPositionSuid(Long currentUserPositionSuid) {
-		this.currentUserPositionSuid = currentUserPositionSuid;
-	}
-
-	/**
-	 * Возвращает {@link#typeView}
-	 *
-	 * @return the {@link#typeView}
-	 */
-	public TasksViewType getTypeView() {
-		return typeView;
-	}
-
-	/**
-	 * Устанавливает значение полю {@link#typeView}
-	 *
-	 * @param typeView значение поля
-	 */
 	public void setTypeView(TasksViewType typeView) {
 		this.typeView = typeView;
 		setPageCountPropertValue(getCountPages());
 	}
 
-	/**
-	 * Возвращает {@link#paginationVisibleProperty}
-	 *
-	 * @return the {@link#paginationVisibleProperty}
-	 */
-	public BooleanProperty getPaginationVisibleProperty() {
-		return paginationVisibleProperty;
-	}
-
-	/**
-	 * Устанавливает значение полю {@link#paginationVisibleProperty}
-	 *
-	 * @param paginationVisibleValue значение поля
-	 */
-	public void setPaginationVisiblePropertyValue(Boolean paginationVisibleValue) {
-		this.paginationVisibleProperty.set(paginationVisibleValue);
-	}
-
-	/**
-	 * Возвращает {@link#pageCountProperty}
-	 *
-	 * @return the {@link#pageCountProperty}
-	 */
 	public IntegerProperty getPageCountProperty() {
 		return pageCountProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#pageCountProperty}
-	 *
-	 * @param pageCountValue значение поля
-	 */
-	public void setPageCountPropertValue(Integer pageCountValue) {
+	private void setPageCountPropertValue(Integer pageCountValue) {
 		this.pageCountProperty.set(pageCountValue);
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#customTimeIntervalModel}
-	 *
-	 * @param customTimeIntervalModel значение поля
-	 */
 	public void setCustomTimeIntervalModel(CustomTimeIntervalModel customTimeIntervalModel) {
 		this.customTimeIntervalModel = customTimeIntervalModel;
 	}
 
-	/**
-	 * Возвращает {@link#currentPageProperty}
-	 *
-	 * @return the {@link#currentPageProperty}
-	 */
 	public IntegerProperty getCurrentPageProperty() {
 		return currentPageProperty;
 	}
@@ -868,7 +722,7 @@ public class TasksViewModel extends PresentationModel<ITaskService, TaskModel> {
 	 * @return поток поиска записей по заданному промежутку времени
 	 */
 	public Runnable createSearchRunnable() {
-		Runnable runnable = () -> {
+		return () -> {
 			try {
 				Date startDate = customTimeIntervalModel.getStartDate();
 				Date endDate = customTimeIntervalModel.getEndDate();
@@ -886,7 +740,6 @@ public class TasksViewModel extends PresentationModel<ITaskService, TaskModel> {
 				e.printStackTrace();
 			}
 		};
-		return runnable;
 
 	}
 
@@ -965,7 +818,7 @@ public class TasksViewModel extends PresentationModel<ITaskService, TaskModel> {
 	 * @return {@code true} - если задача была удалена
 	 */
 	public Boolean isTaskRemoved(Task aTask) {
-		Boolean result = false;
+		boolean result = false;
 		TaskModel entity = service.get(aTask.getSuid());
 		if (null == entity) {
 			result = true;
@@ -978,7 +831,7 @@ public class TasksViewModel extends PresentationModel<ITaskService, TaskModel> {
 	 */
 	public enum TaskBackGroundColor {
 
-		RED, GREEN, YELLOW, DOESNT_START, DEFAULT;
+		RED, GREEN, YELLOW, DOESNT_START, DEFAULT
 
 	}
 
@@ -1053,21 +906,7 @@ public class TasksViewModel extends PresentationModel<ITaskService, TaskModel> {
 		}
 	}
 
-	/**
-	 * Возвращает {@link#colorTaskProperty}
-	 *
-	 * @return the {@link#colorTaskProperty}
-	 */
-	public ObjectProperty<TaskBackGroundColor> getColorTaskProperty(String aSuid) {
-		return colorTaskPropertyMap.get(aSuid);
-	}
-
-	/**
-	 * Устанавливает значение полю {@link#colorTaskProperty}
-	 *
-	 * @param colorTaskValue значение поля
-	 */
-	public void setColorTaskValue(TaskBackGroundColor colorTaskValue, String aSuid) {
+	private void setColorTaskValue(TaskBackGroundColor colorTaskValue, String aSuid) {
 		Platform.runLater(() -> {
 			ObjectProperty<TaskBackGroundColor> property = colorTaskPropertyMap.get(aSuid);
 			if (null != property) {
@@ -1090,11 +929,6 @@ public class TasksViewModel extends PresentationModel<ITaskService, TaskModel> {
 		return property;
 	}
 
-	/**
-	 * Возвращает {@link#colorTaskPropertyMap}
-	 *
-	 * @return the {@link#colorTaskPropertyMap}
-	 */
 	public Map<String, ObjectProperty<TaskBackGroundColor>> getColorTaskPropertyMap() {
 		return colorTaskPropertyMap;
 	}
@@ -1102,42 +936,18 @@ public class TasksViewModel extends PresentationModel<ITaskService, TaskModel> {
 	/**
 	 * Запускает обновление прогресса
 	 */
-	public void startComputeProgress() {
+	private void startComputeProgress() {
 		progressUpdater.startCopmuteProgress();
 	}
 
-	/**
-	 * Возвращает {@link#illumnationEnableCheckMenuItem}
-	 *
-	 * @return the {@link#illumnationEnableCheckMenuItem}
-	 */
 	public BooleanProperty getIllEnableCheckProperty() {
 		return illEnableCheckProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#illumnationEnableCheckMenuItem}
-	 *
-	 * @param illumnationEnableCheckMenuItemValue значение поля
-	 */
-	public void setIllEnableCheckValue(Boolean illumnationEnableCheckMenuItemValue) {
-		this.illEnableCheckProperty.set(illumnationEnableCheckMenuItemValue);
-	}
-
-	/**
-	 * Возвращает {@link#isActive}
-	 *
-	 * @return the {@link#isActive}
-	 */
 	public Boolean getIsActive() {
 		return isActiveProperty.get();
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#isActive}
-	 *
-	 * @param isActive значение поля
-	 */
 	public void setIsActive(Boolean isActive) {
 		this.isActiveProperty.set(isActive);
 		if (isActive) {
@@ -1145,11 +955,6 @@ public class TasksViewModel extends PresentationModel<ITaskService, TaskModel> {
 		}
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#openViewFlag}
-	 *
-	 * @param aFlag значение поля
-	 */
 	@Override
 	public void setOpenFlagValue(Boolean aFlag) {
 		super.setOpenFlagValue(aFlag);

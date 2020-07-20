@@ -63,7 +63,7 @@ public abstract class PresentationModel<T extends ICommonService, E extends IEnt
 	/**
 	 * Подключение к службе рассылки системных JMS сообщений
 	 */
-	public void addJmsListener(String queueName, MessageListener listener) {
+	void addJmsListener(String queueName, MessageListener listener) {
 		ProxyFactory.getInstance()
 				.addMessageListener(viewModelId.toString(), queueName, listener);
 	}

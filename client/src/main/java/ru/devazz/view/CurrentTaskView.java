@@ -1,17 +1,26 @@
 package ru.devazz.view;
 
+import com.sun.webkit.dom.HTMLBodyElementImpl;
+import com.sun.webkit.dom.NodeListImpl;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.InputEvent;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Font;
 import javafx.scene.web.HTMLEditor;
+import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
 import javafx.util.StringConverter;
 import jfxtras.scene.control.LocalDateTimeTextField;
@@ -30,14 +39,17 @@ import ru.devazz.utils.EntityConverter;
 import ru.devazz.utils.Utils;
 import ru.devazz.utils.dialogs.DialogUtils;
 
+import javax.swing.event.DocumentEvent;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 /**
@@ -161,7 +173,13 @@ public class CurrentTaskView extends AbstractView<CurrentTaskViewModel> {
 
 	@Override
 	public void initialize() {
-		bind();
+		try {
+			bind();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (NoSuchFieldException e) {
+			e.printStackTrace();
+		}
 
 		// Установка знчений комобо-боксу выбора приоритета
 		ObservableList<TaskPriority> values = FXCollections.observableArrayList();
@@ -219,7 +237,7 @@ public class CurrentTaskView extends AbstractView<CurrentTaskViewModel> {
 	/**
 	 * Связывание компонентов с моделью
 	 */
-	private void bind() {
+	private void bind() throws IllegalAccessException, NoSuchFieldException {
 
 		// Видимость компонентов
 		Bindings.bindBidirectional(buttonCancelCreateTask.visibleProperty(),
@@ -251,6 +269,10 @@ public class CurrentTaskView extends AbstractView<CurrentTaskViewModel> {
 		Bindings.bindBidirectional(authorTextField.textProperty(), model.getAuthorTextProperty());
 		Bindings.bindBidirectional(timeLeftTaskLabel.textProperty(),
 				model.getTooltipProgressBarTextProperty());
+		//Слушатель изменения редактора секции дополнительно
+		description.addEventHandler(InputEvent.ANY,
+									event -> model.getDesciprtionLabelProperty()
+											.setValue(description.getHtmlText()));
 
 		// Доступность компонентов
 		Bindings.bindBidirectional(startDate.mouseTransparentProperty(),
@@ -367,10 +389,6 @@ public class CurrentTaskView extends AbstractView<CurrentTaskViewModel> {
 						selectTypedTask.setMouseTransparent(false);
 					}
 				});
-
-		model.getDesciprtionLabelProperty()
-				.addListener((observable, oldValue, newValue) -> Platform
-						.runLater(() -> description.setHtmlText(newValue)));
 
 		model.getPriorityLabelProperty()
 				.addListener((observable, oldValue, newValue) -> {
@@ -510,6 +528,7 @@ public class CurrentTaskView extends AbstractView<CurrentTaskViewModel> {
 	 */
 	void initContent() {
 		Task task = model.getTask();
+		description.setHtmlText(task.getDescription());
 		setStatusImage(task.getStatus());
 		setImagePriority(task.getPriority());
 		if (!model.getCreateFlagValue()) {

@@ -3,7 +3,6 @@ package ru.devazz.view;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
-import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ListChangeListener.Change;
@@ -44,10 +43,6 @@ public class TasksView extends AbstractView<TasksViewModel> {
 	@FXML
 	private AnchorPane rootPane;
 
-	/** Корневой композит */
-	@FXML
-	private AnchorPane buttonPane;
-
 	/** Кнопка "Удалить задачу" */
 	@FXML
 	private Button deleteTaskButton;
@@ -70,10 +65,6 @@ public class TasksView extends AbstractView<TasksViewModel> {
 	/** Меню "Фильтр по статусу задачи" */
 	@FXML
 	private Menu statusFilterMenu;
-
-	/** Пункт меню - "Отобразить все задачи" */
-	@FXML
-	private MenuItem showAll;
 
 	/** Пункт меню фильтра по дате "Выбрать промежуток времени" */
 	@FXML
@@ -106,14 +97,6 @@ public class TasksView extends AbstractView<TasksViewModel> {
 	/** Пункт меню настройки записей "Подсветка записей" */
 	@FXML
 	private CheckMenuItem illumnationEnableCheckMenuItem;
-
-	/** Скролл панель представления задач */
-	@FXML
-	private ScrollPane scrollPaneTasksView;
-
-	/** Лейбл процесса загрузки задач */
-	@FXML
-	private Label loadTasksTitle;
 
 	/** Компонент паджинации */
 	@FXML
@@ -164,11 +147,9 @@ public class TasksView extends AbstractView<TasksViewModel> {
 		bindSortMenu(sortByDateMenu);
 		bindSortMenu(sortByPriorityMenu);
 
-		pagination.setPageFactory(param -> createPage(param));
+		pagination.setPageFactory(this::createPage);
 		pagination.currentPageIndexProperty()
-				.addListener((ChangeListener<Number>) (observable, oldValue, newValue) -> {
-					load(newValue.intValue());
-				});
+				.addListener((observable, oldValue, newValue) -> load(newValue.intValue()));
 
 		deleteTaskButton.setOnMouseClicked(event -> {
 			if (null != selectedTask) {
@@ -204,26 +185,24 @@ public class TasksView extends AbstractView<TasksViewModel> {
 			e.printStackTrace();
 		}
 
-		model.getVisibleTasks().addListener((ListChangeListener<Task>) c -> {
-			Platform.runLater(() -> {
-				int oldPageCount = pagination.getPageCount();
-				int newPageCount = model.getCountPages();
-				int currentPageIndex = pagination.getCurrentPageIndex();
-				if (oldPageCount < newPageCount) {
-					pagination.setPageCount(newPageCount);
-					pagination.setCurrentPageIndex(currentPageIndex);
-				} else if (oldPageCount > newPageCount) {
-					pagination.setPageCount(newPageCount);
-					if (currentPageIndex == newPageCount) {
-						currentPageIndex--;
-						currentPageIndex = (0 > currentPageIndex) ? 0 : currentPageIndex;
-					}
-					pagination.setCurrentPageIndex(currentPageIndex);
+		model.getVisibleTasks().addListener((ListChangeListener<Task>) c -> Platform.runLater(() -> {
+			int oldPageCount = pagination.getPageCount();
+			int newPageCount = model.getCountPages();
+			int currentPageIndex = pagination.getCurrentPageIndex();
+			if (oldPageCount < newPageCount) {
+				pagination.setPageCount(newPageCount);
+				pagination.setCurrentPageIndex(currentPageIndex);
+			} else if (oldPageCount > newPageCount) {
+				pagination.setPageCount(newPageCount);
+				if (currentPageIndex == newPageCount) {
+					currentPageIndex--;
+					currentPageIndex = Math.max(0, currentPageIndex);
 				}
+				pagination.setCurrentPageIndex(currentPageIndex);
+			}
 
-				changeTasks(c);
-			});
-		});
+			changeTasks(c);
+		}));
 		initPageSettingsView();
 
 		// Слушатель изменения списка наименований активных фильтров
@@ -270,7 +249,7 @@ public class TasksView extends AbstractView<TasksViewModel> {
 				Integer countPageEntries = pageSettingsView.getModel().getCountPageEntriesProperty()
 						.get();
 				pagination.setMaxPageIndicatorCount(countPages);
-				if (countPageEntries != model.getCountPageEntries()) {
+				if (!countPageEntries.equals(model.getCountPageEntries())) {
 					model.setCountPageEntries(countPageEntries);
 					load(pagination.getCurrentPageIndex());
 				}
@@ -374,7 +353,7 @@ public class TasksView extends AbstractView<TasksViewModel> {
 	/**
 	 * Загрузка записей
 	 */
-	public void load(final int aPageNumber) {
+	void load(final int aPageNumber) {
 		Thread thread = new Thread(() -> {
 			Platform.runLater(() -> {
 				VBox box = getPageNode(aPageNumber);
@@ -462,8 +441,6 @@ public class TasksView extends AbstractView<TasksViewModel> {
 	 * Создает панель задачи
 	 *
 	 * @param task задача
-	 * @return панель задачи
-	 * @throws IOException в случае ошибки
 	 */
 	private void createTaskPanel(Task task) {
 		if (null != task) {
@@ -480,7 +457,7 @@ public class TasksView extends AbstractView<TasksViewModel> {
 				}
 				VBox.setMargin(taskRoot, new Insets(3));
 				model.createColorProperty(taskRoot.getId()).addListener(
-						(ChangeListener<TasksViewModel.TaskBackGroundColor>) (observable, oldValue, newValue) -> {
+						(observable, oldValue, newValue) -> {
 							switch (newValue) {
 							case RED:
 								taskRoot.setStyle("-fx-border-color: #DD2A2A");
@@ -610,39 +587,15 @@ public class TasksView extends AbstractView<TasksViewModel> {
 		}
 	}
 
-	/**
-	 * Устанавливает значение полю {@link #prefTaskWidth}
-	 *
-	 * @param prefTaskWidth значение поля
-	 */
-	public void setPrefTaskWidth(DoubleProperty prefTaskWidth) {
+	void setPrefTaskWidth(DoubleProperty prefTaskWidth) {
 		this.prefTaskWidth = prefTaskWidth;
 	}
 
-	/**
-	 * Возвращает {@link#rootPane}
-	 *
-	 * @return the {@link#rootPane}
-	 */
 	public AnchorPane getRootPane() {
 		return rootPane;
 	}
 
-	/**
-	 * Возвращает {@link#selectedTask}
-	 *
-	 * @return the {@link#selectedTask}
-	 */
-	public Task getSelectedTask() {
-		return selectedTask;
-	}
-
-	/**
-	 * Устанавливает значение полю {@link#openTaskHandler}
-	 *
-	 * @param {@link#openTaskHandler}
-	 */
-	public void addOpenTaskHandler(EventHandler<MouseEvent> openTaskHandler) {
+	void addOpenTaskHandler(EventHandler<MouseEvent> openTaskHandler) {
 		openTaskButton.setOnMouseClicked(openTaskHandler);
 		this.openTaskHandler = openTaskHandler;
 
@@ -673,12 +626,7 @@ public class TasksView extends AbstractView<TasksViewModel> {
 		}
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#customTimeIntervalModeHandler}
-	 *
-	 * @param customTimeIntervalModeHandler значение поля
-	 */
-	public void setCustomTimeIntervalModeHandler(
+	void setCustomTimeIntervalModeHandler(
 			EventHandler<ActionEvent> customTimeIntervalModeHandler) {
 		timeIntervalFilterItem.addEventHandler(ActionEvent.ACTION, customTimeIntervalModeHandler);
 	}
@@ -703,7 +651,7 @@ public class TasksView extends AbstractView<TasksViewModel> {
 					// Проверка на автора задачи. Исполнитель не может удалить задачу
 					if ((null != selectedTask)
 							&& (!TaskType.DEFAULT.equals(selectedTask.getType()))) {
-						Boolean isCurrentUserAuthor = selectedTask.getAuthor().getSuid()
+						boolean isCurrentUserAuthor = selectedTask.getAuthor().getSuid()
 								.equals(Utils.getInstance().getCurrentUser().getPositionSuid());
 						deleteTaskButton.setVisible(isCurrentUserAuthor);
 					}
@@ -714,41 +662,20 @@ public class TasksView extends AbstractView<TasksViewModel> {
 		}
 	}
 
-	/**
-	 * Устанавливает значение полю "Идентификатор должности, выбранной в дереве
-	 * подчиненности"
-	 *
-	 * @param aPositonSuid идентификатор должности
-	 */
-	public void setPositionSuid(Long aPositonSuid) {
+	void setPositionSuid(Long aPositonSuid) {
 		model.setPositionSuid(aPositonSuid);
 	}
 
-	/**
-	 * Возвращает {@link#typeView}
-	 *
-	 * @return the {@link#typeView}
-	 */
-	public TasksViewType getTypeView() {
+	TasksViewType getTypeView() {
 		return typeView;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#typeView}
-	 *
-	 * @param typeView значение поля
-	 */
-	public void setTypeView(TasksViewType typeView) {
+	void setTypeView(TasksViewType typeView) {
 		this.typeView = typeView;
 		model.setTypeView(typeView);
 	}
 
-	/**
-	 * Возвращаяет номер текущей страницы записей
-	 *
-	 * @return номер текущей страницы записей
-	 */
-	public Integer getCurrentPageNumber() {
+	Integer getCurrentPageNumber() {
 		return pagination.getCurrentPageIndex();
 	}
 }

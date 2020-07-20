@@ -2,7 +2,9 @@ package ru.devazz.model;
 
 import javafx.application.Platform;
 import javafx.beans.property.*;
+import javafx.event.EventHandler;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.input.InputMethodEvent;
 import org.apache.activemq.command.ActiveMQMessage;
 import org.apache.activemq.command.ActiveMQObjectMessage;
 import ru.devazz.entities.DefaultTask;
@@ -263,6 +265,15 @@ public class CurrentTaskViewModel extends PresentationModel<ITaskService, TaskMo
 						changeDetectThread.setDaemon(true);
 						changeDetectThread.start();
 					});
+			desciprtionLabelProperty.addListener((observable, oldValue, newValue) -> {
+				String descriptionValue = Optional.ofNullable(task.getDescription()).orElse("");
+				if (!descriptionValue.equals(newValue)) {
+					task.setDescription(newValue);
+					Thread changeDetectThread = new Thread(new ChangeExistCheckRunnable());
+					changeDetectThread.setDaemon(true);
+					changeDetectThread.start();
+				}
+			});
 		}
 	}
 
@@ -318,43 +329,48 @@ public class CurrentTaskViewModel extends PresentationModel<ITaskService, TaskMo
 	/**
 	 * Инициализирует модель данных
 	 */
-	public void initTaskModel() {
-		if (null != task) {
-			SubordinationElement currentUserSubEl;
-			currentUserSubEl = Utils.getInstance().getCurrentUserSubEl();
+	public void initTaskModel(Task initTask) {
+		if (initTask != null) {
+			TaskModel model = service.get(initTask.getSuid());
+			if (model != null) {
+				setTask(EntityConverter.getInstatnce().convertTaskModelToClientWrapTask(model));
+				SubordinationElement currentUserSubEl;
+				currentUserSubEl = Utils.getInstance().getCurrentUserSubEl();
 
-			String title = (null != task.getName()) ? task.getName() : "";
-			String note = (null != task.getNote()) ? task.getNote() : "";
-			String desc = (null != task.getDescription()) ? task.getDescription() : "";
-			String status = (null != task.getStatus()) ? task.getStatus().getName()
-					: "Не установлен";
-			String priority = (null != task.getPriority()) ? task.getPriority().getMenuSuid()
-					: "Не установлен";
-			double percent = (null != task.getExecPercent()) ? task.getExecPercent() : 0;
-			Date startDate = task.getStartDateTime();
-			Date endDate = task.getEndDateTime();
-			String executor = (null != task.getExecutor()) ? task.getExecutor().getName() : "";
-			String author = (null != task.getAuthor()) ? task.getAuthor().getName()
-					: ((null != currentUserSubEl) && getCreateFlagValue())
-							? currentUserSubEl.getName()
-							: "";
-			String path = (null != task.getDocument()) ? task.getDocumentName() : "";
+				String title = (null != task.getName()) ? task.getName() : "";
+				String note = (null != task.getNote()) ? task.getNote() : "";
+				String desc = (null != task.getDescription()) ? task.getDescription() : "";
+				String status = (null != task.getStatus()) ? task.getStatus().getName()
+						: "Не установлен";
+				String priority = (null != task.getPriority()) ? task.getPriority().getMenuSuid()
+						: "Не установлен";
+				double percent = (null != task.getExecPercent()) ? task.getExecPercent() : 0;
+				Date startDate = task.getStartDateTime();
+				Date endDate = task.getEndDateTime();
+				String executor = (null != task.getExecutor()) ? task.getExecutor().getName() : "";
+				String author = (null != task.getAuthor()) ? task.getAuthor().getName()
+						: ((null != currentUserSubEl) && getCreateFlagValue())
+						? currentUserSubEl.getName()
+						: "";
+				String path = (null != task.getDocument()) ? task.getDocumentName() : "";
 
-			getTitleLabelProperty().set(title);
-			getNoteLabelProperty().set(note);
-			getDesciprtionLabelProperty().set(desc);
-			getStatusLabelProperty().set(status);
-			getPriorityLabelProperty().set(priority);
-			getProgressProperty().set(percent);
-			if ((null != startDate) && (null != endDate)) {
-				getStartDateProperty().set(
-						LocalDateTime.ofInstant(startDate.toInstant(), ZoneId.systemDefault()));
-				getEndDateProperty()
-						.set(LocalDateTime.ofInstant(endDate.toInstant(), ZoneId.systemDefault()));
+				getTitleLabelProperty().set(title);
+				getNoteLabelProperty().set(note);
+				getDesciprtionLabelProperty().set(desc);
+				getStatusLabelProperty().set(status);
+				getPriorityLabelProperty().set(priority);
+				getProgressProperty().set(percent);
+				if ((null != startDate) && (null != endDate)) {
+					getStartDateProperty().set(
+							LocalDateTime.ofInstant(startDate.toInstant(), ZoneId.systemDefault()));
+					getEndDateProperty()
+							.set(LocalDateTime
+										 .ofInstant(endDate.toInstant(), ZoneId.systemDefault()));
+				}
+				getExecutorStringProperty().set(executor);
+				setDocumentStringPropertyValue(path);
+				setAuthorTextValue(author);
 			}
-			getExecutorStringProperty().set(executor);
-			setDocumentStringPropertyValue(path);
-			setAuthorTextValue(author);
 		}
 	}
 
@@ -544,8 +560,7 @@ public class CurrentTaskViewModel extends PresentationModel<ITaskService, TaskMo
 									case "failed":
 									case "closed":
 									case "overdue":
-										setTask(task);
-										initTaskModel();
+										initTaskModel(task);
 										break;
 									case "deleted":
 										if (!deletedTasks

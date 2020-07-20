@@ -1,13 +1,16 @@
 package ru.devazz.model;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import org.apache.activemq.command.ActiveMQMessage;
 import org.apache.activemq.command.ActiveMQObjectMessage;
+import org.apache.activemq.command.ActiveMQTextMessage;
 import ru.devazz.entities.Task;
 import ru.devazz.server.ProxyFactory;
 import ru.devazz.server.api.ITaskService;
 import ru.devazz.server.api.event.ObjectEvent;
+import ru.devazz.server.api.event.TaskEvent;
 import ru.devazz.server.api.model.IEntity;
 import ru.devazz.server.api.model.TaskModel;
 import ru.devazz.server.api.model.UserModel;
@@ -46,17 +49,8 @@ public class WorkbenchViewModel extends PresentationModel<ITaskService, TaskMode
 		titleProperty = new SimpleStringProperty(this, "titleProperty", "Задачи: ");
 	}
 
-	/**
-	 * Возвращает {@link #titleProperty}
-	 *
-	 * @return {@link #titleProperty}
-	 */
 	public StringProperty getTitleProperty() {
 		return titleProperty;
-	}
-
-	public void setTitleProperty(StringProperty titleProperty) {
-		this.titleProperty = titleProperty;
 	}
 
 	public void setTitleValue(String aValue) {
@@ -83,7 +77,7 @@ public class WorkbenchViewModel extends PresentationModel<ITaskService, TaskMode
 	 *
 	 * @param aViewTypes типы панелей задач
 	 */
-	public void refreshView(String aEventType, TaskModel aTask, TasksViewType... aViewTypes) {
+	private void refreshView(String aEventType, TaskModel aTask, TasksViewType... aViewTypes) {
 		for (TasksViewType viewType : aViewTypes) {
 			TasksViewModel viewModel = modelsMap.get(viewType);
 			if (null != viewModel) {
@@ -93,11 +87,6 @@ public class WorkbenchViewModel extends PresentationModel<ITaskService, TaskMode
 
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#goOverTaskListener}
-	 *
-	 * @param goOverTaskListener значение поля
-	 */
 	public void setGoOverTaskListener(RootView.GoOverTaskListener goOverTaskListener) {
 		this.goOverTaskListener = goOverTaskListener;
 	}
@@ -111,9 +100,9 @@ public class WorkbenchViewModel extends PresentationModel<ITaskService, TaskMode
 				if (message instanceof ActiveMQMessage) {
 					UserModel user = Utils.getInstance().getCurrentUser();
 					ActiveMQMessage objectMessage = (ActiveMQMessage) message;
-					if (objectMessage instanceof ActiveMQObjectMessage) {
-						ObjectEvent event =
-								(ObjectEvent) ((ActiveMQObjectMessage) objectMessage).getObject();
+					if (objectMessage instanceof ActiveMQTextMessage) {
+						String text = ((ActiveMQTextMessage) objectMessage).getText();
+						TaskEvent event = new ObjectMapper().readValue(text, TaskEvent.class);
 						IEntity entity = event.getEntity();
 						if (entity instanceof TaskModel) {
 							TaskModel taskEntity = (TaskModel) entity;
@@ -207,29 +196,14 @@ public class WorkbenchViewModel extends PresentationModel<ITaskService, TaskMode
 
 	}
 
-	/**
-	 * Возвращает {@link#positionSuid}
-	 *
-	 * @return the {@link#positionSuid}
-	 */
 	public Long getPositionSuid() {
 		return positionSuid;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#positionSuid}
-	 *
-	 * @param positionSuid значение поля
-	 */
 	public void setPositionSuid(Long positionSuid) {
 		this.positionSuid = positionSuid;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#openViewFlag}
-	 *
-	 * @param aFlag значение поля
-	 */
 	@Override
 	public void setOpenFlagValue(Boolean aFlag) {
 		super.setOpenFlagValue(aFlag);

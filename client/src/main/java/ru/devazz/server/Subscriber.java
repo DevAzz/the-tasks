@@ -42,7 +42,6 @@ public class Subscriber {
 	}
 
 	private String getClientId(String clientName, String queueName) {
-		return clientName + queueName + "_" + activeMqBrokerUri.replace("tcp://localhost:",
-																			  "");
+		return clientName + queueName + "_" + activeMqBrokerUri.replace("tcp://127.0.0.1:61616","");
 	}
 }

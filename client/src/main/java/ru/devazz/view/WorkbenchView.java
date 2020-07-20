@@ -2,7 +2,6 @@ package ru.devazz.view;
 
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
-import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -16,7 +15,6 @@ import ru.devazz.entities.Task;
 import ru.devazz.interfaces.SelectionListener;
 import ru.devazz.model.WorkbenchViewModel;
 import ru.devazz.server.api.model.enums.TasksViewType;
-import ru.devazz.server.api.model.enums.UserRoles;
 import ru.devazz.utils.Utils;
 
 import java.io.IOException;
@@ -161,7 +159,7 @@ public class WorkbenchView extends AbstractView<WorkbenchViewModel> {
 	/**
 	 * Инициализация представлений задач
 	 */
-	public void initViews() {
+	void initViews() {
 		try {
 //			Boolean access = Utils.getInstance().checkUserAccess(UserRoles.ASSISTENT);
 //			Boolean isUserRMCHead = Utils.getInstance().checkRoleEquals(UserRoles.RMC_HEAD);
@@ -238,8 +236,8 @@ public class WorkbenchView extends AbstractView<WorkbenchViewModel> {
 			initTitledPanes();
 			for (Tab tab : getTabs()) {
 				tab.selectedProperty()
-						.addListener((ChangeListener<Boolean>) (observable, oldValue, newValue) -> {
-							if (newValue && (null != tab) && (null != tab.getId())) {
+						.addListener((observable, oldValue, newValue) -> {
+							if (newValue && null != tab.getId()) {
 								switch (tab.getId()) {
 								case "currentIn":
 									setActiveView(currentTasksViewIn, true);
@@ -248,8 +246,6 @@ public class WorkbenchView extends AbstractView<WorkbenchViewModel> {
 									setActiveView(currentTasksViewOut, true);
 									break;
 								case "currentEveryday":
-									setActiveView(currentTasksViewEverydayIn, true);
-									break;
 								case "currentEveryDayIn":
 									setActiveView(currentTasksViewEverydayIn, true);
 									break;
@@ -284,100 +280,85 @@ public class WorkbenchView extends AbstractView<WorkbenchViewModel> {
 	 */
 	private void initTitledPanes() {
 		if (null != currentTasksViewIn) {
-			currentTaskButton.setOnMouseClicked(event -> {
-				openTitlePane(currentTitledPane);
-			});
+			currentTaskButton.setOnMouseClicked(event -> openTitlePane(currentTitledPane));
 		} else {
 			accordion.getPanes().remove(currentTitledPane);
 			workbenchButtonBar.getButtons().remove(currentTaskButton);
 		}
 		if (null != inTasksView) {
-			inTaskButton.setOnMouseClicked(event -> {
-				openTitlePane(inTitledPane);
-			});
+			inTaskButton.setOnMouseClicked(event -> openTitlePane(inTitledPane));
 		} else {
 			accordion.getPanes().remove(inTitledPane);
 			workbenchButtonBar.getButtons().remove(inTaskButton);
 		}
 		if (null != outTaskView) {
-			outTaskButton.setOnMouseClicked(event -> {
-				openTitlePane(outTitledPane);
-			});
+			outTaskButton.setOnMouseClicked(event -> openTitlePane(outTitledPane));
 		} else {
 			accordion.getPanes().remove(outTitledPane);
 			workbenchButtonBar.getButtons().remove(outTaskButton);
 		}
 
 		if (null != archiveTasksView) {
-			archiveTaskButton.setOnMouseClicked(event -> {
-				openTitlePane(archiveTitledPane);
-			});
+			archiveTaskButton.setOnMouseClicked(event -> openTitlePane(archiveTitledPane));
 		} else {
 			accordion.getPanes().remove(archiveTitledPane);
 			workbenchButtonBar.getButtons().remove(archiveTaskButton);
 		}
 		if (null != everydayIn) {
-			everydayButton.setOnMouseClicked(event -> {
-				openTitlePane(everyDayTitledPane);
-			});
+			everydayButton.setOnMouseClicked(event -> openTitlePane(everyDayTitledPane));
 		} else {
 			accordion.getPanes().remove(everyDayTitledPane);
 			workbenchButtonBar.getButtons().remove(everydayButton);
 		}
 		if (null != inTitledPane) {
 			inTitledPane.expandedProperty()
-					.addListener((ChangeListener<Boolean>) (observable, oldValue, newValue) -> {
+					.addListener((observable, oldValue, newValue) -> {
 						if (newValue) {
 							setActiveView(inTasksView, true);
 						}
 					});
-			inTitledPane.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
-				inTaskButton.requestFocus();
-			});
+			inTitledPane
+					.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> inTaskButton.requestFocus());
 		}
 		if (null != everyDayTitledPane) {
 			everyDayTitledPane.expandedProperty()
-					.addListener((ChangeListener<Boolean>) (observable, oldValue, newValue) -> {
+					.addListener((observable, oldValue, newValue) -> {
 						if (newValue) {
 							setActiveView(everydayIn, true);
 						}
 					});
-			everyDayTitledPane.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
-				everydayButton.requestFocus();
-			});
+			everyDayTitledPane.addEventFilter(MouseEvent.MOUSE_CLICKED,
+											  event -> everydayButton.requestFocus());
 		}
 		if (null != outTitledPane) {
 			outTitledPane.expandedProperty()
-					.addListener((ChangeListener<Boolean>) (observable, oldValue, newValue) -> {
+					.addListener((observable, oldValue, newValue) -> {
 						if (newValue) {
 							setActiveView(outTaskView, true);
 						}
 					});
-			outTitledPane.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
-				outTaskButton.requestFocus();
-			});
+			outTitledPane.addEventFilter(MouseEvent.MOUSE_CLICKED,
+										 event -> outTaskButton.requestFocus());
 		}
 		if (null != currentTitledPane) {
 			currentTitledPane.expandedProperty()
-					.addListener((ChangeListener<Boolean>) (observable, oldValue, newValue) -> {
+					.addListener((observable, oldValue, newValue) -> {
 						if (newValue) {
 							setActiveView(currentTasksViewIn, true);
 						}
 					});
-			currentTitledPane.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
-				currentTaskButton.requestFocus();
-			});
+			currentTitledPane.addEventFilter(MouseEvent.MOUSE_CLICKED,
+											 event -> currentTaskButton.requestFocus());
 		}
 		if (null != archiveTitledPane) {
 			archiveTitledPane.expandedProperty()
-					.addListener((ChangeListener<Boolean>) (observable, oldValue, newValue) -> {
+					.addListener((observable, oldValue, newValue) -> {
 						if (newValue) {
 							setActiveView(archiveTasksView, true);
 						}
 					});
-			archiveTitledPane.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
-				archiveTaskButton.requestFocus();
-			});
+			archiveTitledPane.addEventFilter(MouseEvent.MOUSE_CLICKED,
+											 event -> archiveTaskButton.requestFocus());
 		}
 	}
 
@@ -391,8 +372,7 @@ public class WorkbenchView extends AbstractView<WorkbenchViewModel> {
 		aView.setPositionSuid(positionSuid);
 		aView.getModel().setIsActive(aActive);
 		for (TasksView view : getTaskViews()) {
-			if ((null != aView) && (null != view)
-					&& !aView.getTypeView().equals(view.getTypeView())) {
+			if (null != view && !aView.getTypeView().equals(view.getTypeView())) {
 				view.getModel().setIsActive(!aActive);
 			}
 		}
@@ -431,9 +411,7 @@ public class WorkbenchView extends AbstractView<WorkbenchViewModel> {
 									}
 								}
 								if (null != inTabPane) {
-									for (Tab inTab : inTabPane.getTabs()) {
-										list.add(inTab);
-									}
+									list.addAll(inTabPane.getTabs());
 								}
 							}
 						}
@@ -485,7 +463,7 @@ public class WorkbenchView extends AbstractView<WorkbenchViewModel> {
 	 *
 	 * @param aTitle заголовок
 	 */
-	public void setCurrentTasksTitle(String aTitle) {
+	void setCurrentTasksTitle(String aTitle) {
 		model.setTitleValue("Задачи: " + aTitle);
 	}
 
@@ -498,61 +476,48 @@ public class WorkbenchView extends AbstractView<WorkbenchViewModel> {
 	private TasksView initTaskView(TitledPane aPane, TasksViewType aTypeView) throws IOException {
 		TasksView viewTasks = Utils.getInstance().loadView(TasksView.class);
 		viewTasks.setTypeView(aTypeView);
-		viewTasks.addSelectionListener((object) -> {
-			selectedTask = (Task) object;
-		});
+		viewTasks.addSelectionListener((object) -> selectedTask = (Task) object);
 		ScrollPane pane = (ScrollPane) aPane.getContent();
-		TabPane tabPane = null;
+		TabPane tabPane;
 		switch (aTypeView) {
-		case ARCHIVE:
-			pane.setContent(viewTasks.getRootPane());
-			break;
-		case IN:
-			pane.setContent(viewTasks.getRootPane());
-			break;
-		case OUT:
-			pane.setContent(viewTasks.getRootPane());
-			break;
-		case CURRENT_IN:
-			tabPane = (TabPane) pane.getContent();
-			tabPane.getTabs().get(0).setContent(viewTasks.getRootPane());
-			break;
-		case CURRENT_OUT:
-			tabPane = (TabPane) pane.getContent();
-			tabPane.getTabs().get(1).setContent(viewTasks.getRootPane());
-			break;
-		case EVERYDAY_IN:
-			tabPane = (TabPane) pane.getContent();
-			tabPane.getTabs().get(0).setContent(viewTasks.getRootPane());
-			break;
-		case EVERYDAY_OUT:
-			tabPane = (TabPane) pane.getContent();
-			tabPane.getTabs().get(1).setContent(viewTasks.getRootPane());
-			break;
-		case CURRENT_ARCHIVE:
-			tabPane = (TabPane) pane.getContent();
-			tabPane.getTabs().get(3).setContent(viewTasks.getRootPane());
-			break;
-		case CURRENT_EVERYDAY_IN:
-			tabPane = (TabPane) pane.getContent();
-			AnchorPane anchorIn = (AnchorPane) tabPane.getTabs().get(2).getContent();
-			TabPane currentEverydayInTabPane = (TabPane) anchorIn.getChildren().get(1);
-			currentEverydayInTabPane.getTabs().get(0).setContent(viewTasks.getRootPane());
-			break;
-		case CURRENT_EVERYDAY_OUT:
-			tabPane = (TabPane) pane.getContent();
-			AnchorPane anchorOut = (AnchorPane) tabPane.getTabs().get(2).getContent();
-			TabPane currentEverydayOutTabPane = (TabPane) anchorOut.getChildren().get(1);
-			currentEverydayOutTabPane.getTabs().get(1).setContent(viewTasks.getRootPane());
-			break;
+			case ARCHIVE:
+			case IN:
+			case OUT:
+				pane.setContent(viewTasks.getRootPane());
+				break;
+			case CURRENT_IN:
+			case EVERYDAY_IN:
+				tabPane = (TabPane) pane.getContent();
+				tabPane.getTabs().get(0).setContent(viewTasks.getRootPane());
+				break;
+			case CURRENT_OUT:
+			case EVERYDAY_OUT:
+				tabPane = (TabPane) pane.getContent();
+				tabPane.getTabs().get(1).setContent(viewTasks.getRootPane());
+				break;
+			case CURRENT_ARCHIVE:
+				tabPane = (TabPane) pane.getContent();
+				tabPane.getTabs().get(3).setContent(viewTasks.getRootPane());
+				break;
+			case CURRENT_EVERYDAY_IN:
+				tabPane = (TabPane) pane.getContent();
+				AnchorPane anchorIn = (AnchorPane) tabPane.getTabs().get(2).getContent();
+				TabPane currentEverydayInTabPane = (TabPane) anchorIn.getChildren().get(1);
+				currentEverydayInTabPane.getTabs().get(0).setContent(viewTasks.getRootPane());
+				break;
+			case CURRENT_EVERYDAY_OUT:
+				tabPane = (TabPane) pane.getContent();
+				AnchorPane anchorOut = (AnchorPane) tabPane.getTabs().get(2).getContent();
+				TabPane currentEverydayOutTabPane = (TabPane) anchorOut.getChildren().get(1);
+				currentEverydayOutTabPane.getTabs().get(1).setContent(viewTasks.getRootPane());
+				break;
 		}
-
 		viewTasks.setPrefTaskWidth(aPane.prefWidthProperty());
 		aPane.setPrefWidth(aPane.getWidth());
 		aPane.widthProperty()
-				.addListener((ChangeListener<Number>) (observable, oldValue, newValue) -> {
-					aPane.prefWidthProperty().set(aPane.getWidth() - 20);
-				});
+				.addListener(
+						(observable, oldValue, newValue) -> aPane.prefWidthProperty()
+								.set(aPane.getWidth() - 20));
 
 		return viewTasks;
 	}
@@ -582,12 +547,7 @@ public class WorkbenchView extends AbstractView<WorkbenchViewModel> {
 		return workbenchTab;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#customTimeIntervalModeHandler}
-	 *
-	 * @param customTimeIntervalModeHandler значение поля
-	 */
-	public void setCustomTimeIntervalModeHandler(
+	void setCustomTimeIntervalModeHandler(
 			EventHandler<ActionEvent> customTimeIntervalModeHandler) {
 		if (null != inTasksView) {
 			inTasksView.setCustomTimeIntervalModeHandler(customTimeIntervalModeHandler);
@@ -623,12 +583,7 @@ public class WorkbenchView extends AbstractView<WorkbenchViewModel> {
 		}
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#openTaskHandler}
-	 *
-	 * @param openTaskHandler значение поля
-	 */
-	public void setOpenTaskHandler(EventHandler<MouseEvent> openTaskHandler) {
+	void setOpenTaskHandler(EventHandler<MouseEvent> openTaskHandler) {
 		if (null != inTasksView) {
 			inTasksView.addOpenTaskHandler(openTaskHandler);
 		}
@@ -661,12 +616,7 @@ public class WorkbenchView extends AbstractView<WorkbenchViewModel> {
 		}
 	}
 
-	/**
-	 * Возвращает {@link#selectedTask}
-	 *
-	 * @return the {@link#selectedTask}
-	 */
-	public Task getSelectedTask() {
+	Task getSelectedTask() {
 		return selectedTask;
 	}
 
@@ -675,7 +625,7 @@ public class WorkbenchView extends AbstractView<WorkbenchViewModel> {
 	 *
 	 * @param aPane панель задач
 	 */
-	public void openTitlePane(TitledPane aPane) {
+	private void openTitlePane(TitledPane aPane) {
 		if (null != aPane) {
 			accordion.setExpandedPane(aPane);
 		}
@@ -713,12 +663,7 @@ public class WorkbenchView extends AbstractView<WorkbenchViewModel> {
 		}
 	}
 
-	/**
-	 * Возвращает {@link#subTreeEventHandler}
-	 *
-	 * @return the {@link#subTreeEventHandler}
-	 */
-	public SelectionListener getSubTreeEventHandler() {
+	SelectionListener getSubTreeEventHandler() {
 		return subTreeEventHandler;
 	}
 
@@ -757,21 +702,11 @@ public class WorkbenchView extends AbstractView<WorkbenchViewModel> {
 		}
 	}
 
-	/**
-	 * Возвращает {@link#positionSuid}
-	 *
-	 * @return the {@link#positionSuid}
-	 */
 	public Long getPositionSuid() {
 		return positionSuid;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#positionSuid}
-	 *
-	 * @param positionSuid значение поля
-	 */
-	public void setPositionSuid(Long positionSuid) {
+	void setPositionSuid(Long positionSuid) {
 		this.positionSuid = positionSuid;
 	}
 

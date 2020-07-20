@@ -5,4 +5,6 @@ package ru.devazz.server.api.event;
  */
 public class TaskEvent extends ObjectEvent {
 
+    public TaskEvent() {
+    }
 }

@@ -449,8 +449,6 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 
 			workbenchView.setOpenTaskHandler(event -> {
 				try {
-					Boolean doneFlag = (null != workbenchView.getSelectedTask()) && TaskStatus.DONE
-							.equals(workbenchView.getSelectedTask().getStatus());
 					showCurrentTaskView(workbenchView.getSelectedTask(), false);
 				} catch (Exception e) {
 					// TODO Логирование
@@ -545,7 +543,7 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 	 */
 	@FXML
 	public void showEventJournalView() throws Exception {
-		Boolean menuSelected = eventJournalViewMenuItem.isSelected();
+		boolean menuSelected = eventJournalViewMenuItem.isSelected();
 		if (menuSelected) {
 			if (!commonCentralTabPane.getTabs().contains(eventJournalView.getTab())) {
 				eventJournalView = Utils.getInstance().loadView(EventJournalView.class);
@@ -593,9 +591,8 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 				}
 
 				currentTaskView.initCycleView();
-				currentTaskView.getModel().setTask(aTask);
+				currentTaskView.getModel().initTaskModel(aTask);
 				currentTaskView.getModel().setCreateFlagValue(aCreateFlag);
-				currentTaskView.getModel().initTaskModel();
 				currentTaskView.setStage(getStage());
 
 				currentTaskView.setCommonTabPane(commonCentralTabPane);
