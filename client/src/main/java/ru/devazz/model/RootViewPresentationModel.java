@@ -43,40 +43,17 @@ public class RootViewPresentationModel extends PresentationModel<ICommonService,
 		timeThread.start();
 	}
 
-	/**
-	 * Возвращает {@link#searchBoxTextProperty}
-	 *
-	 * @return the {@link#searchBoxTextProperty}
-	 */
+	@Override
+	protected String getQueueName() {
+		return null;
+	}
+
 	public StringProperty getSearchBoxTextProperty() {
 		return searchBoxTextProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#searchBoxTextProperty}
-	 *
-	 * @param searchBoxTextProperty значение поля
-	 */
-	public void setSearchBoxTextProperty(StringProperty searchBoxTextProperty) {
-		this.searchBoxTextProperty = searchBoxTextProperty;
-	}
-
-	/**
-	 * Возвращает {@link#dateTimeTextProperty}
-	 *
-	 * @return the {@link#dateTimeTextProperty}
-	 */
 	public StringProperty getDateTimeTextProperty() {
 		return dateTimeTextProperty;
-	}
-
-	/**
-	 * Устанавливает значение полю {@link#dateTimeTextProperty}
-	 *
-	 * @param dateTimeTextProperty значение поля
-	 */
-	public void setDateTimeTextProperty(StringProperty dateTimeTextProperty) {
-		this.dateTimeTextProperty = dateTimeTextProperty;
 	}
 
 	@Override

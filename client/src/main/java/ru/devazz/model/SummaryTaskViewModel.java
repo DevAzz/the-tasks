@@ -33,75 +33,40 @@ public class SummaryTaskViewModel extends PresentationModel<ICommonService, IEnt
 		statusImageProperty = new SimpleObjectProperty<>(this, "statusImageProperty", null);
 	}
 
-	/**
-	 * Возвращает {@link#aTaskSuid}
-	 *
-	 * @return the {@link#aTaskSuid}
-	 */
+	@Override
+	protected String getQueueName() {
+		return null;
+	}
+
 	public Long getTaskSuid() {
 		return taskSuid;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#aTaskSuid}
-	 *
-	 * @param aTaskSuid значение поля
-	 */
-	public void setTaskSuid(Long aTaskSuid) {
+	private void setTaskSuid(Long aTaskSuid) {
 		this.taskSuid = aTaskSuid;
 	}
 
-	/**
-	 * Возвращает {@link#priorityImageProperty}
-	 *
-	 * @return the {@link#priorityImageProperty}
-	 */
 	public ObjectProperty<Image> getPriorityImageProperty() {
 		return priorityImageProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#priorityImageProperty}
-	 *
-	 * @param priorityImageValue значение поля
-	 */
-	public void setPriorityImagePropertyValue(Image priorityImageValue) {
+	private void setPriorityImagePropertyValue(Image priorityImageValue) {
 		this.priorityImageProperty.set(priorityImageValue);
 	}
 
-	/**
-	 * Возвращает {@link#nameTaskProperty}
-	 *
-	 * @return the {@link#nameTaskProperty}
-	 */
 	public StringProperty getNameTaskProperty() {
 		return nameTaskProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#nameTaskProperty}
-	 *
-	 * @param nameTaskValue значение поля
-	 */
-	public void setNameTaskPropertyValue(String nameTaskValue) {
+	private void setNameTaskPropertyValue(String nameTaskValue) {
 		this.nameTaskProperty.set(nameTaskValue);
 	}
 
-	/**
-	 * Возвращает {@link#statusImageProperty}
-	 *
-	 * @return the {@link#statusImageProperty}
-	 */
 	public ObjectProperty<Image> getStatusImageProperty() {
 		return statusImageProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#statusImageProperty}
-	 *
-	 * @param statusImageValue значение поля
-	 */
-	public void setStatusImagePropertyValue(Image statusImageValue) {
+	private void setStatusImagePropertyValue(Image statusImageValue) {
 		this.statusImageProperty.set(statusImageValue);
 	}
 
@@ -161,7 +126,6 @@ public class SummaryTaskViewModel extends PresentationModel<ICommonService, IEnt
 
 	@Override
 	public Class<ICommonService> getTypeService() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

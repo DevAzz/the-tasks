@@ -61,10 +61,10 @@ public class EntityConverter {
 	public Task convertTaskModelToClientWrapTask(TaskModel aEntity) {
 		Task task = null;
 		if (null != aEntity) {
-			String name = "";
-			String note = "";
-			String description = "";
-			String documentName = "";
+			String name;
+			String note;
+			String description;
+			String documentName;
 			ISubordinationElementService subElService = ProxyFactory.getInstance()
 					.getService(ISubordinationElementService.class);
 
@@ -110,18 +110,18 @@ public class EntityConverter {
 	 * @param aEndDate конечная дата
 	 * @return процент выполнения задачи
 	 */
-	public Double computeProgress(Date aStartDate, Date aEndDate) {
+	private Double computeProgress(Date aStartDate, Date aEndDate) {
 		Date currDate = new Date();
 		Double result = null;
 		if (currDate.getTime() >= aStartDate.getTime()) {
-			Long totalHourDifference = (aEndDate.getTime() - aStartDate.getTime()) / 360000;
+			long totalHourDifference = (aEndDate.getTime() - aStartDate.getTime()) / 360000;
 			if (totalHourDifference > 0) {
-				Long currentHourDifference = (aEndDate.getTime() - new Date().getTime()) / 360000;
-				result = new Double(100 - ((currentHourDifference * 100) / totalHourDifference))
-						/ 100;
+				long currentHourDifference = (aEndDate.getTime() - new Date().getTime()) / 360000;
+				result = (double) (100 - ((currentHourDifference * 100) / totalHourDifference))
+						 / 100;
 			}
 		} else {
-			result = new Double(0);
+			result = (double) 0;
 		}
 		return result;
 	}
@@ -186,26 +186,6 @@ public class EntityConverter {
 		entity.setStartTime(aDefaultTaskModel.getStartTime());
 		entity.setEndTime(aDefaultTaskModel.getEndTime());
 		entity.setSubordinationSUID(aDefaultTaskModel.getSubordinationSUID());
-		return entity;
-
-	}
-
-	/**
-	 * Ковертирует клиентскую обертку над типовой задачей в клиентскую обертку над
-	 * ней
-	 *
-	 * @param defaultTask клиентская обертка над типовой задачей
-	 * @return сущность типовой задачи
-	 */
-	public DefaultTaskModel convertClientWrapDefaultTaskToDefaultTaskModel(
-			DefaultTask defaultTask) {
-		DefaultTaskModel entity = new DefaultTaskModel();
-		entity.setSuid(defaultTask.getDefaultTaskID());
-		entity.setName(defaultTask.getName());
-		entity.setNote(defaultTask.getNote());
-		entity.setStartTime(defaultTask.getStartTime());
-		entity.setEndTime(defaultTask.getEndTime());
-		entity.setSubordinationSUID(defaultTask.getSubordinationSUID());
 		return entity;
 
 	}

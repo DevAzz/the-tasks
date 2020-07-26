@@ -87,200 +87,95 @@ public class SummaryPanelViewModel extends PresentationModel<ICommonService, IEn
 		reworkAmountLabelProperty = new SimpleStringProperty(this, "reworkAmountLabel", "");
 	}
 
-	/**
-	 * Возвращает {@link#subElLabelProperty}
-	 *
-	 * @return the {@link#subElLabelProperty}
-	 */
+	@Override
+	protected String getQueueName() {
+		return null;
+	}
+
 	public StringProperty getSubElLabelProperty() {
 		return subElLabelProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#subElLabelProperty}
-	 *
-	 * @param subElLabelValue значение поля
-	 */
-	public void setSubElLabelValue(String subElLabelValue) {
+	private void setSubElLabelValue(String subElLabelValue) {
 		this.subElLabelProperty.set(subElLabelValue);
 	}
 
-	/**
-	 * Возвращает {@link#imageProperty}
-	 *
-	 * @return the {@link#imageProperty}
-	 */
 	public ObjectProperty<Image> getImageProperty() {
 		return imageProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#imageProperty}
-	 *
-	 * @param imageValue значение поля
-	 */
-	public void setImagePropertyValue(Image imageValue) {
+	private void setImagePropertyValue(Image imageValue) {
 		this.imageProperty.set(imageValue);
 	}
 
-	/**
-	 * Возвращает {@link#successDoneAmountLabelProperty}
-	 *
-	 * @return the {@link#successDoneAmountLabelProperty}
-	 */
 	public StringProperty getSuccessDoneAmountLabelProperty() {
 		return successDoneAmountLabelProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#successDoneAmountLabelProperty}
-	 *
-	 * @param successDoneAmountLabelValue значение поля
-	 */
-	public void setSuccessDoneAmountLabelPropertyValue(String successDoneAmountLabelValue) {
+	private void setSuccessDoneAmountLabelPropertyValue(String successDoneAmountLabelValue) {
 		this.successDoneAmountLabelProperty.set(successDoneAmountLabelValue);
 	}
 
-	/**
-	 * Возвращает {@link#overdueDoneAmountLabelProperty}
-	 *
-	 * @return the {@link#overdueDoneAmountLabelProperty}
-	 */
 	public StringProperty getOverdueDoneAmountLabelProperty() {
 		return overdueDoneAmountLabelProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#overdueDoneAmountLabelProperty}
-	 *
-	 * @param overdueDoneAmountLabelValue значение поля
-	 */
-	public void setOverdueDoneAmountLabelPropertyValue(String overdueDoneAmountLabelValue) {
+	private void setOverdueDoneAmountLabelPropertyValue(String overdueDoneAmountLabelValue) {
 		this.overdueDoneAmountLabelProperty.set(overdueDoneAmountLabelValue);
 	}
 
-	/**
-	 * Возвращает {@link#closedAmountLabelProperty}
-	 *
-	 * @return the {@link#closedAmountLabelProperty}
-	 */
 	public StringProperty getClosedAmountLabelProperty() {
 		return closedAmountLabelProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#closedAmountLabelProperty}
-	 *
-	 * @param closedAmountLabelValue значение поля
-	 */
-	public void setClosedAmountLabelPropertyValue(String closedAmountLabelValue) {
+	private void setClosedAmountLabelPropertyValue(String closedAmountLabelValue) {
 		this.closedAmountLabelProperty.set(closedAmountLabelValue);
 	}
 
-	/**
-	 * Возвращает {@link#overdueAmountLabelProperty}
-	 *
-	 * @return the {@link#overdueAmountLabelProperty}
-	 */
 	public StringProperty getOverdueAmountLabelProperty() {
 		return overdueAmountLabelProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#overdueAmountLabelProperty}
-	 *
-	 * @param overdueAmountLabelValue значение поля
-	 */
-	public void setOverdueAmountLabelPropertyValue(String overdueAmountLabelValue) {
+	private void setOverdueAmountLabelPropertyValue(String overdueAmountLabelValue) {
 		this.overdueAmountLabelProperty.set(overdueAmountLabelValue);
 	}
 
-	/**
-	 * Возвращает {@link#failedAmountLabelProperty}
-	 *
-	 * @return the {@link#failedAmountLabelProperty}
-	 */
 	public StringProperty getFailedAmountLabelProperty() {
 		return failedAmountLabelProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#failedAmountLabelProperty}
-	 *
-	 * @param failedAmountLabelValue значение поля
-	 */
-	public void setFailedAmountLabelPropertyValue(String failedAmountLabelValue) {
+	private void setFailedAmountLabelPropertyValue(String failedAmountLabelValue) {
 		this.failedAmountLabelProperty.set(failedAmountLabelValue);
 	}
 
-	/**
-	 * Возвращает {@link#inWorkAmountLabelProperty}
-	 *
-	 * @return the {@link#inWorkAmountLabelProperty}
-	 */
 	public StringProperty getInWorkAmountLabelProperty() {
 		return inWorkAmountLabelProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#inWorkAmountLabelProperty}
-	 *
-	 * @param inWorkAmountLabelValue значение поля
-	 */
-	public void setInWorkAmountLabelPropertyValue(String inWorkAmountLabelValue) {
+	private void setInWorkAmountLabelPropertyValue(String inWorkAmountLabelValue) {
 		this.inWorkAmountLabelProperty.set(inWorkAmountLabelValue);
 	}
 
-	/**
-	 * Возвращает {@link#reworkAmountLabel}
-	 *
-	 * @return the {@link#reworkAmountLabel}
-	 */
 	public StringProperty getReworkAmountLabelProperty() {
 		return reworkAmountLabelProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#reworkAmountLabel}
-	 *
-	 * @param reworkAmountLabelValue значение поля
-	 */
-	public void setReworkAmountLabelPropertyValue(String reworkAmountLabelValue) {
+	private void setReworkAmountLabelPropertyValue(String reworkAmountLabelValue) {
 		this.reworkAmountLabelProperty.set(reworkAmountLabelValue);
 	}
 
-	/**
-	 * Возвращает {@link#inTasks}
-	 *
-	 * @return the {@link#inTasks}
-	 */
 	public ObservableList<Task> getInTasks() {
 		return inTasks;
 	}
 
-	/**
-	 * Возвращает {@link#outTasks}
-	 *
-	 * @return the {@link#outTasks}
-	 */
 	public ObservableList<Task> getOutTasks() {
 		return outTasks;
 	}
 
-	/**
-	 * Возвращает {@link#entity}
-	 *
-	 * @return the {@link#entity}
-	 */
 	public ReportModel getEntity() {
 		return entity;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#entity}
-	 *
-	 * @param aEntity значение поля
-	 */
 	public void setReportEntity(ReportModel aEntity) {
 		if (null != aEntity) {
 			this.entity = aEntity;
@@ -387,8 +282,6 @@ public class SummaryPanelViewModel extends PresentationModel<ICommonService, IEn
 			}
 
 			setImagePropertyValue(image);
-			image = null;
-			file = null;
 			System.gc();
 		});
 		thread.setDaemon(true);
@@ -397,7 +290,6 @@ public class SummaryPanelViewModel extends PresentationModel<ICommonService, IEn
 
 	@Override
 	public Class<ICommonService> getTypeService() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

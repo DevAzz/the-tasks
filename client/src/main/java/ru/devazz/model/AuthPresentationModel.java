@@ -7,6 +7,7 @@ import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import ru.devazz.server.ProxyFactory;
 import ru.devazz.server.api.IUserService;
+import ru.devazz.server.api.event.QueueNameEnum;
 import ru.devazz.server.api.model.UserModel;
 import ru.devazz.utils.Utils;
 
@@ -51,11 +52,11 @@ public class AuthPresentationModel extends PresentationModel<IUserService, UserM
 		return password;
 	}
 
-	public String getLogin() {
+	private String getLogin() {
 		return login.get();
 	}
 
-	public String getPassword() {
+	private String getPassword() {
 		return password.get();
 	}
 
@@ -68,16 +69,21 @@ public class AuthPresentationModel extends PresentationModel<IUserService, UserM
 		password = new SimpleStringProperty(this, "password", "");
 		enterDisabled = new SimpleBooleanProperty(this, "enterEnabled", true);
 
-		login.addListener((ChangeListener<String>) (observable, oldValue, newValue) -> {
+		login.addListener((observable, oldValue, newValue) -> {
 			if (!authProcessFlag) {
 				setEnterDisabled(newValue.isEmpty() || getPassword().isEmpty());
 			}
 		});
-		password.addListener((ChangeListener<String>) (observable, oldValue, newValue) -> {
+		password.addListener((observable, oldValue, newValue) -> {
 			if (!authProcessFlag) {
 				setEnterDisabled(newValue.isEmpty() || getLogin().isEmpty());
 			}
 		});
+	}
+
+	@Override
+	protected String getQueueName() {
+		return QueueNameEnum.USERS_QUEUE;
 	}
 
 	/**
@@ -104,27 +110,14 @@ public class AuthPresentationModel extends PresentationModel<IUserService, UserM
 		return IUserService.class;
 	}
 
-	/**
-	 * Возвращает {@link#authProcessFlag}
-	 *
-	 * @return the {@link#authProcessFlag}
-	 */
 	public Boolean getAuthProcessFlag() {
 		return authProcessFlag;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#authProcessFlag}
-	 *
-	 * @param authProcessFlag значение поля
-	 */
 	public void setAuthProcessFlag(Boolean authProcessFlag) {
 		this.authProcessFlag = authProcessFlag;
 	}
 
-	/**
-	 * Shutdown ловушка
-	 */
 	private class MyShutdownHook extends Thread {
 
 		/** Идентификатор пользователя */

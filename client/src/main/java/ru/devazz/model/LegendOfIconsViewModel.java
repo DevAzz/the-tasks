@@ -7,13 +7,16 @@ public class LegendOfIconsViewModel extends PresentationModel<ICommonService, IE
 
 	@Override
 	protected void initModel() {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
+	protected String getQueueName() {
+		return null;
+	}
+
+	@Override
 	public Class<ICommonService> getTypeService() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

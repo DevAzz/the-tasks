@@ -10,6 +10,7 @@ import ru.devazz.server.api.ISubordinationElementService;
 import ru.devazz.server.api.ITaskHistoryService;
 import ru.devazz.server.api.ITaskService;
 import ru.devazz.server.api.event.ObjectEvent;
+import ru.devazz.server.api.event.QueueNameEnum;
 import ru.devazz.server.api.event.TaskEvent;
 import ru.devazz.server.api.model.*;
 import ru.devazz.server.api.model.enums.*;
@@ -123,13 +124,13 @@ public class TaskService extends AbstractEntityService<TaskModel, TaskEntity>
                     historyEntity.setHistoryType(TaskHistoryType.TASK_OVERDUE_DONE);
                     historyEntity.setText("Пользователь " + subEl.getName()
                                           + " завершил выполнение задачи c опозданием");
-                    historyEntity.setTitle("Задача завершена с опозданием");
+                    historyEntity.setName("Задача завершена с опозданием");
                 } else {
                     historyEntity.setHistoryType(TaskHistoryType.TASK_DONE);
                     historyEntity
                             .setText("Пользователь " + subEl.getName() +
                                      " завершил выполнение задачи");
-                    historyEntity.setTitle("Задача завершена");
+                    historyEntity.setName("Задача завершена");
                 }
 
                 break;
@@ -145,7 +146,7 @@ public class TaskService extends AbstractEntityService<TaskModel, TaskEntity>
                 historyEntity
                         .setText("Пользователь " + subEl.getName() +
                                  " отправил задачу на доработку");
-                historyEntity.setTitle("Задача отправлена на доработку");
+                historyEntity.setName("Задача отправлена на доработку");
                 break;
             case FAILD:
                 if (aNeedPublishEvent) {
@@ -159,7 +160,7 @@ public class TaskService extends AbstractEntityService<TaskModel, TaskEntity>
                 historyEntity
                         .setText("Пользователь " + subEl.getName() +
                                  " отметил задачу как проваленную");
-                historyEntity.setTitle("Задача провалена");
+                historyEntity.setName("Задача провалена");
                 break;
             case CLOSED:
                 if (aNeedPublishEvent) {
@@ -171,7 +172,7 @@ public class TaskService extends AbstractEntityService<TaskModel, TaskEntity>
                 historyEntity.setHistoryType(TaskHistoryType.TASK_CLOSED);
                 subEl = subElService.get(aEntity.getAuthorSuid());
                 historyEntity.setText("Пользователь " + subEl.getName() + " закрыл задачу");
-                historyEntity.setTitle("Задача закрыта");
+                historyEntity.setName("Задача закрыта");
                 break;
             default:
                 if (aNeedPublishEvent) {
@@ -183,7 +184,7 @@ public class TaskService extends AbstractEntityService<TaskModel, TaskEntity>
                 historyEntity.setHistoryType(TaskHistoryType.TASK_UPDATED);
                 subEl = subElService.get(aEntity.getAuthorSuid());
                 historyEntity.setText("Пользователь " + subEl.getName() + " обновил задачу");
-                historyEntity.setTitle("Задача обновлена");
+                historyEntity.setName("Задача обновлена");
         }
 
         if (null != historyEntity.getHistoryType()) {
@@ -198,7 +199,7 @@ public class TaskService extends AbstractEntityService<TaskModel, TaskEntity>
 
     @Override
     protected String getQueueName() {
-        return JmsQueueName.TASKS.getName();
+        return QueueNameEnum.TASKS_QUEUE;
     }
 
     /**

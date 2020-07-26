@@ -1,8 +1,6 @@
 package ru.devazz.server.api.model;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.*;
 
 import java.io.Serializable;
 import java.util.List;
@@ -12,7 +10,10 @@ import java.util.List;
  */
 @EqualsAndHashCode
 @ToString
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class SubordinationElementModel implements Serializable, IEntity{
 
     /** Идентификатор модели элмента подчиненности */

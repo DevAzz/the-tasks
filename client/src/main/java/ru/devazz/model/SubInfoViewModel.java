@@ -9,10 +9,12 @@ import javafx.scene.image.Image;
 import org.apache.activemq.command.ActiveMQMessage;
 import org.apache.activemq.command.ActiveMQObjectMessage;
 import ru.devazz.entities.SubordinationElement;
+import ru.devazz.server.IMessageListener;
 import ru.devazz.server.ProxyFactory;
 import ru.devazz.server.api.ISubordinationElementService;
 import ru.devazz.server.api.IUserService;
 import ru.devazz.server.api.event.ObjectEvent;
+import ru.devazz.server.api.event.QueueNameEnum;
 import ru.devazz.server.api.event.UserEvent;
 import ru.devazz.server.api.model.IEntity;
 import ru.devazz.server.api.model.SubordinationElementModel;
@@ -59,112 +61,68 @@ public class SubInfoViewModel
 		imageProperty = new SimpleObjectProperty<>(this, "imageProperty", null);
 		onlineProperty = new SimpleStringProperty(this, "positionProperty", "Не в сети");
 
-		ProxyFactory.getInstance().addMessageListener("subInfoViewModel", "subElQueue",
-														 message -> {
-			try {
-				if (message instanceof ActiveMQMessage) {
-					ActiveMQMessage objectMessage = (ActiveMQMessage) message;
-					if (objectMessage instanceof ActiveMQObjectMessage) {
-						ObjectEvent event =
-								(ObjectEvent) ((ActiveMQObjectMessage) objectMessage).getObject();
-						IEntity entity = event.getEntity();
-						if (event instanceof UserEvent) {
-							userData = (UserModel) entity;
-							SubordinationElementModel subEl = service
-									.get(userData.getPositionSuid());
-							if ((null != selectionSub)
-									&& selectionSub.getSuid().equals(userData.getPositionSuid())) {
-								setSelectionSub(EntityConverter.getInstatnce()
-										.convertSubElEntityToClientWrap(subEl));
-							}
-
-							if (userData.getOnline() && !Utils.getInstance().getCurrentUser()
-									.getSuid().equals(userData.getSuid())) {
-								Platform.runLater(() -> {
-									DialogUtils.getInstance().showPushUp(
-											"Должностное лицо " + subEl.getName() + ".",
-											"Пользователь " + userData.getName() + " в системе",
-											PushUpTypes.USER_ONLINE_PUSH, null);
-								});
-							}
-						}
-					}
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-				// TODO Логирование
-			}
-		});
+		addJmsListener(getMessageListener());
 	}
 
-	/**
-	 * Возвращает {@link #titleProperty}
-	 *
-	 * @return {@link #titleProperty}
-	 */
+	private IMessageListener getMessageListener() {
+		return event -> {
+			IEntity entity = event.getEntity();
+			if (event instanceof UserEvent) {
+				userData = (UserModel) entity;
+				SubordinationElementModel subEl = service
+						.get(userData.getPositionSuid());
+				if ((null != selectionSub)
+					&& selectionSub.getSuid().equals(userData.getPositionSuid())) {
+					setSelectionSub(EntityConverter.getInstatnce()
+											.convertSubElEntityToClientWrap(subEl));
+				}
+
+				if (userData.getOnline() && !Utils.getInstance().getCurrentUser()
+						.getSuid().equals(userData.getSuid())) {
+					Platform.runLater(() -> {
+						DialogUtils.getInstance().showPushUp(
+								"Должностное лицо " + subEl.getName() + ".",
+								"Пользователь " + userData.getName() + " в системе",
+								PushUpTypes.USER_ONLINE_PUSH, null);
+					});
+				}
+			}
+		};
+	}
+
+	@Override
+    protected String getQueueName() {
+		return QueueNameEnum.SUB_EL_QUEUE;
+	}
+
 	public StringProperty getTitleProperty() {
 		return titleProperty;
 	}
 
-	/**
-	 * Возвращает {@link#fioProperty}
-	 *
-	 * @return the fioProperty
-	 */
 	public StringProperty getFioProperty() {
 		return fioProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю fioProperty
-	 *
-	 * @param fioProperty значение поле
-	 */
-	public void setFioValue(String fioProperty) {
+	private void setFioValue(String fioProperty) {
 		this.fioProperty.set(fioProperty);
 	}
 
-	/**
-	 * Возвращает {@link#positionProperty}
-	 *
-	 * @return the positionProperty
-	 */
 	public StringProperty getPositionProperty() {
 		return positionProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#titleProperty}
-	 *
-	 * @param titleProperty значение поля
-	 */
-	public void setTitleValue(String titleProperty) {
+	private void setTitleValue(String titleProperty) {
 		this.titleProperty.set(titleProperty);
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#positionProperty}
-	 *
-	 * @param positionProperty значение поля
-	 */
-	public void setPositionValue(String positionProperty) {
+	private void setPositionValue(String positionProperty) {
 		this.positionProperty.set(positionProperty);
 	}
 
-	/**
-	 * Возвращает {@link #selectionSub}
-	 *
-	 * @return {@link #selectionSub}
-	 */
 	public SubordinationElement getSelectionSub() {
 		return selectionSub;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#selectionSub}
-	 *
-	 * @param selectionSub значение поля
-	 */
 	public void setSelectionSub(SubordinationElement selectionSub) {
 		if (null != selectionSub) {
 			this.selectionSub = selectionSub;
@@ -222,39 +180,19 @@ public class SubInfoViewModel
 		return ISubordinationElementService.class;
 	}
 
-	/**
-	 * Возвращает {@link#imageProperty}
-	 *
-	 * @return the {@link#imageProperty}
-	 */
 	public ObjectProperty<Image> getImageProperty() {
 		return imageProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#imageProperty}
-	 *
-	 * @param imageValue значение поля
-	 */
-	public void setImageValue(Image imageValue) {
+	private void setImageValue(Image imageValue) {
 		this.imageProperty.set(imageValue);
 	}
 
-	/**
-	 * Возвращает {@link#onlineProperty}
-	 *
-	 * @return the {@link#onlineProperty}
-	 */
 	public StringProperty getOnlineProperty() {
 		return onlineProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#onlineProperty}
-	 *
-	 * @param onlineValue значение поля
-	 */
-	public void setOnlineValue(String onlineValue) {
+	private void setOnlineValue(String onlineValue) {
 		this.onlineProperty.set(onlineValue);
 	}
 

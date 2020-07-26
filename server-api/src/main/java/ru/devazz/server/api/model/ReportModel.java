@@ -1,9 +1,6 @@
 package ru.devazz.server.api.model;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.*;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -14,7 +11,10 @@ import java.util.Date;
  */
 @EqualsAndHashCode
 @ToString
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class ReportModel implements Serializable, IEntity {
 

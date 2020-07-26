@@ -2,7 +2,6 @@ package ru.devazz.model;
 
 import javafx.application.Platform;
 import javafx.beans.property.*;
-import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import ru.devazz.entities.Task;
@@ -115,6 +114,11 @@ public class TasksViewModel extends PresentationModel<ITaskService, TaskModel> {
 				});
 
 		progressUpdater = new ProgressUpdater();
+	}
+
+	@Override
+	protected String getQueueName() {
+		return null;
 	}
 
 	/**

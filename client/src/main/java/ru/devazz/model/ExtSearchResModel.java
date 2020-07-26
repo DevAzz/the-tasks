@@ -22,46 +22,30 @@ public class ExtSearchResModel extends PresentationModel<ICommonService, IEntity
 		resLabelProperty = new SimpleStringProperty(this, "resLabelProperty", "Заголовок");
 	}
 
-	/**
-	 * Возвращает {@link#resLabelProperty}
-	 *
-	 * @return the {@link#resLabelProperty}
-	 */
+	@Override
+	protected String getQueueName() {
+		return null;
+	}
+
 	public StringProperty getResLabelProperty() {
 		return resLabelProperty;
 	}
 
-	/**
-	 * Возвращает {@link#result}
-	 *
-	 * @return the {@link#result}
-	 */
 	public ExtSearchRes getResult() {
 		return result;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#result}
-	 *
-	 * @param result значение поля
-	 */
 	public void setResult(ExtSearchRes result) {
 		this.result = result;
 		setResLabelValue(result.getName());
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#resLabelProperty}
-	 *
-	 * @param resLabelValue значение поля
-	 */
-	public void setResLabelValue(String resLabelValue) {
+	private void setResLabelValue(String resLabelValue) {
 		this.resLabelProperty.set(resLabelValue);
 	}
 
 	@Override
 	public Class<ICommonService> getTypeService() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

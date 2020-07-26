@@ -5,7 +5,6 @@ import javafx.beans.property.StringProperty;
 import ru.devazz.entities.Task;
 import ru.devazz.server.api.ITaskService;
 import ru.devazz.server.api.model.TaskModel;
-import ru.devazz.server.api.model.enums.TaskStatus;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -30,15 +29,17 @@ public class TaskPanelViewModel extends PresentationModel<ITaskService, TaskMode
 	/** Свойство текста автора задачи */
 	private StringProperty authorLabelProperty;
 
-	/** Статус задачи */
-	private TaskStatus taskStatus;
-
 	@Override
 	protected void initModel() {
 		titleLabelProperty = new SimpleStringProperty(this, "titleLabelProperty", "Заголовок");
 		noteLabelProperty = new SimpleStringProperty(this, "noteLabelProperty", "Описание");
 		dateLabelProperty = new SimpleStringProperty(this, "dateLabelProperty", "Дата");
 		authorLabelProperty = new SimpleStringProperty(this, "authorLabelProperty", "Автор задачи");
+	}
+
+	@Override
+	protected String getQueueName() {
+		return null;
 	}
 
 	/**
@@ -69,75 +70,27 @@ public class TaskPanelViewModel extends PresentationModel<ITaskService, TaskMode
 		setDateLabelPropertyValue(date);
 	}
 
-	/**
-	 * Возвращает {@link#titleLabelProperty}
-	 *
-	 * @return the {@link#titleLabelProperty}
-	 */
 	public StringProperty getTitleLabelProperty() {
 		return titleLabelProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#titleLabelProperty}
-	 *
-	 * @param {@link#titleLabelProperty}
-	 */
-	public void setTitleLabelText(String titleLabelText) {
+	private void setTitleLabelText(String titleLabelText) {
 		this.titleLabelProperty.set(titleLabelText);
 	}
 
-	/**
-	 * Возвращает {@link#noteLabelProperty}
-	 *
-	 * @return the {@link#noteLabelProperty}
-	 */
 	public StringProperty getNoteLabelProperty() {
 		return noteLabelProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#noteLabelProperty}
-	 *
-	 * @param {@link#noteLabelProperty}
-	 */
-	public void setNoteLabelProperty(String noteLabelText) {
+	private void setNoteLabelProperty(String noteLabelText) {
 		this.noteLabelProperty.set(noteLabelText);
 	}
 
-	/**
-	 * Возвращает {@link#taskStatus}
-	 *
-	 * @return the {@link#taskStatus}
-	 */
-	public TaskStatus getTaskStatus() {
-		return taskStatus;
-	}
-
-	/**
-	 * Устанавливает значение полю {@link#taskStatus}
-	 *
-	 * @param {@link#taskStatus}
-	 */
-	public void setTaskStatus(TaskStatus taskStatus) {
-		this.taskStatus = taskStatus;
-	}
-
-	/**
-	 * Возвращает {@link#dateLabelProperty}
-	 *
-	 * @return the {@link#dateLabelProperty}
-	 */
 	public StringProperty getDateLabelProperty() {
 		return dateLabelProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#dateLabelProperty}
-	 *
-	 * @param dateLabelPropertyValue значение поля
-	 */
-	public void setDateLabelPropertyValue(String dateLabelPropertyValue) {
+	private void setDateLabelPropertyValue(String dateLabelPropertyValue) {
 		this.dateLabelProperty.set(dateLabelPropertyValue);
 	}
 
@@ -146,21 +99,11 @@ public class TaskPanelViewModel extends PresentationModel<ITaskService, TaskMode
 		return ITaskService.class;
 	}
 
-	/**
-	 * Возвращает {@link#authorLabelProperty}
-	 *
-	 * @return the {@link#authorLabelProperty}
-	 */
 	public StringProperty getAuthorLabelProperty() {
 		return authorLabelProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#authorLabelProperty}
-	 *
-	 * @param authorLabelValue значение поля
-	 */
-	public void setAuthorLabelValue(String authorLabelValue) {
+	private void setAuthorLabelValue(String authorLabelValue) {
 		this.authorLabelProperty.set(authorLabelValue);
 	}
 

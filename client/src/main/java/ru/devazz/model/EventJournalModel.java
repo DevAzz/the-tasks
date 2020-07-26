@@ -6,8 +6,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import ru.devazz.entities.Event;
 import ru.devazz.entities.SubordinationElement;
+import ru.devazz.server.IMessageListener;
 import ru.devazz.server.ProxyFactory;
 import ru.devazz.server.api.IEventService;
+import ru.devazz.server.api.event.QueueNameEnum;
 import ru.devazz.server.api.model.EventModel;
 import ru.devazz.utils.EntityConverter;
 import ru.devazz.utils.EventType;
@@ -27,24 +29,6 @@ public class EventJournalModel extends PresentationModel<IEventService, EventMod
 	private ObjectProperty<ObservableList<Event>> dataProperty;
 
 	/**
-	 * Возвращает {@link#data}
-	 *
-	 * @return the {@link#data}
-	 */
-	public ObservableList<Event> getEtalonData() {
-		return etalonData;
-	}
-
-	/**
-	 * Устанавливает значение полю {@link#data}
-	 *
-	 * @param {@link#data}
-	 */
-	public void setEtalonData(ObservableList<Event> data) {
-		this.etalonData = data;
-	}
-
-	/**
 	 * Конструктор
 	 */
 	public EventJournalModel() {
@@ -53,18 +37,19 @@ public class EventJournalModel extends PresentationModel<IEventService, EventMod
 	}
 
 	@Override
+	protected String getQueueName() {
+		return QueueNameEnum.EVENT_QUEUE;
+	}
+
+	@Override
 	protected void initModel() {
 		etalonData = FXCollections.observableArrayList();
 		dataProperty = new SimpleObjectProperty<>(etalonData);
+		addJmsListener(getMessageListener());
 	}
 
-	/**
-	 * Подключение к сервису рассылки уведомлений
-	 */
-	public void connectToJMSService() {
-		ProxyFactory.getInstance().addMessageListener("eventJournal", "eventsQueue", arg0 -> {
-			loadEntities();
-		});
+	private IMessageListener getMessageListener() {
+		return event -> loadEntities();
 	}
 
 	/**
@@ -92,33 +77,7 @@ public class EventJournalModel extends PresentationModel<IEventService, EventMod
 	}
 
 	/**
-	 * Задаёт значния даты события
-	 *
-	 * @param hour
-	 * @param minute
-	 * @param day
-	 * @param month
-	 * @param year
-	 * @return
-	 */
-	public Date initDate(int hour, int minute, int day, int month, int year) {
-		GregorianCalendar calendar = new GregorianCalendar();
-		calendar.set(Calendar.AM_PM, Calendar.PM);
-		calendar.set(Calendar.HOUR, hour);
-		calendar.set(Calendar.MINUTE, minute);
-		calendar.set(Calendar.SECOND, 0);
-		calendar.set(Calendar.MONTH, month - 1);
-		calendar.set(Calendar.DATE, day);
-		calendar.set(Calendar.YEAR, year);
-		Date date = calendar.getTime();
-		return date;
-	}
-
-	/**
 	 * Фильтрует события по дате
-	 *
-	 * @param aList
-	 * @return
 	 */
 	public ObservableList<Event> changedDataByDate(String aList) {
 		ObservableList<Event> tempData = FXCollections.observableArrayList();
@@ -278,20 +237,10 @@ public class EventJournalModel extends PresentationModel<IEventService, EventMod
 		return result;
 	}
 
-	/**
-	 * Возвращает {@link#dataProperty}
-	 *
-	 * @return the {@link#dataProperty}
-	 */
 	public ObjectProperty<ObservableList<Event>> getDataProperty() {
 		return dataProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#dataProperty}
-	 *
-	 * @param dataPropertyValue значение поля
-	 */
 	public void setDataPropertyValue(ObservableList<Event> dataPropertyValue) {
 		this.dataProperty.set(dataPropertyValue);
 	}

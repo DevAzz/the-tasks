@@ -12,9 +12,6 @@ import ru.devazz.server.api.model.HelpModel;
  */
 public class HelpViewModel extends PresentationModel<IHelpService, HelpModel> {
 
-	/** Для выбора заголовка */
-	private HelpModel selection;
-
 	/** Свойство основного текста */
 	private StringProperty helpTextProperty;
 
@@ -29,49 +26,17 @@ public class HelpViewModel extends PresentationModel<IHelpService, HelpModel> {
 
 	}
 
-	/**
-	 * Возвращает {@link#helpEntityListProperty}
-	 *
-	 * @return the helpEntityListProperty
-	 */
+	@Override
+	protected String getQueueName() {
+		return null;
+	}
+
 	public ListProperty<HelpModel> getHelpEntityListProperty() {
 		return helpEntityListProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю helpEntityListProperty
-	 *
-	 * @param helpEntityListProperty значение поле
-	 */
-	public void setHelpEntityListProperty(ListProperty<HelpModel> helpEntityListProperty) {
-		this.helpEntityListProperty = helpEntityListProperty;
-	}
-
-	/**
-	 * Возвращает {@link#helpTextProperty}
-	 *
-	 * @return the helpTextProperty
-	 */
 	public StringProperty getHelpTextProperty() {
 		return helpTextProperty;
-	}
-
-	/**
-	 * Устанавливает значение полю helpTextProperty
-	 *
-	 * @param helpTextProperty значение поле
-	 */
-	public void setHelpTextProperty(StringProperty helpTextProperty) {
-		this.helpTextProperty = helpTextProperty;
-	}
-
-	/**
-	 * Возвращает {@link#selection}
-	 *
-	 * @return the selection
-	 */
-	public HelpModel getSelection() {
-		return selection;
 	}
 
 	/**
@@ -81,14 +46,13 @@ public class HelpViewModel extends PresentationModel<IHelpService, HelpModel> {
 	 */
 	public void setSelection(HelpModel selection) {
 		if (null != selection) {
-			this.selection = selection;
+			// Для выбора заголовка
 			getHelpTextProperty().set(selection.getHelpItemText());
 		}
 	}
 
 	@Override
 	public Class<IHelpService> getTypeService() {
-		// TODO Auto-generated method stub
 		return IHelpService.class;
 	}
 

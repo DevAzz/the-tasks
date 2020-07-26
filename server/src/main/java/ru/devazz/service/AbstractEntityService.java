@@ -6,7 +6,6 @@ import ru.devazz.repository.AbstractRepository;
 import ru.devazz.server.api.IEntityService;
 import ru.devazz.server.api.event.ObjectEvent;
 import ru.devazz.server.api.model.IEntity;
-import ru.devazz.server.api.model.enums.JmsQueueName;
 import ru.devazz.server.api.model.enums.SystemEventType;
 import ru.devazz.service.impl.converters.IEntityConverter;
 

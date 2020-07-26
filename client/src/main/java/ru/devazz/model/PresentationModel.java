@@ -4,6 +4,7 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import ru.devazz.server.IMessageListener;
 import ru.devazz.server.ProxyFactory;
 import ru.devazz.server.api.ICommonService;
 import ru.devazz.server.api.IEntityService;
@@ -56,16 +57,19 @@ public abstract class PresentationModel<T extends ICommonService, E extends IEnt
 		}
 	}
 
+	protected abstract String getQueueName();
+
 	public void deleteJmsListener() {
-		ProxyFactory.getInstance().deleteMessageListener(viewModelId.toString());
+		ProxyFactory.getInstance()
+				.deleteMessageListener(String.format("%s_%s", getQueueName(), viewModelId));
 	}
 
 	/**
 	 * Подключение к службе рассылки системных JMS сообщений
 	 */
-	void addJmsListener(String queueName, MessageListener listener) {
+	void addJmsListener(IMessageListener listener) {
 		ProxyFactory.getInstance()
-				.addMessageListener(viewModelId.toString(), queueName, listener);
+				.addMessageListener(String.format("%s_%s", getQueueName(), viewModelId), listener);
 	}
 
 	public BooleanProperty getOpenViewFlag() {

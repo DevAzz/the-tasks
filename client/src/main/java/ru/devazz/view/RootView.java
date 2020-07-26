@@ -2,7 +2,6 @@ package ru.devazz.view;
 
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
-import javafx.beans.value.ChangeListener;
 import javafx.collections.ListChangeListener;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -10,8 +9,6 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Label;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
@@ -30,7 +27,6 @@ import ru.devazz.server.api.model.SubordinationElementModel;
 import ru.devazz.server.api.model.TaskModel;
 import ru.devazz.server.api.model.UserModel;
 import ru.devazz.server.api.model.enums.TaskPriority;
-import ru.devazz.server.api.model.enums.TaskStatus;
 import ru.devazz.utils.EntityConverter;
 import ru.devazz.utils.EventType;
 import ru.devazz.utils.SplitViewEnum;
@@ -164,10 +160,6 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 	@FXML
 	private RadioMenuItem summaryTasksMenuItem;
 
-	/** Пункт меню "Файл" -> "Создать задачу" */
-	@FXML
-	private MenuItem createTask;
-
 	/** Лейбл даты и времени */
 	@FXML
 	private Label dateTimeLabel;
@@ -175,14 +167,6 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 	/** Общий компонент вкладок */
 	@FXML
 	private TabPane commonCentralTabPane;
-
-	/** Меню "Вид" */
-	@FXML
-	private Menu viewMenu;
-
-	/** Меню "Файл" */
-	@FXML
-	private Menu fileMenu;
 
 	/** Лейбл имени пользователя */
 	@FXML
@@ -237,17 +221,15 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 
 			// Записываем текущее положение разделителя для кадждой панели
 			leftHorizontalSplitPane.getDividers().get(0).positionProperty()
-					.addListener((ChangeListener<Number>) (observable, oldValue, newValue) -> {
-						mapSplitPanePosition.put(SplitViewEnum.LEFT_HORIZONTAL_SPLIT_PANEL,
-								oldValue.doubleValue());
-					});
+					.addListener((observable, oldValue, newValue) -> mapSplitPanePosition
+									.put(SplitViewEnum.LEFT_HORIZONTAL_SPLIT_PANEL,
+										 oldValue.doubleValue()));
 			rightSplitPane.getDividers().get(0).positionProperty()
-					.addListener((ChangeListener<Number>) (observable, oldValue, newValue) -> {
-						mapSplitPanePosition.put(SplitViewEnum.RIGHT_SPLIT_PANEL,
-								oldValue.doubleValue());
-					});
+					.addListener((observable, oldValue, newValue) -> mapSplitPanePosition
+							.put(SplitViewEnum.RIGHT_SPLIT_PANEL,
+								 oldValue.doubleValue()));
 			commonSplitPane.getDividers().get(0).positionProperty()
-					.addListener((ChangeListener<Number>) (observable, oldValue, newValue) -> {
+					.addListener((observable, oldValue, newValue) -> {
 						mapSplitPanePosition.put(SplitViewEnum.COMMON_SPLIT_PANEL,
 								oldValue.doubleValue());
 						if ((null != subTreeView) && (subTreeView.getDisableDivider())) {
@@ -257,15 +239,12 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 					});
 
 			// Переключение с кнопок управления фокуса на основное окно
-			closeStage.addEventFilter(MouseEvent.MOUSE_RELEASED, event -> {
-				windowBorder.requestFocus();
-			});
-			minimizedStage.addEventFilter(MouseEvent.MOUSE_RELEASED, event -> {
-				windowBorder.requestFocus();
-			});
-			maximizedStage.addEventFilter(MouseEvent.MOUSE_RELEASED, event -> {
-				windowBorder.requestFocus();
-			});
+			closeStage.addEventFilter(MouseEvent.MOUSE_RELEASED,
+									  event -> windowBorder.requestFocus());
+			minimizedStage.addEventFilter(MouseEvent.MOUSE_RELEASED,
+										  event -> windowBorder.requestFocus());
+			maximizedStage.addEventFilter(MouseEvent.MOUSE_RELEASED,
+										  event -> windowBorder.requestFocus());
 
 			// Слушатель перемещения окна
 			windowBorder.addEventFilter(MouseEvent.MOUSE_DRAGGED, event -> {
@@ -289,12 +268,11 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 			// Принудительно устанавливаем position правому разделителю при сдвиге общего
 			// разделителя если правый свернут
 			commonSplitPane.getDividers().get(0).positionProperty()
-					.addListener((ChangeListener<Number>) (observable, oldValue, newValue) -> {
+					.addListener((observable, oldValue, newValue) -> {
 						if (!subInfoMenuItem.isSelected()
 								&& !legendOfIconsViewMenuItem.isSelected()) {
 							rightSplitPane.getDividers().get(0).setPosition(1);
-							mapSplitPanePosition.put(SplitViewEnum.RIGHT_SPLIT_PANEL,
-									new Double(1));
+							mapSplitPanePosition.put(SplitViewEnum.RIGHT_SPLIT_PANEL, 1d);
 						}
 
 					});
@@ -361,7 +339,7 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 	/**
 	 * Связывание
 	 */
-	public void bind() {
+	private void bind() {
 		// Binding
 		Bindings.bindBidirectional(searchBox.textProperty(), model.getSearchBoxTextProperty());
 		Bindings.bindBidirectional(dateTimeLabel.textProperty(), model.getDateTimeTextProperty());
@@ -374,15 +352,13 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 	 */
 	@FXML
 	public void showSummaryTasksView() throws Exception {
-		Boolean menuSelected = summaryTasksMenuItem.isSelected();
+		boolean menuSelected = summaryTasksMenuItem.isSelected();
 		if (menuSelected) {
-			summaryView = Utils.getInstance().loadView(SummaryView.class);
+			summaryView = getSummaryView();
 			summaryView.setOpenTaskHandler(new OpenTaskInSummaryHandler());
 			summaryView.setStage(stage);
 
-			summaryView.addCloseListener(() -> {
-				summaryTasksMenuItem.setSelected(false);
-			});
+			summaryView.addCloseListener(() -> summaryTasksMenuItem.setSelected(false));
 			commonCentralTabPane.getTabs().add(summaryView.getTab());
 			commonCentralTabPane.getSelectionModel().select(summaryView.getTab());
 			summaryView.getModel().setOpenFlagValue(true);
@@ -402,14 +378,12 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 	 */
 	@FXML
 	public void showReportView() throws Exception {
-		Boolean menuSelected = reportMenuItem.isSelected();
+		boolean menuSelected = reportMenuItem.isSelected();
 		if (menuSelected) {
-			reportView = Utils.getInstance().loadView(ReportView.class);
+			reportView = getReportView();
 			reportView.setStage(stage);
 
-			reportView.addCloseListener(() -> {
-				reportMenuItem.setSelected(false);
-			});
+			reportView.addCloseListener(() -> reportMenuItem.setSelected(false));
 			commonCentralTabPane.getTabs().add(reportView.getTab());
 			commonCentralTabPane.getSelectionModel().select(reportView.getTab());
 			reportView.getModel().setOpenFlagValue(true);
@@ -424,9 +398,9 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 	 */
 	@FXML
 	public void showWorkbenchView() throws Exception {
-		Boolean menuSelected = workbenchMenuItem.isSelected();
+		boolean menuSelected = workbenchMenuItem.isSelected();
 		if (menuSelected) {
-			workbenchView = Utils.getInstance().loadView(WorkbenchView.class);
+			workbenchView = getWorkbenchView();
 			workbenchView.setStage(getStage());
 			workbenchView.getModel()
 					.setPositionSuid((null != subTreeView.getSelection())
@@ -438,14 +412,11 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 			workbenchView.setPositionSuid(positionSuid);
 			workbenchView.initViews();
 			workbenchView.setStage(getStage());
-			workbenchView.getModel().connectToJMSService();
 			commonCentralTabPane.getTabs().add(workbenchView.getTab());
 			commonCentralTabPane.getSelectionModel().select(workbenchView.getTab());
 
 			workbenchView.getModel().setGoOverTaskListener(new GoOverTaskListener());
-			workbenchView.addCloseListener(() -> {
-				workbenchMenuItem.setSelected(false);
-			});
+			workbenchView.addCloseListener(() -> workbenchMenuItem.setSelected(false));
 
 			workbenchView.setOpenTaskHandler(event -> {
 				try {
@@ -489,12 +460,12 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 	/**
 	 * Отображает вкладку расширенного поиска
 	 *
-	 * @throws Exception
+	 * @throws Exception в случае ошибки
 	 */
 	@FXML
 	public void showExtendedSearchView() throws Exception {
 		if (!extendedSearchView.getModel().getOpenViewFlag().get()) {
-			extendedSearchView = Utils.getInstance().loadView(ExtendedSearchView.class);
+			extendedSearchView = getExtendedSearchView();
 			extendedSearchView.setDoubleClickHandler(event -> {
 				ExtSearchRes res = extendedSearchView.getModel().getSelectedResult();
 				IEntity entity = res.getEntity();
@@ -546,12 +517,9 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 		boolean menuSelected = eventJournalViewMenuItem.isSelected();
 		if (menuSelected) {
 			if (!commonCentralTabPane.getTabs().contains(eventJournalView.getTab())) {
-				eventJournalView = Utils.getInstance().loadView(EventJournalView.class);
+				eventJournalView = getEventJournalView();
 				eventJournalView.setStage(getStage());
-				eventJournalView.getModel().connectToJMSService();
-				eventJournalView.addCloseListener(() -> {
-					eventJournalViewMenuItem.setSelected(false);
-				});
+				eventJournalView.addCloseListener(() -> eventJournalViewMenuItem.setSelected(false));
 				commonCentralTabPane.getTabs().add(eventJournalView.getTab());
 				commonCentralTabPane.getSelectionModel().select(eventJournalView.getTab());
 				if (!subInfoMenuItem.isSelected()) {
@@ -631,14 +599,12 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 	 */
 	@FXML
 	public void showPositionBookView() throws Exception {
-		Boolean menuSelected = positionBookMenuItem.isSelected();
+		boolean menuSelected = positionBookMenuItem.isSelected();
 		if (menuSelected) {
-			positionBookView = Utils.getInstance().loadView(PositionBookView.class);
+			positionBookView = getPositionBookView();
 			commonCentralTabPane.getTabs().add(positionBookView.getTab());
 			commonCentralTabPane.getSelectionModel().select(positionBookView.getTab());
-			positionBookView.addCloseListener(() -> {
-				positionBookMenuItem.setSelected(false);
-			});
+			positionBookView.addCloseListener(() -> positionBookMenuItem.setSelected(false));
 //			if (Utils.getInstance().checkUserAccess(UserRoles.ASSISTENT)) {
 				rightSplitPane.getDividers().get(0).setPosition(0.6);
 //			}
@@ -658,9 +624,9 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 	@FXML
 	public void showSubTree() throws Exception {
 //		if (Utils.getInstance().checkUserAccess(UserRoles.ASSISTENT)) {
-			Boolean menuSelected = subTreeMenuItem.isSelected();
+			boolean menuSelected = subTreeMenuItem.isSelected();
 			if (menuSelected) {
-				subTreeView = Utils.getInstance().loadView(SubordinationTreeView.class);
+				subTreeView = getSubTreeView();
 				AnchorPane pane = (AnchorPane) leftHorizontalSplitPane.getItems().get(0);
 				if (null != pane) {
 					if (!pane.getChildren().isEmpty()) {
@@ -757,10 +723,10 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 	 */
 	@FXML
 	public void showSubInfo() throws Exception {
-		Boolean menuSelected = subInfoMenuItem.isSelected();
+		boolean menuSelected = subInfoMenuItem.isSelected();
 		if (menuSelected) {
 			if (null == subInfoView) {
-				subInfoView = Utils.getInstance().loadView(SubInfoView.class);
+				subInfoView = getSubInfoView();
 			}
 			SplitPane sPane = (SplitPane) rightSplitPane.getItems().get(1);
 			AnchorPane pane = (AnchorPane) sPane.getItems().get(0);
@@ -821,9 +787,9 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 	 */
 	@FXML
 	public void showIconsLegend() throws Exception {
-		Boolean menuSelected = legendOfIconsViewMenuItem.isSelected();
+		boolean menuSelected = legendOfIconsViewMenuItem.isSelected();
 		if (menuSelected) {
-			legendView = Utils.getInstance().loadView(LegendOfIconsView.class);
+			legendView = getLegendView();
 			SplitPane sPane = (SplitPane) rightSplitPane.getItems().get(1);
 			AnchorPane pane = (AnchorPane) sPane.getItems().get(1);
 			if (null != pane) {
@@ -874,12 +840,11 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 	 */
 	@FXML
 	public void showEventIndicator() throws Exception {
-		Boolean menuSelected = eventViewMenuItem.isSelected();
+		boolean menuSelected = eventViewMenuItem.isSelected();
 		if (menuSelected) {
-			eventIndicatorView = Utils.getInstance().loadView(EventIndicatorView.class);
+			eventIndicatorView = getEventIndicatorView();
 			AnchorPane pane = (AnchorPane) leftHorizontalSplitPane.getItems().get(1);
 			if (null != pane) {
-				eventIndicatorView.getModel().connectToJMSService();
 				// Слушатель закрытия таба. По закрытию таба опускаем сплит
 				eventIndicatorView.addCloseListener(() -> {
 					eventViewMenuItem.setSelected(false);
@@ -918,9 +883,8 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 						e.printStackTrace();
 					}
 				});
-				eventIndicatorView.setJournalItemClickHandler(event -> {
-					showEventJournalWithSelection(eventIndicatorView.getSelection());
-				});
+				eventIndicatorView.setJournalItemClickHandler(
+						event -> showEventJournalWithSelection(eventIndicatorView.getSelection()));
 				eventIndicatorView.setDoubleClickHandler(event -> {
 					if (2 == event.getClickCount()) {
 						showEventJournalWithSelection(eventIndicatorView.getSelection());
@@ -1049,7 +1013,7 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 	/**
 	 * Отобразить справку
 	 *
-	 * @throws IOException
+	 * @throws IOException в случае ошибки чтения
 	 */
 	@FXML
 	private void showHelp() throws IOException {
@@ -1382,14 +1346,14 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 	 * @throws IOException в случае ошибки загрузки
 	 */
 	private void initViews() throws Exception {
-		subTreeView = Utils.getInstance().loadView(SubordinationTreeView.class);
-		eventIndicatorView = Utils.getInstance().loadView(EventIndicatorView.class);
-		subInfoView = Utils.getInstance().loadView(SubInfoView.class);
-		positionBookView = Utils.getInstance().loadView(PositionBookView.class);
-		eventJournalView = Utils.getInstance().loadView(EventJournalView.class);
-		extendedSearchView = Utils.getInstance().loadView(ExtendedSearchView.class);
-		workbenchView = Utils.getInstance().loadView(WorkbenchView.class);
-		reportView = Utils.getInstance().loadView(ReportView.class);
+		subTreeView = getSubTreeView();
+		eventIndicatorView = getEventIndicatorView();
+		subInfoView = getSubInfoView();
+		positionBookView = getPositionBookView();
+		eventJournalView = getEventJournalView();
+		extendedSearchView = getExtendedSearchView();
+		workbenchView = getWorkbenchView();
+		reportView = getReportView();
 	}
 
 	public AnchorPane getRootComposite() {
@@ -1517,11 +1481,77 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 				});
 				thread.setDaemon(true);
 				thread.start();
-
 			}
-
 		}
-
 	}
 
+	private SubordinationTreeView getSubTreeView() throws IOException {
+		if (subTreeView == null) {
+			subTreeView = Utils.getInstance().loadView(SubordinationTreeView.class);
+		}
+		return subTreeView;
+	}
+
+	private EventIndicatorView getEventIndicatorView() throws IOException {
+		if (eventIndicatorView == null) {
+			eventIndicatorView = Utils.getInstance().loadView(EventIndicatorView.class);
+		}
+		return eventIndicatorView;
+	}
+
+	private SubInfoView getSubInfoView() throws IOException {
+		if (subInfoView == null) {
+			subInfoView = Utils.getInstance().loadView(SubInfoView.class);
+		}
+		return subInfoView;
+	}
+
+	private PositionBookView getPositionBookView() throws IOException {
+		if (positionBookView == null) {
+			positionBookView = Utils.getInstance().loadView(PositionBookView.class);
+		}
+		return positionBookView;
+	}
+
+	private ExtendedSearchView getExtendedSearchView() throws IOException {
+		if (extendedSearchView == null) {
+			extendedSearchView = Utils.getInstance().loadView(ExtendedSearchView.class);
+		}
+		return extendedSearchView;
+	}
+
+	private EventJournalView getEventJournalView() throws IOException {
+		if (eventJournalView == null) {
+			eventJournalView = Utils.getInstance().loadView(EventJournalView.class);
+		}
+		return eventJournalView;
+	}
+
+	private WorkbenchView getWorkbenchView() throws IOException {
+		if (workbenchView == null) {
+			workbenchView = Utils.getInstance().loadView(WorkbenchView.class);
+		}
+		return workbenchView;
+	}
+
+	private ReportView getReportView() throws IOException {
+		if (reportView == null) {
+			reportView = Utils.getInstance().loadView(ReportView.class);
+		}
+		return reportView;
+	}
+
+	private SummaryView getSummaryView() throws IOException {
+		if (summaryView == null) {
+			summaryView = Utils.getInstance().loadView(SummaryView.class);
+		}
+		return summaryView;
+	}
+
+	private LegendOfIconsView getLegendView() throws IOException {
+		if (legendView == null) {
+			legendView = Utils.getInstance().loadView(LegendOfIconsView.class);
+		}
+		return legendView;
+	}
 }

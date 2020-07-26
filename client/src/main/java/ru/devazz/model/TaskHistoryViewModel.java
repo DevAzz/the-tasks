@@ -6,12 +6,10 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import org.apache.activemq.command.ActiveMQMessage;
-import org.apache.activemq.command.ActiveMQObjectMessage;
 import ru.devazz.entities.Task;
-import ru.devazz.server.ProxyFactory;
+import ru.devazz.server.IMessageListener;
 import ru.devazz.server.api.ITaskHistoryService;
-import ru.devazz.server.api.event.ObjectEvent;
+import ru.devazz.server.api.event.QueueNameEnum;
 import ru.devazz.server.api.model.Filter;
 import ru.devazz.server.api.model.IEntity;
 import ru.devazz.server.api.model.TaskHistoryModel;
@@ -20,8 +18,6 @@ import ru.devazz.server.api.model.enums.SortType;
 import ru.devazz.server.api.model.enums.TaskHistoryType;
 import ru.devazz.server.api.model.enums.TaskTimeInterval;
 
-import javax.jms.JMSException;
-import javax.jms.MessageListener;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -98,7 +94,12 @@ public class TaskHistoryViewModel
 		currentPageProperty = new SimpleIntegerProperty(this, "currentPageProperty", 0);
 		pageCountProperty = new SimpleIntegerProperty(this, "pageCountProperty", 1);
 
-		addJmsListener("taskHistoryQueue", getMessageListener());
+		addJmsListener(getMessageListener());
+	}
+
+	@Override
+	protected String getQueueName() {
+		return QueueNameEnum.TASKS_HISTORY_QUEUE;
 	}
 
 	/**
@@ -472,26 +473,14 @@ public class TaskHistoryViewModel
 		return result;
 	}
 
-	private MessageListener getMessageListener() {
-		return message -> {
-			try {
-				if (message instanceof ActiveMQMessage) {
-					ActiveMQMessage objectMessage = (ActiveMQMessage) message;
-					if (objectMessage instanceof ActiveMQObjectMessage) {
-						ObjectEvent event =
-								(ObjectEvent) ((ActiveMQObjectMessage) objectMessage).getObject();
-						IEntity entity = event.getEntity();
-						if (entity instanceof TaskHistoryModel) {
-							TaskHistoryModel historyEntity = (TaskHistoryModel) entity;
-							if (historyEntity.getTaskSuid().equals(task.getSuid())) {
-								visibleEntries.add(historyEntity);
-							}
-						}
-					}
+	private IMessageListener getMessageListener() {
+		return event -> {
+			IEntity entity = event.getEntity();
+			if (entity instanceof TaskHistoryModel) {
+				TaskHistoryModel historyEntity = (TaskHistoryModel) entity;
+				if (historyEntity.getTaskSuid().equals(task.getSuid())) {
+					visibleEntries.add(historyEntity);
 				}
-			} catch (JMSException e) {
-				// TODO Логирование
-				e.printStackTrace();
 			}
 		};
 	}

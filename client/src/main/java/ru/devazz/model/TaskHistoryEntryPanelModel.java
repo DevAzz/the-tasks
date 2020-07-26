@@ -39,32 +39,27 @@ public class TaskHistoryEntryPanelModel extends PresentationModel<ICommonService
 
 	}
 
-	/**
-	 * Возвращает {@link#entity}
-	 *
-	 * @return the {@link#entity}
-	 */
+	@Override
+	protected String getQueueName() {
+		return null;
+	}
+
 	public ru.devazz.server.api.model.TaskHistoryModel getEntity() {
 		return entity;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#entity}
-	 *
-	 * @param aEntity значение поля
-	 */
 	public void setEntity(ru.devazz.server.api.model.TaskHistoryModel aEntity) {
 		this.entity = aEntity;
 
 		setTextLabelProperty(aEntity.getText());
-		setTitleLabelText(aEntity.getTitle());
+		setTitleLabelText(aEntity.getName());
 
 		SimpleDateFormat parser = new SimpleDateFormat("HH:mm dd.MM.yyyy");
 
 		String date = " " + parser.format(aEntity.getDate());
 		setDateLabelPropertyValue(date);
 
-		Image image = null;
+		Image image;
 		switch (aEntity.getHistoryType()) {
 		case TASK_OVERDUE_DONE:
 			image = new Image("/css/overdueDone.png");
@@ -101,75 +96,35 @@ public class TaskHistoryEntryPanelModel extends PresentationModel<ICommonService
 		}
 	}
 
-	/**
-	 * Возвращает {@link#titleLabelProperty}
-	 *
-	 * @return the {@link#titleLabelProperty}
-	 */
 	public StringProperty getTitleLabelProperty() {
 		return titleLabelProperty;
 	}
 
-	/**
-	 * Возвращает {@link#imageProperty}
-	 *
-	 * @return the {@link#imageProperty}
-	 */
 	public ObjectProperty<Image> getImageProperty() {
 		return imageProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#imageProperty}
-	 *
-	 * @param aImage значение поля
-	 */
-	public void setImagePropertyValue(Image aImage) {
+	private void setImagePropertyValue(Image aImage) {
 		this.imageProperty.set(aImage);
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#titleLabelProperty}
-	 *
-	 * @param {@link#titleLabelProperty}
-	 */
-	public void setTitleLabelText(String titleLabelText) {
+	private void setTitleLabelText(String titleLabelText) {
 		this.titleLabelProperty.set(titleLabelText);
 	}
 
-	/**
-	 * Возвращает {@link#textLabelProperty}
-	 *
-	 * @return the {@link#textLabelProperty}
-	 */
 	public StringProperty getTextLabelProperty() {
 		return textLabelProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#textLabelProperty}
-	 *
-	 * @param {@link#textLabelProperty}
-	 */
-	public void setTextLabelProperty(String textLabelText) {
+	private void setTextLabelProperty(String textLabelText) {
 		this.textLabelProperty.set(textLabelText);
 	}
 
-	/**
-	 * Возвращает {@link#dateLabelProperty}
-	 *
-	 * @return the {@link#dateLabelProperty}
-	 */
 	public StringProperty getDateLabelProperty() {
 		return dateLabelProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#dateLabelProperty}
-	 *
-	 * @param dateLabelPropertyValue значение поля
-	 */
-	public void setDateLabelPropertyValue(String dateLabelPropertyValue) {
+	private void setDateLabelPropertyValue(String dateLabelPropertyValue) {
 		this.dateLabelProperty.set(dateLabelPropertyValue);
 	}
 

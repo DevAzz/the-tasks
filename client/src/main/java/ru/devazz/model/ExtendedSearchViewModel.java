@@ -1,7 +1,6 @@
 package ru.devazz.model;
 
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import ru.devazz.entities.ExtSearchRes;
@@ -67,19 +66,19 @@ public class ExtendedSearchViewModel extends PresentationModel<ISearchService, I
 		// Очистка полей поиска в зависимости от выбранного. Поиск возможен только по
 		// одному из параметров
 
-		authorProperty.addListener((ChangeListener<String>) (observable, oldValue, newValue) -> {
+		authorProperty.addListener((observable, oldValue, newValue) -> {
 			if (!newValue.isEmpty()) {
 				taskNameProperty.set("");
 				executorProperty.set("");
 			}
 		});
-		taskNameProperty.addListener((ChangeListener<String>) (observable, oldValue, newValue) -> {
+		taskNameProperty.addListener((observable, oldValue, newValue) -> {
 			if (!newValue.isEmpty()) {
 				authorProperty.set("");
 				executorProperty.set("");
 			}
 		});
-		executorProperty.addListener((ChangeListener<String>) (observable, oldValue, newValue) -> {
+		executorProperty.addListener((observable, oldValue, newValue) -> {
 			if (!newValue.isEmpty()) {
 				authorProperty.set("");
 				taskNameProperty.set("");
@@ -92,20 +91,20 @@ public class ExtendedSearchViewModel extends PresentationModel<ISearchService, I
 		subElNameProperty = new SimpleStringProperty(this, "subElNameProperty", "");
 
 		personNameProperty
-				.addListener((ChangeListener<String>) (observable, oldValue, newValue) -> {
+				.addListener((observable, oldValue, newValue) -> {
 					if (!newValue.isEmpty()) {
 						positionSubElProperty.set("");
 						subElNameProperty.set("");
 					}
 				});
 		positionSubElProperty
-				.addListener((ChangeListener<String>) (observable, oldValue, newValue) -> {
+				.addListener((observable, oldValue, newValue) -> {
 					if (!newValue.isEmpty()) {
 						personNameProperty.set("");
 						subElNameProperty.set("");
 					}
 				});
-		subElNameProperty.addListener((ChangeListener<String>) (observable, oldValue, newValue) -> {
+		subElNameProperty.addListener((observable, oldValue, newValue) -> {
 			if (!newValue.isEmpty()) {
 				personNameProperty.set("");
 				positionSubElProperty.set("");
@@ -113,40 +112,17 @@ public class ExtendedSearchViewModel extends PresentationModel<ISearchService, I
 		});
 	}
 
-	/**
-	 * Возвращает {@link#data}
-	 *
-	 * @return the {@link#data}
-	 */
+	@Override
+	protected String getQueueName() {
+		return null;
+	}
+
 	public ObservableList<ExtSearchRes> getTasksData() {
 		return tasksData;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#data}
-	 *
-	 * @param data значение поля
-	 */
-	public void setData(ObservableList<ExtSearchRes> data) {
-		this.tasksData = data;
-	}
-
-	/**
-	 * Возвращает {@link#personsData}
-	 *
-	 * @return the {@link#personsData}
-	 */
 	public ObservableList<ExtSearchRes> getPersonsData() {
 		return personsData;
-	}
-
-	/**
-	 * Устанавливает значение полю {@link#personsData}
-	 *
-	 * @param personsData значение поля
-	 */
-	public void setPersonsData(ObservableList<ExtSearchRes> personsData) {
-		this.personsData = personsData;
 	}
 
 	@Override
@@ -154,146 +130,54 @@ public class ExtendedSearchViewModel extends PresentationModel<ISearchService, I
 		return ISearchService.class;
 	}
 
-	/**
-	 * Возвращает {@link#positionProperty}
-	 *
-	 * @return the {@link#positionProperty}
-	 */
 	public SimpleStringProperty getAuthorProperty() {
 		return authorProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#positionProperty}
-	 *
-	 * @param positionString значение поля
-	 */
-	public void setAuthorProperty(String positionString) {
+	private void setAuthorProperty(String positionString) {
 		this.authorProperty.set(positionString);
 	}
 
-	/**
-	 * Возвращает {@link#taskNameProperty}
-	 *
-	 * @return the {@link#taskNameProperty}
-	 */
 	public SimpleStringProperty getTaskNameProperty() {
 		return taskNameProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#taskNameProperty}
-	 *
-	 * @param taskNameValue значение поля
-	 */
 	public void setTaskNameProperty(String taskNameValue) {
 		this.taskNameProperty.set(taskNameValue);
 	}
 
-	/**
-	 * Возвращает {@link#subelProperty}
-	 *
-	 * @return the {@link#subelProperty}
-	 */
 	public SimpleStringProperty getExecutorProperty() {
 		return executorProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#subelProperty}
-	 *
-	 * @param subelValue значение поля
-	 */
-	public void setExecutorProperty(String subelValue) {
+	private void setExecutorProperty(String subelValue) {
 		this.executorProperty.set(subelValue);
 	}
 
-	/**
-	 * Возвращает {@link#selectedResult}
-	 *
-	 * @return the {@link#selectedResult}
-	 */
 	public ExtSearchRes getSelectedResult() {
 		return selectedResult;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#selectedResult}
-	 *
-	 * @param selectedResult значение поля
-	 */
 	public void setSelectedResult(ExtSearchRes selectedResult) {
 		this.selectedResult = selectedResult;
 	}
 
-	/**
-	 * Возвращает {@link#personNameProperty}
-	 *
-	 * @return the {@link#personNameProperty}
-	 */
 	public SimpleStringProperty getPersonNameProperty() {
 		return personNameProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#personNameProperty}
-	 *
-	 * @param personNameValue значение поля
-	 */
-	public void setPersonNamePropertyValue(String personNameValue) {
-		this.personNameProperty.set(personNameValue);
-	}
-
-	/**
-	 * Возвращает {@link#positionSubElProperty}
-	 *
-	 * @return the {@link#positionSubElProperty}
-	 */
 	public SimpleStringProperty getPositionSubElProperty() {
 		return positionSubElProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#positionSubElProperty}
-	 *
-	 * @param positionSubElValue значение поля
-	 */
-	public void setPositionSubElPropertyValue(String positionSubElValue) {
-		this.positionSubElProperty.set(positionSubElValue);
-	}
-
-	/**
-	 * Возвращает {@link#subElNameProperty}
-	 *
-	 * @return the {@link#subElNameProperty}
-	 */
 	public SimpleStringProperty getSubElNameProperty() {
 		return subElNameProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#subElNameProperty}
-	 *
-	 * @param subElNameValue значение поля
-	 */
-	public void setSubElNameValue(String subElNameValue) {
-		this.subElNameProperty.set(subElNameValue);
-	}
-
-	/**
-	 * Возвращает {@link#author}
-	 *
-	 * @return the {@link#author}
-	 */
 	public SubordinationElement getAuthor() {
 		return author;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#author}
-	 *
-	 * @param author значение поля
-	 */
 	public void setAuthor(SubordinationElement author) {
 		this.author = author;
 		if (null != author) {
@@ -303,20 +187,6 @@ public class ExtendedSearchViewModel extends PresentationModel<ISearchService, I
 		}
 	}
 
-	/**
-	 * Возвращает {@link#executor}
-	 *
-	 * @return the {@link#executor}
-	 */
-	public SubordinationElement getExecutor() {
-		return executor;
-	}
-
-	/**
-	 * Устанавливает значение полю {@link#executor}
-	 *
-	 * @param executor значение поля
-	 */
 	public void setExecutor(SubordinationElement executor) {
 		this.executor = executor;
 		if (null != executor) {
@@ -333,9 +203,9 @@ public class ExtendedSearchViewModel extends PresentationModel<ISearchService, I
 		personsData.clear();
 		List<IEntity> listEntity = new ArrayList<>();
 
-		Boolean userCredentials = !personNameProperty.get().isEmpty();
-		Boolean position = !positionSubElProperty.get().isEmpty();
-		Boolean subElName = !subElNameProperty.get().isEmpty();
+		boolean userCredentials = !personNameProperty.get().isEmpty();
+		boolean position = !positionSubElProperty.get().isEmpty();
+		boolean subElName = !subElNameProperty.get().isEmpty();
 
 		if (userCredentials) {
 			listEntity.addAll(getService().searchUsersByName(personNameProperty.get(),
@@ -362,9 +232,9 @@ public class ExtendedSearchViewModel extends PresentationModel<ISearchService, I
 		tasksData.clear();
 		List<IEntity> listEntity = new ArrayList<>();
 
-		Boolean authorExist = !authorProperty.get().isEmpty();
-		Boolean executorExist = !executorProperty.get().isEmpty();
-		Boolean taskNameExist = !taskNameProperty.get().isEmpty();
+		boolean authorExist = !authorProperty.get().isEmpty();
+		boolean executorExist = !executorProperty.get().isEmpty();
+		boolean taskNameExist = !taskNameProperty.get().isEmpty();
 
 		if (authorExist) {
 			listEntity.addAll(getService().searchTasksByAuthor(author.getSuid()));

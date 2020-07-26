@@ -17,7 +17,7 @@ public abstract class AbstractRepository<T extends IEntity> {
     /**
      * Менеджер сущностей
      */
-    private EntityManager em;
+    protected EntityManager em;
 
     /**
      * Удаляет сущность

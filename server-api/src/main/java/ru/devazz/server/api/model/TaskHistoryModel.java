@@ -1,9 +1,6 @@
 package ru.devazz.server.api.model;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.*;
 import ru.devazz.server.api.model.enums.TaskHistoryType;
 
 import java.io.Serializable;
@@ -11,7 +8,10 @@ import java.util.Date;
 
 @EqualsAndHashCode
 @ToString
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class TaskHistoryModel implements Serializable, IEntity{
 
@@ -24,7 +24,7 @@ public class TaskHistoryModel implements Serializable, IEntity{
     private TaskHistoryType historyType;
 
     /** Заголовок */
-    private String title;
+    private String name;
 
     /** Основной текст */
     private String text;
@@ -34,9 +34,4 @@ public class TaskHistoryModel implements Serializable, IEntity{
 
     /** Дата */
     private Date date;
-
-    @Override
-    public String getName() {
-        return title;
-    }
 }

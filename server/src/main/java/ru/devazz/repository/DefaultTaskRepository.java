@@ -21,8 +21,6 @@ import java.util.List;
 @Transactional
 public class DefaultTaskRepository extends AbstractRepository<DefaultTaskEntity> {
 
-	private EntityManager em;
-
 	public DefaultTaskRepository(EntityManager em) {
 		super(em);
 	}

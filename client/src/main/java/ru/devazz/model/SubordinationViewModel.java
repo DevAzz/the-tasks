@@ -32,38 +32,23 @@ public class SubordinationViewModel
 	protected void initModel() {
 	}
 
-	/**
-	 * Возвращает {@link#rootElement}
-	 *
-	 * @return the {@link#rootElement}
-	 */
+	@Override
+	protected String getQueueName() {
+		return null;
+	}
+
 	public SubordinationElement getRootElement() {
 		return rootElement;
 	}
 
-	/**
-	 * Возвращает {@link#selectedElement}
-	 *
-	 * @return the {@link#selectedElement}
-	 */
 	public SubordinationElement getSelectedElement() {
 		return selectedElement;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#selectedElement}
-	 *
-	 * @param selectedElement значение поля
-	 */
 	public void setSelectedElement(SubordinationElement selectedElement) {
 		this.selectedElement = selectedElement;
 	}
 
-	/**
-	 * Загружает дерево элементов поддчиненности
-	 *
-	 * @return корневой элемент дерева
-	 */
 	public void loadTree() {
 		loadEntities();
 		if (!listDataModelEntities.isEmpty()) {
@@ -142,15 +127,6 @@ public class SubordinationViewModel
 	@Override
 	public Class<ISubordinationElementService> getTypeService() {
 		return ISubordinationElementService.class;
-	}
-
-	/**
-	 * Возвращает {@link#root}
-	 *
-	 * @return the {@link#root}
-	 */
-	public SubordinationElement getRoot() {
-		return root;
 	}
 
 	/**

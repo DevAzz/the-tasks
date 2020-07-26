@@ -1,13 +1,16 @@
 package ru.devazz.server;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
 import ru.devazz.server.api.*;
+import ru.devazz.server.api.event.ObjectEvent;
+import ru.devazz.server.api.event.QueueNameEnum;
 
-import javax.jms.MessageListener;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Фабрика Proxy объектов
@@ -21,7 +24,7 @@ public class ProxyFactory {
 	/** Карта соответствия типов и имен сервисов */
 	private Map<Class<? extends ICommonService>, Object> mapServiceType = new HashMap<>();
 
-	private Map<String, Subscriber> subscriberMap = new HashMap<>();
+	private Map<String, IMessageListener> subscriberMap = new ConcurrentHashMap<>();
 
 	@Autowired
 	private IUserService userService;
@@ -100,21 +103,58 @@ public class ProxyFactory {
 		subscriberMap.remove(clientName);
 	}
 
+
+	@JmsListener(destination = QueueNameEnum.EVENT_QUEUE)
+	public void receiveEvent(ObjectEvent event) {
+		subscriberMap.entrySet()
+				.stream()
+				.filter(entry -> entry.getKey().contains(QueueNameEnum.EVENT_QUEUE))
+				.forEach(entry -> entry.getValue().onEvent(event));
+	}
+
+	@JmsListener(destination = QueueNameEnum.SUB_EL_QUEUE)
+	public void receiveSubElEvent(ObjectEvent event) {
+		subscriberMap.entrySet()
+				.stream()
+				.filter(entry -> entry.getKey().contains(QueueNameEnum.SUB_EL_QUEUE))
+				.forEach(entry -> entry.getValue().onEvent(event));
+	}
+
+
+	@JmsListener(destination = QueueNameEnum.TASKS_HISTORY_QUEUE)
+	public void receiveTaskHistoryEvent(ObjectEvent event) {
+		subscriberMap.entrySet()
+				.stream()
+				.filter(entry -> entry.getKey().contains(QueueNameEnum.TASKS_HISTORY_QUEUE))
+				.forEach(entry -> entry.getValue().onEvent(event));
+	}
+
+	@JmsListener(destination = QueueNameEnum.TASKS_QUEUE)
+	public void receiveTaskEvent(ObjectEvent event) {
+		subscriberMap.entrySet()
+				.stream()
+				.filter(entry -> entry.getKey().contains(QueueNameEnum.TASKS_QUEUE))
+				.forEach(entry -> entry.getValue().onEvent(event));
+	}
+
+	@JmsListener(destination = QueueNameEnum.USERS_QUEUE)
+	public void receiveUserEvent(ObjectEvent event) {
+		subscriberMap.entrySet()
+				.stream()
+				.filter(entry -> entry.getKey().contains(QueueNameEnum.USERS_QUEUE))
+				.forEach(entry -> entry.getValue().onEvent(event));
+	}
+
 	/**
 	 * Добавляет слушателя JMS сообщений
 	 *
 	 * @param aListener слушатель JMS сообщений
 	 */
-	public void addMessageListener(String clientName, String queueName, MessageListener aListener) {
-		try {
-			Subscriber subscriber =
-					new Subscriber("tcp://127.0.0.1:61616", "admin", "password");
-			subscriber.run(clientName, queueName, aListener);
-			subscriberMap.put(clientName, subscriber);
-		} catch (Exception e) {
-			// TODO Логирование
-			e.printStackTrace();
-		}
+	public void addMessageListener(
+			String clientName,
+			IMessageListener aListener
+	) {
+		subscriberMap.put(clientName, aListener);
 	}
 
 }

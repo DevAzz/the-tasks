@@ -32,38 +32,23 @@ public class TaskCompletionDialogViewModel
 
 	}
 
-	/**
-	 * Возвращает {@link#nameLabelProperty}
-	 *
-	 * @return the {@link#nameLabelProperty}
-	 */
+	@Override
+	protected String getQueueName() {
+		return null;
+	}
+
 	public StringProperty getNameLabelProperty() {
 		return nameLabelProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#nameLabelProperty}
-	 *
-	 * @param nameLabelValue значение поля
-	 */
-	public void setNameLabelValue(String nameLabelValue) {
+	private void setNameLabelValue(String nameLabelValue) {
 		this.nameLabelProperty.set(nameLabelValue);
 	}
 
-	/**
-	 * Возвращает {@link#documentStringProperty}
-	 *
-	 * @return the {@link#documentStringProperty}
-	 */
 	public StringProperty getDocumentStringProperty() {
 		return documentStringProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#documentStringProperty}
-	 *
-	 * @param documentString значение поля
-	 */
 	public void setDocumentStringPropertyValue(String documentString) {
 		this.documentStringProperty.set(documentString);
 		if (!documentString.isEmpty()) {
@@ -73,20 +58,10 @@ public class TaskCompletionDialogViewModel
 		}
 	}
 
-	/**
-	 * Возвращает {@link#task}
-	 *
-	 * @return the {@link#task}
-	 */
 	public Task getTask() {
 		return task;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#task}
-	 *
-	 * @param task значение поля
-	 */
 	public void setTask(Task task) {
 		if (null != task) {
 			this.task = task;

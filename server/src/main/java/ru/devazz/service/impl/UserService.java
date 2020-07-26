@@ -6,9 +6,9 @@ import ru.devazz.entity.UserEntity;
 import ru.devazz.repository.UserRepository;
 import ru.devazz.server.api.IUserService;
 import ru.devazz.server.api.event.ObjectEvent;
+import ru.devazz.server.api.event.QueueNameEnum;
 import ru.devazz.server.api.event.UserEvent;
 import ru.devazz.server.api.model.UserModel;
-import ru.devazz.server.api.model.enums.JmsQueueName;
 import ru.devazz.server.api.model.enums.SystemEventType;
 import ru.devazz.service.AbstractEntityService;
 import ru.devazz.service.impl.converters.UserEntityConverter;
@@ -91,7 +91,7 @@ public class UserService extends AbstractEntityService<UserModel, UserEntity>
 
 	@Override
 	protected String getQueueName() {
-		return JmsQueueName.USERS.getName();
+		return QueueNameEnum.USERS_QUEUE;
 	}
 
 	@Override

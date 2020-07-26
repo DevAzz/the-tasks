@@ -170,6 +170,7 @@ public class CurrentTaskView extends AbstractView<CurrentTaskViewModel> {
 	/** Лейбл оставшегося времени для задачи */
 	@FXML
 	private Label timeLeftTaskLabel;
+	private TaskHistoryView historyView;
 
 	@Override
 	public void initialize() {
@@ -541,11 +542,11 @@ public class CurrentTaskView extends AbstractView<CurrentTaskViewModel> {
 				timeLeftTaskLabel.setText("Задача завершена");
 			}
 			try {
-				TaskHistoryView historyView = Utils.getInstance().loadView(TaskHistoryView.class);
+				historyView = Utils.getInstance().loadView(TaskHistoryView.class);
 				historyView.getModel().setTask(task);
 				historyView.getModel().setInitialSortType(SortType.SORT_BY_DATE_FIRST_OLD);
 				historyView.loadPageEntries(0);
-				historyView.addCloseListener(() -> getModel().deleteJmsListener());
+				historyView.addCloseListener(() -> historyView.getModel().deleteJmsListener());
 				historyTitledPane.setContent(historyView.getRootPane());
 			} catch (IOException e) {
 				// TODO логирование
@@ -735,6 +736,7 @@ public class CurrentTaskView extends AbstractView<CurrentTaskViewModel> {
 		if (null != commonTabPane) {
 			commonTabPane.getTabs().remove(getTab());
 		}
+		historyView.close();
 		super.closeTabView();
 	}
 

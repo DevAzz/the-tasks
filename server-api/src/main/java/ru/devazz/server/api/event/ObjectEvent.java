@@ -9,12 +9,12 @@ import java.io.Serializable;
  * Объект события, содержащий тему и сущность
  */
 @Data
-public abstract class ObjectEvent implements Serializable {
+public abstract class ObjectEvent<T extends IEntity> implements Serializable {
 
 	/** Тип события */
 	private String type;
 
 	/** Сущность, к которой привязано событие */
-	private IEntity entity;
+	private T entity;
 
 }

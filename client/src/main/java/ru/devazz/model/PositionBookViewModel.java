@@ -34,6 +34,11 @@ public class PositionBookViewModel extends PresentationModel<IUserService, UserM
 		data.addAll(createClientWrapUserList());
 	}
 
+	@Override
+	protected String getQueueName() {
+		return null;
+	}
+
 	/**
 	 * Создает клиентскую обертку над списком сущностей пользователей
 	 *
@@ -46,24 +51,6 @@ public class PositionBookViewModel extends PresentationModel<IUserService, UserM
 			result.add(user);
 		}
 		return result;
-	}
-
-	/**
-	 * Возвращает {@link#data}
-	 *
-	 * @return the {@link#data}
-	 */
-	public ObservableList<User> getData() {
-		return data;
-	}
-
-	/**
-	 * Устанавливает значение полю {@link#data}
-	 *
-	 * @param data значение поля
-	 */
-	public void setData(ObservableList<User> data) {
-		this.data = data;
 	}
 
 	@Override
@@ -132,11 +119,6 @@ public class PositionBookViewModel extends PresentationModel<IUserService, UserM
 		return result;
 	}
 
-	/**
-	 * Возвращает {@link#dataProperty}
-	 *
-	 * @return the {@link#dataProperty}
-	 */
 	public ObjectProperty<ObservableList<User>> getDataProperty() {
 		return dataProperty;
 	}

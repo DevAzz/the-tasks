@@ -4,7 +4,6 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.beans.value.ChangeListener;
 import ru.devazz.entities.Task;
 import ru.devazz.server.api.ITaskService;
 import ru.devazz.server.api.model.TaskModel;
@@ -43,20 +42,20 @@ public class DecisionDialogViewModel extends PresentationModel<ITaskService, Tas
 		endDateProperty = new SimpleObjectProperty<>(this, "endDateProperty", null);
 		documentStringProperty = new SimpleStringProperty(this, "documentStringProperty", "");
 
-		nameLabelProperty.addListener((ChangeListener<String>) (observable, oldValue, newValue) -> {
+		nameLabelProperty.addListener((observable, oldValue, newValue) -> {
 			if (!newValue.isEmpty()) {
 				task.setName(newValue);
 			}
 
 		});
-		noteLabelProperty.addListener((ChangeListener<String>) (observable, oldValue, newValue) -> {
+		noteLabelProperty.addListener((observable, oldValue, newValue) -> {
 			if (!newValue.isEmpty()) {
 				task.setNote(newValue);
 			}
 
 		});
 		endDateProperty
-				.addListener((ChangeListener<LocalDateTime>) (observable, oldValue, newValue) -> {
+				.addListener((observable, oldValue, newValue) -> {
 					if (null != newValue) {
 						task.setEndDateTime(
 								Date.from(newValue.atZone(ZoneId.systemDefault()).toInstant()));
@@ -64,75 +63,40 @@ public class DecisionDialogViewModel extends PresentationModel<ITaskService, Tas
 				});
 	}
 
-	/**
-	 * Возвращает {@link#nameLabelProperty}
-	 *
-	 * @return the {@link#nameLabelProperty}
-	 */
+	@Override
+	protected String getQueueName() {
+		return null;
+	}
+
 	public StringProperty getNameLabelProperty() {
 		return nameLabelProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#nameLabelProperty}
-	 *
-	 * @param nameLabelValue значение поля
-	 */
-	public void setNameLabelValue(String nameLabelValue) {
+	private void setNameLabelValue(String nameLabelValue) {
 		this.nameLabelProperty.set(nameLabelValue);
 	}
 
-	/**
-	 * Возвращает {@link#noteLabelProperty}
-	 *
-	 * @return the {@link#noteLabelProperty}
-	 */
 	public StringProperty getNoteLabelProperty() {
 		return noteLabelProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#noteLabelProperty}
-	 *
-	 * @param noteLabelValue значение поля
-	 */
-	public void setNoteLabelValue(String noteLabelValue) {
+	private void setNoteLabelValue(String noteLabelValue) {
 		this.noteLabelProperty.set(noteLabelValue);
 	}
 
-	/**
-	 * Возвращает {@link#endDateProperty}
-	 *
-	 * @return the {@link#endDateProperty}
-	 */
 	public ObjectProperty<LocalDateTime> getEndDateProperty() {
 		return endDateProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#endDateProperty}
-	 *
-	 * @param endDateValue значение поля
-	 */
-	public void setEndDateValue(LocalDateTime endDateValue) {
+	private void setEndDateValue(LocalDateTime endDateValue) {
 		this.endDateProperty.set(endDateValue);
 	}
 
-	/**
-	 * Возвращает {@link#documentStringProperty}
-	 *
-	 * @return the {@link#documentStringProperty}
-	 */
 	public StringProperty getDocumentStringProperty() {
 		return documentStringProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#documentStringProperty}
-	 *
-	 * @param documentString значение поля
-	 */
-	public void setDocumentStringPropertyValue(String documentString) {
+	private void setDocumentStringPropertyValue(String documentString) {
 		this.documentStringProperty.set(documentString);
 	}
 
@@ -141,20 +105,10 @@ public class DecisionDialogViewModel extends PresentationModel<ITaskService, Tas
 		return ITaskService.class;
 	}
 
-	/**
-	 * Возвращает {@link#task}
-	 *
-	 * @return the {@link#task}
-	 */
 	public Task getTask() {
 		return task;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#task}
-	 *
-	 * @param task значение поля
-	 */
 	public void setTask(Task task) {
 		if (null != task) {
 			this.task = task;

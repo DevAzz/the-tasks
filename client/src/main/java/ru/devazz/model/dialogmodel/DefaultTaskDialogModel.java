@@ -23,32 +23,21 @@ public class DefaultTaskDialogModel extends PresentationModel<ITaskService,
 
 	@Override
 	protected void initModel() {
-		// TODO Auto-generated method stub
 		defaultTaskList = FXCollections.observableArrayList();
 		defaultTaskListProperity = new SimpleListProperty<>(defaultTaskList);
 	}
 
-	/**
-	 * Загрузка всех типовых задач
-	 *
-	 * @throws Exception
-	 */
-	public void loadAllDefaultTasks() throws Exception {
-		defaultTaskList.clear();
-		for (DefaultTaskModel defaultTaskEntity : super.getService().getDefaultTaskAll()) {
-			defaultTaskList.add(
-					EntityConverter
-							.getInstatnce().convertDefaultTaskModelToClientWrapDefaultTask(defaultTaskEntity));
-		}
+	@Override
+	protected String getQueueName() {
+		return null;
 	}
 
 	/**
 	 * Загрузка типовых задач по SUID должности
 	 *
 	 * @param SUID - SUID должности
-	 * @throws Exception
 	 */
-	public void loadDefaultTasksBySub(Long SUID) throws Exception {
+	public void loadDefaultTasksBySub(Long SUID) {
 		defaultTaskList.clear();
 		for (DefaultTaskModel defaultTaskEntity : super.getService().getDefaultTaskBySub(SUID)) {
 			defaultTaskList.add(

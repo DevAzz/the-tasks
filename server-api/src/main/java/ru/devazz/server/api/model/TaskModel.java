@@ -14,7 +14,10 @@ import java.util.Date;
  */
 @EqualsAndHashCode
 @ToString
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class TaskModel implements Serializable, IEntity {
 
@@ -63,6 +66,4 @@ public class TaskModel implements Serializable, IEntity {
     /** Время цикличного назначения (часы или дата) */
     private String cycleTime;
 
-    public TaskModel() {
-    }
 }

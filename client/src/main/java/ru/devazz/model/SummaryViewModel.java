@@ -65,6 +65,11 @@ public class SummaryViewModel extends PresentationModel<ICommonService, IEntity>
 		thread.start();
 	}
 
+	@Override
+	protected String getQueueName() {
+		return null;
+	}
+
 	/**
 	 * Выбирает в качестве временного интревала текущий день
 	 */
@@ -116,7 +121,7 @@ public class SummaryViewModel extends PresentationModel<ICommonService, IEntity>
 	/**
 	 * Загружает сущности отчетов по задачам
 	 */
-	public void loadReportEntities() {
+	private void loadReportEntities() {
 		Thread thread = new Thread(() -> {
 			try {
 				panelsList.clear();
@@ -145,7 +150,7 @@ public class SummaryViewModel extends PresentationModel<ICommonService, IEntity>
 	 * @return поток поиска записей по заданному промежутку времени
 	 */
 	public Runnable createSearchRunnable() {
-		Runnable runnable = () -> {
+		return () -> {
 			try {
 				setStartDate(customTimeIntervalModel.getStartDate());
 				setEndDate(customTimeIntervalModel.getEndDate());
@@ -157,112 +162,50 @@ public class SummaryViewModel extends PresentationModel<ICommonService, IEntity>
 				e.printStackTrace();
 			}
 		};
-		return runnable;
 
 	}
 
-	/**
-	 * Возвращает {@link#customTimeIntervalModel}
-	 *
-	 * @return the {@link#customTimeIntervalModel}
-	 */
-	public CustomTimeIntervalModel getCustomTimeIntervalModel() {
-		return customTimeIntervalModel;
-	}
-
-	/**
-	 * Устанавливает значение полю {@link#customTimeIntervalModel}
-	 *
-	 * @param customTimeIntervalModel значение поля
-	 */
 	public void setCustomTimeIntervalModel(CustomTimeIntervalModel customTimeIntervalModel) {
 		this.customTimeIntervalModel = customTimeIntervalModel;
 	}
 
-	/**
-	 * Возвращает {@link#subElSuidList}
-	 *
-	 * @return the {@link#subElSuidList}
-	 */
 	public ObservableList<SubordinationElement> getSubElSuidList() {
 		return subElList;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#subElSuidList}
-	 *
-	 * @param subElSuidList значение поля
-	 */
 	public void setSubElSuidList(ObservableList<SubordinationElement> subElSuidList) {
 		this.subElList = subElSuidList;
 		loadReportEntities();
 	}
 
-	/**
-	 * Возвращает {@link#startDate}
-	 *
-	 * @return the {@link#startDate}
-	 */
-	public Date getStartDate() {
+	private Date getStartDate() {
 		return startDate;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#startDate}
-	 *
-	 * @param startDate значение поля
-	 */
-	public void setStartDate(Date startDate) {
+	private void setStartDate(Date startDate) {
 		this.startDate = startDate;
 		initDateLabelValue(startDate, endDate);
 	}
 
-	/**
-	 * Возвращает {@link#endDate}
-	 *
-	 * @return the {@link#endDate}
-	 */
 	public Date getEndDate() {
 		return endDate;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#endDate}
-	 *
-	 * @param endDate значение поля
-	 */
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
 		initDateLabelValue(startDate, endDate);
 	}
 
-	/**
-	 * Возвращает {@link#panelsList}
-	 *
-	 * @return the {@link#panelsList}
-	 */
 	public ObservableList<ReportModel> getPanelsList() {
 		return panelsList;
 	}
 
-	/**
-	 * Возвращает {@link#dateLabelProperty}
-	 *
-	 * @return the {@link#dateLabelProperty}
-	 */
 	public StringProperty getDateLabelProperty() {
 		return dateLabelProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#dateLabelProperty}
-	 *
-	 * @param dateLabelValue значение поля
-	 */
-	public void setDateLabelPropertyValue(String dateLabelValue) {
-		Platform.runLater(() -> {
-			this.dateLabelProperty.set(dateLabelValue);
-		});
+	private void setDateLabelPropertyValue(String dateLabelValue) {
+		Platform.runLater(() -> this.dateLabelProperty.set(dateLabelValue));
 	}
 
 	/**

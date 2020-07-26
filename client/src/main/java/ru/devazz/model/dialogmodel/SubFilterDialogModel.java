@@ -10,7 +10,6 @@ import ru.devazz.utils.EntityConverter;
 import ru.devazz.utils.Utils;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 /**
  * Модель представления диалога выбора подразделений фильтра журнала событий по должностям
@@ -34,6 +33,11 @@ public class SubFilterDialogModel
 	}
 
 	@Override
+	protected String getQueueName() {
+		return null;
+	}
+
+	@Override
 	public void loadEntities() {
 		if (!searchFlag) {
 			SubordinationElement root = EntityConverter.getInstatnce()
@@ -47,7 +51,7 @@ public class SubFilterDialogModel
 			}
 
 		}
-		Collections.sort(allSubList, (o1, o2) -> {
+		allSubList.sort((o1, o2) -> {
 			int result = 0;
 			if (o1.getRoleSuid() < o2.getRoleSuid()) {
 				result = -1;
@@ -90,47 +94,14 @@ public class SubFilterDialogModel
 		return result;
 	}
 
-	/**
-	 * Возвращает {@link#selectedSubList}
-	 *
-	 * @return the {@link#selectedSubList}
-	 */
 	public ObservableList<SubordinationElement> getSelectedSubList() {
 		return selectedSubList;
 	}
 
-	/**
-	 * Возвращает {@link#allSubList}
-	 *
-	 * @return the {@link#allSubList}
-	 */
 	public ObservableList<SubordinationElement> getAllSubList() {
 		return allSubList;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#allSubList}
-	 *
-	 * @param allSubList значение поля
-	 */
-	public void setAllSubList(ObservableList<SubordinationElement> allSubList) {
-		this.allSubList = allSubList;
-	}
-
-	/**
-	 * Возвращает {@link#searchFlag}
-	 *
-	 * @return the {@link#searchFlag}
-	 */
-	public Boolean getSearchFlag() {
-		return searchFlag;
-	}
-
-	/**
-	 * Устанавливает значение полю {@link#searchFlag}
-	 *
-	 * @param searchFlag значение поля
-	 */
 	public void setSearchFlag(Boolean searchFlag) {
 		this.searchFlag = searchFlag;
 	}

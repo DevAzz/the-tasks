@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import ru.devazz.server.api.ISubordinationElementService;
 import ru.devazz.server.api.ITaskHistoryService;
 import ru.devazz.server.api.ITaskService;
+import ru.devazz.server.api.event.QueueNameEnum;
 import ru.devazz.server.api.model.DefaultTaskModel;
 import ru.devazz.server.api.model.SubordinationElementModel;
 import ru.devazz.server.api.model.TaskHistoryModel;
@@ -145,7 +146,7 @@ public class TasksInspector {
 								&& !(TaskStatus.OVERDUE.equals(entity.getStatus()))
 								&& nonArchiveTask) {
 							timeLeftOverTasks.add(entity.getSuid());
-							broker.convertAndSend(JmsQueueName.TASKS.getName(), taskService
+							broker.convertAndSend(QueueNameEnum.TASKS_QUEUE, taskService
 									.getEventByEntity(SystemEventType.OVERDUE, entity));
 							Thread.sleep(100L);
 						}
@@ -156,7 +157,7 @@ public class TasksInspector {
 							entity.setStatus(TaskStatus.OVERDUE);
 							taskService.update(entity, false);
 
-							broker.convertAndSend(JmsQueueName.TASKS.getName(), taskService
+							broker.convertAndSend(QueueNameEnum.TASKS_QUEUE, taskService
 									.getEventByEntity(SystemEventType.OVERDUE, entity));
 
 							//	@formatter:off
@@ -171,7 +172,7 @@ public class TasksInspector {
 									.get(entity.getExecutorSuid());
 							historyModel.setText(
 									"Пользователь " + subEl.getName() + " просрочил задачу");
-							historyModel.setTitle("Задача просрочена");
+							historyModel.setName("Задача просрочена");
 							historyService.add(historyModel, true);
 							Thread.sleep(100L);
 						}
@@ -267,7 +268,7 @@ public class TasksInspector {
 		historyEntity.setActorSuid(aEntity.getAuthorSuid());
 		historyEntity.setHistoryType(TaskHistoryType.TASK_REMAPPING);
 		historyEntity.setText("Система переназначила задачу");
-		historyEntity.setTitle("Задача переназначена");
+		historyEntity.setName("Задача переназначена");
 		historyService.add(historyEntity, true);
 	}
 

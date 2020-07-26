@@ -13,7 +13,7 @@ public class TaskHistoryEntityConverter implements IEntityConverter<TaskHistoryM
             model = TaskHistoryModel.builder().build();
             model.setHistoryType(entity.getHistoryType());
             model.setText(entity.getText());
-            model.setTitle(entity.getTitle());
+            model.setName(entity.getTitle());
             model.setActorSuid(entity.getActorSuid());
             model.setSuid(entity.getSuid());
             model.setDate(entity.getDate());
@@ -30,7 +30,7 @@ public class TaskHistoryEntityConverter implements IEntityConverter<TaskHistoryM
             entity.setSuid(model.getSuid());
             entity.setHistoryType(model.getHistoryType());
             entity.setText(model.getText());
-            entity.setTitle(model.getTitle());
+            entity.setTitle(model.getName());
             entity.setActorSuid(model.getActorSuid());
             entity.setDate(model.getDate());
             entity.setTaskSuid(model.getTaskSuid());

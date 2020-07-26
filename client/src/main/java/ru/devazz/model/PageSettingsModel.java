@@ -1,6 +1,3 @@
-/**
- *
- */
 package ru.devazz.model;
 
 import javafx.beans.property.ObjectProperty;
@@ -29,6 +26,11 @@ public class PageSettingsModel extends PresentationModel<ICommonService, IEntity
 
 	}
 
+	@Override
+	protected String getQueueName() {
+		return null;
+	}
+
 	/**
 	 * Инициализирует свойства модели
 	 * 
@@ -41,27 +43,16 @@ public class PageSettingsModel extends PresentationModel<ICommonService, IEntity
 				aInitMap.get(PageSettingsView.DEFAULT_PAGES_COUNT));
 	}
 
-	/**
-	 * Возвращает {@link#countPageEntriesProperty}
-	 *
-	 * @return the {@link#countPageEntriesProperty}
-	 */
 	public ObjectProperty<Integer> getCountPageEntriesProperty() {
 		return countPageEntriesProperty;
 	}
 
-	/**
-	 * Возвращает {@link#countPagesProperty}
-	 *
-	 * @return the {@link#countPagesProperty}
-	 */
 	public ObjectProperty<Integer> getCountPagesProperty() {
 		return countPagesProperty;
 	}
 
 	@Override
 	public Class<ICommonService> getTypeService() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

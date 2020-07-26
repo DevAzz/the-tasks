@@ -40,14 +40,14 @@ public class CustomTimeIntervalModel extends PresentationModel<ICommonService, I
 		disableSearchButton = new SimpleBooleanProperty(this, "disableSearchButton", true);
 
 		fromTimeIntervalProperty
-				.addListener((ChangeListener<String>) (observable, oldValue, newValue) -> {
+				.addListener((observable, oldValue, newValue) -> {
 					String start = (null != getToTimeIntervalProperty().get())
 							? getToTimeIntervalProperty().get()
 							: "";
 					setDisableSearchButtonValue(newValue.isEmpty() || (start.isEmpty()));
 				});
 		toTimeIntervalProperty
-				.addListener((ChangeListener<String>) (observable, oldValue, newValue) -> {
+				.addListener((observable, oldValue, newValue) -> {
 					String end = (null != getFromTimeIntervalProperty().get())
 							? getFromTimeIntervalProperty().get()
 							: "";
@@ -56,58 +56,25 @@ public class CustomTimeIntervalModel extends PresentationModel<ICommonService, I
 
 	}
 
-	/**
-	 * Возвращает {@link#disableSearchButton}
-	 *
-	 * @return the {@link#disableSearchButton}
-	 */
+	@Override
+	protected String getQueueName() {
+		return null;
+	}
+
 	public BooleanProperty getDisableSearchButton() {
 		return disableSearchButton;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#disableSearchButton}
-	 *
-	 * @param disableSearchButtonValue значение поля
-	 */
-	public void setDisableSearchButtonValue(Boolean disableSearchButtonValue) {
+	private void setDisableSearchButtonValue(Boolean disableSearchButtonValue) {
 		this.disableSearchButton.set(disableSearchButtonValue);
 	}
 
-	/**
-	 * Возвращает {@link#fromTimeIntervalProperty}
-	 *
-	 * @return the {@link#fromTimeIntervalProperty}
-	 */
 	public StringProperty getFromTimeIntervalProperty() {
 		return fromTimeIntervalProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#fromTimeIntervalProperty}
-	 *
-	 * @param fromTimeIntervalPropertyValue значение поля
-	 */
-	public void setFromTimeIntervalProperty(String fromTimeIntervalPropertyValue) {
-		this.fromTimeIntervalProperty.set(fromTimeIntervalPropertyValue);
-	}
-
-	/**
-	 * Возвращает {@link#toTimeIntervalProperty}
-	 *
-	 * @return the {@link#toTimeIntervalProperty}
-	 */
 	public StringProperty getToTimeIntervalProperty() {
 		return toTimeIntervalProperty;
-	}
-
-	/**
-	 * Устанавливает значение полю {@link#toTimeIntervalProperty}
-	 *
-	 * @param toTimeIntervalPropertyValue значение поля
-	 */
-	public void setToTimeIntervalPropertyValue(String toTimeIntervalPropertyValue) {
-		this.toTimeIntervalProperty.set(toTimeIntervalPropertyValue);
 	}
 
 	/**
@@ -116,7 +83,7 @@ public class CustomTimeIntervalModel extends PresentationModel<ICommonService, I
 	 * @return дата начала для фильтрации по заданному временному промежутку
 	 * @throws ParseException в случае ошибки парсинга
 	 */
-	public Date getStartDate() throws ParseException {
+	Date getStartDate() throws ParseException {
 		Date result = null;
 		String dateFrom = fromTimeIntervalProperty.get();
 		if (!dateFrom.isEmpty()) {

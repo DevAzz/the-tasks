@@ -61,18 +61,18 @@ public class CycleTaskViewModel extends PresentationModel<ICommonService, IEntit
 
 		editModeProperty = new SimpleBooleanProperty(this, "editModeProperty", false);
 
-		editModeProperty.addListener((ChangeListener<Boolean>) (observable, oldValue, newValue) -> {
+		editModeProperty.addListener((observable, oldValue, newValue) -> {
 			boolean disabled = !newValue;
 			boolean selected = false;
 			if (null != task) {
-				for (Entry<CycleEnums.NodePropertyType, Property<Boolean>> entry : getMapProperty(
-						CycleEnums.PropertyType.DISABLED, Boolean.class).entrySet()) {
-					if (CycleEnums.CheckBoxDisabledType.class.isInstance(entry.getKey())) {
+				for (Entry<NodePropertyType, Property<Boolean>> entry : getMapProperty(
+						PropertyType.DISABLED, Boolean.class).entrySet()) {
+					if (CheckBoxDisabledType.class.isInstance(entry.getKey())) {
 						entry.getValue().setValue(disabled);
 					} else {
 						selected = false;
 						if (null != task.getCycleType()) {
-							for (CycleEnums.CheckBoxValueType selectedBoxes : getSelectedCheckBoxTypeList()) {
+							for (CheckBoxValueType selectedBoxes : getSelectedCheckBoxTypeList()) {
 								for (String value : selectedBoxes.getControlNodes()) {
 									if (value.equals(entry.getKey().getNameElement())) {
 										selected = true;
@@ -89,6 +89,11 @@ public class CycleTaskViewModel extends PresentationModel<ICommonService, IEntit
 				}
 			}
 		});
+	}
+
+	@Override
+	protected String getQueueName() {
+		return null;
 	}
 
 	/**

@@ -96,57 +96,32 @@ public class ReportViewModel extends PresentationModel<IReportService, ReportMod
 		generateReportDisable = new SimpleBooleanProperty(this, "generateReportEnable", true);
 	}
 
-	/**
-	 * Возвращает {@link#closedAmountLabelProperty}
-	 *
-	 * @return the {@link#closedAmountLabelProperty}
-	 */
+	@Override
+	protected String getQueueName() {
+		return null;
+	}
+
 	public StringProperty getClosedAmountLabelProperty() {
 		return closedAmountLabelProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#closedAmountLabelProperty}
-	 *
-	 * @param closedAmountLabelValue значение поля
-	 */
-	public void setClosedAmountLabelPropertyValue(String closedAmountLabelValue) {
+	private void setClosedAmountLabelPropertyValue(String closedAmountLabelValue) {
 		this.closedAmountLabelProperty.set(closedAmountLabelValue);
 	}
 
-	/**
-	 * Возвращает {@link#overdueAmountLabel}
-	 *
-	 * @return the {@link#overdueAmountLabel}
-	 */
 	public StringProperty getOverdueAmountLabel() {
 		return overdueAmountLabel;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#overdueAmountLabel}
-	 *
-	 * @param overdueAmountLabelValue значение поля
-	 */
-	public void setOverdueAmountLabelValue(String overdueAmountLabelValue) {
+	private void setOverdueAmountLabelValue(String overdueAmountLabelValue) {
 		this.overdueAmountLabel.set(overdueAmountLabelValue);
 	}
 
-	/**
-	 * Возвращает {@link#reworkAmountLabel}
-	 *
-	 * @return the {@link#reworkAmountLabel}
-	 */
 	public StringProperty getReworkAmountLabel() {
 		return reworkAmountLabel;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#reworkAmountLabel}
-	 *
-	 * @param reworkAmountLabelValue значение поля
-	 */
-	public void setReworkAmountLabelValue(String reworkAmountLabelValue) {
+	private void setReworkAmountLabelValue(String reworkAmountLabelValue) {
 		this.reworkAmountLabel.set(reworkAmountLabelValue);
 	}
 
@@ -157,165 +132,58 @@ public class ReportViewModel extends PresentationModel<IReportService, ReportMod
 	public void setPositionNameTextPropertyValue(String positionNameTextValue) {
 		this.positionNameTextProperty.set(positionNameTextValue);
 	}
-
-	/**
-	 * Возвращает {@link#startDateTextProperty}
-	 *
-	 * @return the {@link#startDateTextProperty}
-	 */
 	public StringProperty getStartDateTextProperty() {
 		return startDateTextProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#startDateTextProperty}
-	 *
-	 * @param startDateTextValue значение поля
-	 */
-	public void setStartDateTextPropertyValue(String startDateTextValue) {
-		this.startDateTextProperty.set(startDateTextValue);
-	}
-
-	/**
-	 * Возвращает {@link#endDateTextProperty}
-	 *
-	 * @return the {@link#endDateTextProperty}
-	 */
 	public StringProperty getEndDateTextProperty() {
 		return endDateTextProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#endDateTextProperty}
-	 *
-	 * @param endDateTextValue значение поля
-	 */
-	public void setEndDateTextPropertyValue(String endDateTextValue) {
-		this.endDateTextProperty.set(endDateTextValue);
-	}
-
-	/**
-	 * Возвращает {@link#reportTitleTextProperty}
-	 *
-	 * @return the {@link#reportTitleTextProperty}
-	 */
-	public StringProperty getReportTitleTextProperty() {
-		return reportTitleTextProperty;
-	}
-
-	/**
-	 * Устанавливает значение полю {@link#reportTitleTextProperty}
-	 *
-	 * @param reportTitleTextValue значение поля
-	 */
-	public void setReportTitleTextPropertyValue(String reportTitleTextValue) {
-		this.reportTitleTextProperty.set(reportTitleTextValue);
-	}
-
-	/**
-	 * Возвращает {@link#countDoneTasksTextProperty}
-	 *
-	 * @return the {@link#countDoneTasksTextProperty}
-	 */
 	public StringProperty getCountDoneTasksTextProperty() {
 		return countDoneTasksTextProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#countDoneTasksTextProperty}
-	 *
-	 * @param countDoneTasksTextValue значение поля
-	 */
-	public void setCountDoneTasksTextPropertyValue(String countDoneTasksTextValue) {
+	private void setCountDoneTasksTextPropertyValue(String countDoneTasksTextValue) {
 		this.countDoneTasksTextProperty.set(countDoneTasksTextValue);
 	}
 
-	/**
-	 * Возвращает {@link#countOverDueTasksTextProperty}
-	 *
-	 * @return the {@link#countOverDueTasksTextProperty}
-	 */
 	public StringProperty getCountOverDueTasksTextProperty() {
 		return countOverdueDoneTasksTextProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#countOverDueTasksTextProperty}
-	 *
-	 * @param countOverDueTasksTextValue значение поля
-	 */
-	public void setCountOverdueDoneTasksTextPropertyValue(String countOverDueTasksTextValue) {
+	private void setCountOverdueDoneTasksTextPropertyValue(String countOverDueTasksTextValue) {
 		this.countOverdueDoneTasksTextProperty.set(countOverDueTasksTextValue);
 	}
 
-	/**
-	 * Возвращает {@link#countFaildTasksTextProperty}
-	 *
-	 * @return the {@link#countFaildTasksTextProperty}
-	 */
 	public StringProperty getCountFaildTasksTextProperty() {
 		return countFaildTasksTextProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#countFaildTasksTextProperty}
-	 *
-	 * @param countFaildTasksTextValue значение поля
-	 */
-	public void setCountFaildTasksTextPropertyValue(String countFaildTasksTextValue) {
+	private void setCountFaildTasksTextPropertyValue(String countFaildTasksTextValue) {
 		this.countFaildTasksTextProperty.set(countFaildTasksTextValue);
 	}
 
-	/**
-	 * Возвращает {@link#countInWorksTaskTextProperty}
-	 *
-	 * @return the {@link#countInWorksTaskTextProperty}
-	 */
 	public StringProperty getCountInWorksTaskTextProperty() {
 		return countInWorksTaskTextProperty;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#countInWorksTaskTextProperty}
-	 *
-	 * @param countInWorksTaskTextValue значение поля
-	 */
-	public void setCountInWorksTaskTextPropertyValue(String countInWorksTaskTextValue) {
+	private void setCountInWorksTaskTextPropertyValue(String countInWorksTaskTextValue) {
 		this.countInWorksTaskTextProperty.set(countInWorksTaskTextValue);
 	}
 
-	/**
-	 * Возвращает {@link#generateReportEnable}
-	 *
-	 * @return the {@link#generateReportEnable}
-	 */
 	public BooleanProperty getGenerateReportDisable() {
 		return generateReportDisable;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#generateReportEnable}
-	 *
-	 * @param generateReportEnable значение поля
-	 */
 	public void setGenerateReportDisableValue(Boolean generateReportEnable) {
 		this.generateReportDisable.set(generateReportEnable);
 	}
 
-	/**
-	 * Возвращает {@link#positionSuid}
-	 *
-	 * @return the {@link#positionSuid}
-	 */
 	public Long getPositionSuid() {
 		return positionSuid;
 	}
 
-	/**
-	 * Устанавливает значение полю {@link#positionSuid}
-	 *
-	 * @param positionSuid значение поля
-	 */
 	public void setPositionSuid(Long positionSuid) {
 		this.positionSuid = positionSuid;
 	}
@@ -359,7 +227,6 @@ public class ReportViewModel extends PresentationModel<IReportService, ReportMod
 	/**
 	 * Отправляет отчёт на печать
 	 *
-	 * @throws JRException в случае ошибки
 	 */
 	public void printReport() {
 		Thread thread = new Thread(() -> {
@@ -411,9 +278,8 @@ public class ReportViewModel extends PresentationModel<IReportService, ReportMod
 	 *
 	 * @param aReport отчет
 	 * @return отчет в формате PDF
-	 * @throws JRException в случае ошибки
 	 */
-	public File getPDF(JasperPrint aReport, ReportModel aEntity) throws JRException {
+	private File getPDF(JasperPrint aReport, ReportModel aEntity) {
 		File file = null;
 		try (FileOutputStream outputStream = new FileOutputStream(
 				Utils.getInstance().getTempDir() + aEntity.getPostName() + ".pdf")) {
@@ -436,29 +302,15 @@ public class ReportViewModel extends PresentationModel<IReportService, ReportMod
 	 * @return отчет в формате HTML
 	 * @throws JRException в случае ошибки
 	 */
-	public File getHTML(JasperPrint aReport, ReportModel aEntity) throws JRException {
+	private File getHTML(JasperPrint aReport, ReportModel aEntity) throws JRException {
 		File file = new File(
 				Utils.getInstance().getTempDir() + aEntity.getPostName() + ".html");
 		JasperExportManager.exportReportToHtmlFile(aReport, file.getAbsolutePath());
 		return file;
 	}
 
-	/**
-	 * Возвращает {@link#htmlFileReport}
-	 *
-	 * @return the {@link#htmlFileReport}
-	 */
 	public File getHtmlFileReport() {
 		return htmlFileReport;
-	}
-
-	/**
-	 * Возвращает {@link#pdfFileReport}
-	 *
-	 * @return the {@link#pdfFileReport}
-	 */
-	public File getPdfFileReport() {
-		return pdfFileReport;
 	}
 
 	@Override

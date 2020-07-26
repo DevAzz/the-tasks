@@ -1,8 +1,6 @@
 package ru.devazz.server.api.model;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.*;
 
 import java.io.Serializable;
 
@@ -11,7 +9,10 @@ import java.io.Serializable;
  */
 @EqualsAndHashCode
 @ToString
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class RoleModel implements Serializable, IEntity{
 
     /** Идентификатор роли */
