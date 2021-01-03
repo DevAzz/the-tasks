@@ -11,6 +11,7 @@ import ru.devazz.server.api.model.enums.DayOfWeek;
 import ru.devazz.utils.CycleEnums;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
@@ -445,8 +446,8 @@ public class CycleTaskViewModel extends PresentationModel<ICommonService, IEntit
 					setInterval(1);
 				}
 			} else if (TimeFieldValueType.class.isInstance(aType)) {
-				SimpleDateFormat parser = new SimpleDateFormat("HH:mm");
-				LocalTime time = CONVERTER.fromString(parser.format(new Date()));
+				DateTimeFormatter parser = DateTimeFormatter.ofPattern("HH:mm");
+				LocalTime time = CONVERTER.fromString(parser.format(LocalDateTime.now()));
 				getProperty(CycleEnums.getInstance().getEnumElement(PropertyType.TIME_FIELD_VALUE,
 						aType.getNameElement()), LocalTime.class).setValue(time);
 				setLocalTime(time);
@@ -596,14 +597,14 @@ public class CycleTaskViewModel extends PresentationModel<ICommonService, IEntit
 				property = (Property<T>) new SimpleObjectProperty<>(this, aNodeType.toString(),
 						DayOfWeek.MONDAY);
 			} else {
-				property = (Property<T>) new SimpleObjectProperty<>(this, aNodeType.toString(),
+				property = new SimpleObjectProperty<>(this, aNodeType.toString(),
 						null);
 			}
 			break;
 		case TIME_FIELD_VALUE:
-			SimpleDateFormat parser = new SimpleDateFormat("HH:mm");
+			DateTimeFormatter parser = DateTimeFormatter.ofPattern("HH:mm");
 			property = (Property<T>) new SimpleObjectProperty<>(this, aNodeType.toString(),
-					CONVERTER.fromString(parser.format(new Date())));
+					CONVERTER.fromString(parser.format(LocalDateTime.now())));
 			break;
 		default:
 			break;

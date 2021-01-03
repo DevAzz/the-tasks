@@ -16,10 +16,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.temporal.TemporalField;
+import java.time.temporal.WeekFields;
+import java.util.*;
 
 public class Utils {
 
@@ -81,14 +83,8 @@ public class Utils {
 	 *
 	 * @return дата начала отсчета
 	 */
-	public Date getStartDateForFilterDate() {
-		GregorianCalendar calendarStart = new GregorianCalendar();
-		calendarStart.set(Calendar.AM_PM, Calendar.AM);
-		calendarStart.set(Calendar.HOUR, 0);
-		calendarStart.set(Calendar.MINUTE, 0);
-		calendarStart.set(Calendar.SECOND, 0);
-		Date dateStart = calendarStart.getTime();
-		return dateStart;
+	public LocalDateTime getStartDateForFilterDate() {
+		return LocalDate.now().atStartOfDay();
 	}
 
 	/**
@@ -96,14 +92,8 @@ public class Utils {
 	 *
 	 * @return дата конца отсчета
 	 */
-	public Date getEndDateForFilterDate() {
-		GregorianCalendar calendarEnd = new GregorianCalendar();
-		calendarEnd.set(Calendar.AM_PM, Calendar.PM);
-		calendarEnd.set(Calendar.HOUR, 11);
-		calendarEnd.set(Calendar.MINUTE, 59);
-		calendarEnd.set(Calendar.SECOND, 59);
-		Date dateEnd = calendarEnd.getTime();
-		return dateEnd;
+	public LocalDateTime getEndDateForFilterDate() {
+		return LocalDateTime.of(LocalDate.now(), LocalTime.MAX);
 	}
 
 	/**
@@ -111,15 +101,9 @@ public class Utils {
 	 *
 	 * @return дата начала отсчета
 	 */
-	public Date getStartDateForFilterWeek() {
-		GregorianCalendar calendarStart = new GregorianCalendar();
-		calendarStart.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-		calendarStart.set(Calendar.AM_PM, Calendar.AM);
-		calendarStart.set(Calendar.HOUR, 0);
-		calendarStart.set(Calendar.MINUTE, 0);
-		calendarStart.set(Calendar.SECOND, 0);
-		Date dateStart = calendarStart.getTime();
-		return dateStart;
+	public LocalDateTime getStartDateForFilterWeek() {
+		TemporalField field = WeekFields.of(Locale.getDefault()).dayOfWeek();
+		return LocalDateTime.of(LocalDate.now().with(field, 1), LocalTime.MIDNIGHT);
 	}
 
 	/**
@@ -127,15 +111,9 @@ public class Utils {
 	 *
 	 * @return дата конца отсчета
 	 */
-	public Date getEndDateForFilterWeek() {
-		GregorianCalendar calendarEnd = new GregorianCalendar();
-		calendarEnd.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
-		calendarEnd.set(Calendar.AM_PM, Calendar.PM);
-		calendarEnd.set(Calendar.HOUR, 11);
-		calendarEnd.set(Calendar.MINUTE, 59);
-		calendarEnd.set(Calendar.SECOND, 59);
-		Date dateEnd = calendarEnd.getTime();
-		return dateEnd;
+	public LocalDateTime getEndDateForFilterWeek() {
+		TemporalField field = WeekFields.of(Locale.getDefault()).dayOfWeek();
+		return LocalDateTime.of(LocalDate.now().with(field, 1), LocalTime.MAX);
 	}
 
 	/**
@@ -143,12 +121,8 @@ public class Utils {
 	 *
 	 * @return дата начала отсчета
 	 */
-	public Date getStartDateForFilterMonth() {
-		GregorianCalendar commonCalendar = new GregorianCalendar();
-		GregorianCalendar calendarStart = new GregorianCalendar(commonCalendar.get(Calendar.YEAR),
-				commonCalendar.get(Calendar.MONTH), 1, 0, 0, 0);
-		Date dateStart = calendarStart.getTime();
-		return dateStart;
+	public LocalDateTime getStartDateForFilterMonth() {
+		return LocalDateTime.of(LocalDate.now().withDayOfMonth(1), LocalTime.MIDNIGHT);
 	}
 
 	/**
@@ -156,13 +130,8 @@ public class Utils {
 	 *
 	 * @return дата конца отсчета
 	 */
-	public Date getEndDateForFilterMonth() {
-		GregorianCalendar commonCalendar = new GregorianCalendar();
-		GregorianCalendar calendarEnd = new GregorianCalendar(commonCalendar.get(Calendar.YEAR),
-				commonCalendar.get(Calendar.MONTH),
-				commonCalendar.getMaximum(Calendar.DAY_OF_MONTH), 23, 59, 59);
-		Date dateEnd = calendarEnd.getTime();
-		return dateEnd;
+	public LocalDateTime getEndDateForFilterMonth() {
+		return LocalDateTime.of(LocalDate.now().withDayOfMonth(1), LocalTime.MAX);
 	}
 
 	/**

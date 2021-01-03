@@ -2,6 +2,7 @@ package ru.devazz.configuration;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.springframework.boot.autoconfigure.jms.DefaultJmsListenerContainerFactoryConfigurer;
 import org.springframework.boot.autoconfigure.jms.activemq.ActiveMQProperties;
@@ -53,6 +54,7 @@ public class TasksConfiguration {
 
     @Bean // Serialize message content to json using TextMessage
     public MessageConverter jacksonJmsMessageConverter(ObjectMapper mapper) {
+        mapper.registerModule(new JavaTimeModule());
         MappingJackson2MessageConverter converter = new MappingJackson2MessageConverter();
         converter.setObjectMapper(mapper);
         converter.setTargetType(MessageType.TEXT);

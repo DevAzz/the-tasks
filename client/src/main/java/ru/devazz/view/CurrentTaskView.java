@@ -335,11 +335,7 @@ public class CurrentTaskView extends AbstractView<CurrentTaskViewModel> {
 					String normal = "dateTimeTextFieldNormal";
 					if (null == newValue) {
 						startDate.getStyleClass().add(errStyle);
-						for (String value : new ArrayList<>(startDate.getStyleClass())) {
-							if (value.equals(normal)) {
-								startDate.getStyleClass().remove(value);
-							}
-						}
+						startDate.getStyleClass().removeIf(value -> value.equals(normal));
 						startDate.getStyleClass().remove(normal);
 					} else {
 						startDate.getStyleClass().remove(errStyle);
@@ -359,11 +355,7 @@ public class CurrentTaskView extends AbstractView<CurrentTaskViewModel> {
 
 					if (null == newValue) {
 						endDate.getStyleClass().add(errStyle);
-						for (String value : new ArrayList<>(endDate.getStyleClass())) {
-							if (value.equals(normal)) {
-								endDate.getStyleClass().remove(value);
-							}
-						}
+						endDate.getStyleClass().removeIf(value -> value.equals(normal));
 						endDate.getStyleClass().remove(normal);
 					} else {
 						endDate.getStyleClass().remove(errStyle);
@@ -433,11 +425,8 @@ public class CurrentTaskView extends AbstractView<CurrentTaskViewModel> {
 					model.selectTypedTask(t);
 					priority.getSelectionModel().select(TaskPriority.EVERYDAY);
 
-					startDate.setLocalDateTime(
-							LocalDateTime.ofInstant(model.getTask().getStartDateTime().toInstant(),
-									ZoneId.systemDefault()));
-					endDate.setLocalDateTime(LocalDateTime.ofInstant(
-							model.getTask().getEndDateTime().toInstant(), ZoneId.systemDefault()));
+					startDate.setLocalDateTime(model.getTask().getStartDateTime());
+					endDate.setLocalDateTime(model.getTask().getEndDateTime());
 				} catch (ParseException e1) {
 					// Логирование
 					e1.printStackTrace();
@@ -649,7 +638,7 @@ public class CurrentTaskView extends AbstractView<CurrentTaskViewModel> {
 					// Установка статуса
 					try {
 						TaskStatus status = model.getTask().getStatus();
-						if ((new Date().getTime() < model.getTask().getEndDate().getTime())
+						if ((LocalDateTime.now().isBefore(model.getTask().getEndDate()))
 								&& !(TaskStatus.REWORK.equals(status))) {
 							model.getTask().setStatus(TaskStatus.WORKING);
 						}
@@ -736,7 +725,9 @@ public class CurrentTaskView extends AbstractView<CurrentTaskViewModel> {
 		if (null != commonTabPane) {
 			commonTabPane.getTabs().remove(getTab());
 		}
-		historyView.close();
+		if (historyView != null) {
+			historyView.close();
+		}
 		super.closeTabView();
 	}
 

@@ -185,7 +185,7 @@ public class TasksView extends AbstractView<TasksViewModel> {
 			e.printStackTrace();
 		}
 
-		model.getVisibleTasks().addListener((ListChangeListener<Task>) c -> Platform.runLater(() -> {
+		model.getVisibleTasks().addListener((ListChangeListener<Task>) change -> Platform.runLater(() -> {
 			int oldPageCount = pagination.getPageCount();
 			int newPageCount = model.getCountPages();
 			int currentPageIndex = pagination.getCurrentPageIndex();
@@ -201,7 +201,7 @@ public class TasksView extends AbstractView<TasksViewModel> {
 				pagination.setCurrentPageIndex(currentPageIndex);
 			}
 
-			changeTasks(c);
+			changeTasks(change);
 		}));
 		initPageSettingsView();
 
@@ -442,7 +442,7 @@ public class TasksView extends AbstractView<TasksViewModel> {
 	 *
 	 * @param task задача
 	 */
-	private void createTaskPanel(Task task) {
+	private synchronized void createTaskPanel(Task task) {
 		if (null != task) {
 			try {
 				TaskPanelView view = Utils.getInstance().loadView(TaskPanelView.class);
@@ -609,7 +609,7 @@ public class TasksView extends AbstractView<TasksViewModel> {
 		clearMenu(dateFilterMenu);
 		clearMenu(priorityFilterMenu);
 		clearMenu(statusFilterMenu);
-		model.showAllEntries();
+		model.uploadAllEntries();
 	}
 
 	/**

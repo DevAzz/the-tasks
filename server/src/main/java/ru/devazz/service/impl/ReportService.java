@@ -14,6 +14,7 @@ import ru.devazz.server.api.model.enums.FilterType;
 import ru.devazz.server.api.model.enums.TaskHistoryType;
 import ru.devazz.server.api.model.enums.TaskTimeInterval;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -33,20 +34,20 @@ public class ReportService implements IReportService {
 	private ITaskHistoryService taskHistoryService;
 
 	@Override
-	public ReportModel createReportEntity(Long aPositionSuid, Date aStartDate, Date aEndDate)
+	public ReportModel createReportEntity(Long aPositionSuid, LocalDateTime aStartDate, LocalDateTime aEndDate)
 			throws Exception {
 		ReportModel report = null;
 		SubordinationElementModel subElEntity = subElService.get(aPositionSuid);
 		if (null != subElEntity) {
 			List<TaskModel> tasksLists = taskService.getAllUserTasksExecutorWithFilter(
 					subElEntity.getSuid(), getTasksFilter(aStartDate));
-			Long successDoneTasks = 0L;
-			Long closedTasks = 0L;
-			Long overdueDoneTasks = 0L;
-			Long overdueTasks = 0L;
-			Long failedTasks = 0L;
+			long successDoneTasks = 0L;
+			long closedTasks = 0L;
+			long overdueDoneTasks = 0L;
+			long overdueTasks = 0L;
+			long failedTasks = 0L;
 			long inWorksTasks = 0L;
-			Long reworkTasks = 0L;
+			long reworkTasks = 0L;
 
 			for (TaskModel entity : tasksLists) {
 				overdueDoneTasks += getTaskOverdueDoneAmount(entity, aStartDate, aEndDate);
@@ -85,7 +86,7 @@ public class ReportService implements IReportService {
 	 * @param aEndDate дата завершения
 	 * @return сформированный фильтр
 	 */
-	private Filter getHistoryFilter(TaskHistoryType aType, Date aStartDate, Date aEndDate) {
+	private Filter getHistoryFilter(TaskHistoryType aType, LocalDateTime aStartDate, LocalDateTime aEndDate) {
 		Filter filter = new Filter();
 
 		List<String> historyTypeFilterList = new ArrayList<>();
@@ -110,7 +111,7 @@ public class ReportService implements IReportService {
 	 * @param aStartDate дата начала временного интервала
 	 * @return сформированный фильтр
 	 */
-	private Filter getTasksFilter(Date aStartDate) {
+	private Filter getTasksFilter(LocalDateTime aStartDate) {
 		Filter filter = new Filter();
 
 		List<String> dateFilterList = new ArrayList<>();
@@ -132,7 +133,7 @@ public class ReportService implements IReportService {
 	 * @param aEndDate дата завершения отчета
 	 * @return {@code true} - в случае, если задача была завершена после просрочки
 	 */
-	private Integer getTaskOverdueDoneAmount(TaskModel aTask, Date aStartDate, Date aEndDate) {
+	private Integer getTaskOverdueDoneAmount(TaskModel aTask, LocalDateTime aStartDate, LocalDateTime aEndDate) {
 		return taskHistoryService
 				.getTaskHistory(aTask.getSuid(),
 						getHistoryFilter(TaskHistoryType.TASK_OVERDUE_DONE, aStartDate, aEndDate))
@@ -147,7 +148,7 @@ public class ReportService implements IReportService {
 	 * @param aEndDate дата завершения отчета
 	 * @return {@code true} - в случае, если задача была завершена после просрочки
 	 */
-	private Integer getTaskSuccessDoneAmount(TaskModel aTask, Date aStartDate, Date aEndDate) {
+	private Integer getTaskSuccessDoneAmount(TaskModel aTask, LocalDateTime aStartDate, LocalDateTime aEndDate) {
 		return taskHistoryService.getTaskHistory(aTask.getSuid(),
 				getHistoryFilter(TaskHistoryType.TASK_DONE, aStartDate, aEndDate)).size();
 	}
@@ -160,7 +161,7 @@ public class ReportService implements IReportService {
 	 * @param aEndDate дата завершения отчета
 	 * @return {@code true} - в случае, если задача была завершена после просрочки
 	 */
-	private Integer getTaskClosedAmount(TaskModel aTask, Date aStartDate, Date aEndDate) {
+	private Integer getTaskClosedAmount(TaskModel aTask, LocalDateTime aStartDate, LocalDateTime aEndDate) {
 		return taskHistoryService.getTaskHistory(aTask.getSuid(),
 				getHistoryFilter(TaskHistoryType.TASK_CLOSED, aStartDate, aEndDate)).size();
 	}
@@ -173,7 +174,7 @@ public class ReportService implements IReportService {
 	 * @param aEndDate дата завершения отчета
 	 * @return {@code true} - в случае, если задача была завершена после просрочки
 	 */
-	private Integer getTaskFailedAmount(TaskModel aTask, Date aStartDate, Date aEndDate) {
+	private Integer getTaskFailedAmount(TaskModel aTask, LocalDateTime aStartDate, LocalDateTime aEndDate) {
 		return taskHistoryService.getTaskHistory(aTask.getSuid(),
 				getHistoryFilter(TaskHistoryType.TASK_FAILED, aStartDate, aEndDate)).size();
 	}
@@ -186,7 +187,7 @@ public class ReportService implements IReportService {
 	 * @param aEndDate дата завершения отчета
 	 * @return {@code true} - в случае, если задача была завершена после просрочки
 	 */
-	private Integer getTaskOverdueAmount(TaskModel aTask, Date aStartDate, Date aEndDate) {
+	private Integer getTaskOverdueAmount(TaskModel aTask, LocalDateTime aStartDate, LocalDateTime aEndDate) {
 		return taskHistoryService
 				.getTaskHistory(aTask.getSuid(),
 						getHistoryFilter(TaskHistoryType.TASK_OVERDUE, aStartDate, aEndDate))
@@ -201,7 +202,7 @@ public class ReportService implements IReportService {
 	 * @param aEndDate дата завершения отчета
 	 * @return {@code true} - в случае, если задача была завершена после просрочки
 	 */
-	private Integer getTaskReworkAmount(TaskModel aTask, Date aStartDate, Date aEndDate) {
+	private Integer getTaskReworkAmount(TaskModel aTask, LocalDateTime aStartDate, LocalDateTime aEndDate) {
 		return taskHistoryService.getTaskHistory(aTask.getSuid(),
 				getHistoryFilter(TaskHistoryType.TASK_REWORK, aStartDate, aEndDate)).size();
 	}

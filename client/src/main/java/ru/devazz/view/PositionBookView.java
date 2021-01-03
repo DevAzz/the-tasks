@@ -54,8 +54,8 @@ public class PositionBookView extends AbstractView<PositionBookViewModel> {
 		Bindings.bindBidirectional(personsTable.itemsProperty(), model.getDataProperty());
 
 		// устанавливаем тип и значение которое должно хранится в колонке
-		fioColumn.setCellValueFactory(new PropertyValueFactory<User, String>("name"));
-		positionColumn.setCellValueFactory(new PropertyValueFactory<User, String>("position"));
+		fioColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+		positionColumn.setCellValueFactory(new PropertyValueFactory<>("position"));
 
 		subElColumn.setCellValueFactory(user -> {
 			SimpleStringProperty property = new SimpleStringProperty();
@@ -79,8 +79,11 @@ public class PositionBookView extends AbstractView<PositionBookViewModel> {
 			imageView.getStyleClass().add("subInfoImageStyle");
 			imagePane.setOnMouseClicked(event -> {
 				if (imagePane.isExpanded()) {
-					imageView.setImage(new Image(model.getImageURI(user.getValue().getSuid()), 289,
-							293, true, false, true));
+					String url = model.getImageURI(user.getValue().getSuid());
+					if (url != null && !url.isBlank()) {
+						imageView.setImage(new Image(url, 289,
+								293, true, false, true));
+					}
 				} else {
 					imageView.setImage(null);
 				}

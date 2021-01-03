@@ -1,5 +1,9 @@
 package ru.devazz.server.api.model;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import lombok.*;
 import ru.devazz.server.api.model.enums.CycleTypeTask;
 import ru.devazz.server.api.model.enums.TaskPriority;
@@ -7,6 +11,7 @@ import ru.devazz.server.api.model.enums.TaskStatus;
 import ru.devazz.server.api.model.enums.TaskType;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -40,10 +45,14 @@ public class TaskModel implements Serializable, IEntity {
     private TaskPriority priority;
 
     /** Дата начала */
-    private Date startDate;
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    private LocalDateTime startDate;
 
     /** Дата конца */
-    private Date endDate;
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    private LocalDateTime endDate;
 
     /** идентификатор должностного лица (автор задачи) */
     private Long authorSuid;

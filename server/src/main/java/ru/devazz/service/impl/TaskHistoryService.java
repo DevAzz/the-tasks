@@ -15,6 +15,7 @@ import ru.devazz.service.AbstractEntityService;
 import ru.devazz.service.impl.converters.TaskHistoryEntityConverter;
 
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -102,7 +103,7 @@ public class TaskHistoryService extends AbstractEntityService<TaskHistoryModel, 
 	 */
 	private boolean checkRepeatTaskHistoryEntry(TaskHistoryModel aEntry) {
 		boolean result = false;
-		SimpleDateFormat parser = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+		DateTimeFormatter parser = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 		List<TaskHistoryEntity> list = repository
 				.getAllTaskHistoryEntriesByType(aEntry.getTaskSuid(), aEntry.getHistoryType());
 		for (TaskHistoryEntity entity : list) {

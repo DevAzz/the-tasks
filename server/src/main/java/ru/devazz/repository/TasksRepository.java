@@ -10,10 +10,8 @@ import ru.devazz.utils.*;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.*;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.Map.Entry;
 
 /**
@@ -184,11 +182,11 @@ public class TasksRepository extends AbstractRepository<TaskEntity> {
 			case SORT_BY_DATE_FIRST_NEW:
 				Collections.sort(list, (o1, o2) -> {
 					int sort = 0;
-					Date o1Date = o1.getStartDate();
-					Date o2Date = o2.getStartDate();
-					if (o1Date.getTime() == o2Date.getTime()) {
+					LocalDateTime o1Date = o1.getStartDate();
+					LocalDateTime o2Date = o2.getStartDate();
+					if (o1Date.equals(o2Date)) {
 						sort = 0;
-					} else if (o1Date.getTime() < o2Date.getTime()) {
+					} else if (o1Date.isBefore(o2Date)) {
 						sort = 1;
 					} else {
 						sort = -1;
@@ -199,11 +197,11 @@ public class TasksRepository extends AbstractRepository<TaskEntity> {
 			case SORT_BY_DATE_FIRST_OLD:
 				Collections.sort(list, (o1, o2) -> {
 					int sort = 0;
-					Date o1Date = o1.getStartDate();
-					Date o2Date = o2.getStartDate();
-					if (o1Date.getTime() == o2Date.getTime()) {
+					LocalDateTime o1Date = o1.getStartDate();
+					LocalDateTime o2Date = o2.getStartDate();
+					if (o1Date.equals(o2Date)) {
 						sort = 0;
-					} else if (o1Date.getTime() > o2Date.getTime()) {
+					} else if (o1Date.isAfter(o2Date)) {
 						sort = 1;
 					} else {
 						sort = -1;
@@ -212,14 +210,10 @@ public class TasksRepository extends AbstractRepository<TaskEntity> {
 				});
 				break;
 			case SORT_BY_PRIORITY_ASCENDING:
-				Collections.sort(list, (o1, o2) -> {
-					return o2.getPriority().compareTo(o1.getPriority());
-				});
+				Collections.sort(list, (o1, o2) -> o2.getPriority().compareTo(o1.getPriority()));
 				break;
 			case SORT_BY_PRIORITY_DESCENDING:
-				Collections.sort(list, (o1, o2) -> {
-					return o1.getPriority().compareTo(o2.getPriority());
-				});
+				Collections.sort(list, Comparator.comparing(TaskEntity::getPriority));
 				break;
 			default:
 				break;
@@ -246,8 +240,8 @@ public class TasksRepository extends AbstractRepository<TaskEntity> {
 		for (Entry<FilterType, List<String>> entry : aFilter.getFilterTypeMap().entrySet()) {
 			switch (entry.getKey()) {
 			case FILTER_BY_DATE:
-				Date startDate = null;
-				Date endDate = null;
+				LocalDateTime startDate = null;
+				LocalDateTime endDate = null;
 				for (String filterKey : entry.getValue()) {
 					TaskTimeInterval interval = TaskTimeInterval.getTimeIntervalBySuid(filterKey);
 					if (null != interval) {
@@ -271,7 +265,7 @@ public class TasksRepository extends AbstractRepository<TaskEntity> {
 						case PARTICULAR_TIME_INTERVAL:
 							startDate = aFilter.getStartDate();
 							listPredicateDate.add(builder
-									.greaterThan(aRoot.<Date>get(TaskEntity_.endDate), startDate));
+									.greaterThan(aRoot.<LocalDateTime>get(TaskEntity_.endDate), startDate));
 							break;
 						default:
 							break;
@@ -280,9 +274,9 @@ public class TasksRepository extends AbstractRepository<TaskEntity> {
 								|| TaskTimeInterval.PARTICULAR_TIME_INTERVAL.equals(interval))) {
 							listPredicateDate.add(builder.and(
 									builder.greaterThanOrEqualTo(
-											aRoot.<Date>get(TaskEntity_.startDate), startDate),
+											aRoot.<LocalDateTime>get(TaskEntity_.startDate), startDate),
 									builder.lessThanOrEqualTo(
-											aRoot.<Date>get(TaskEntity_.startDate), endDate)));
+											aRoot.<LocalDateTime>get(TaskEntity_.startDate), endDate)));
 						}
 					}
 				}

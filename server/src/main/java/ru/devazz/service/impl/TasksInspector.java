@@ -16,7 +16,10 @@ import ru.devazz.utils.Utils;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.time.Month;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 /**
@@ -151,7 +154,7 @@ public class TasksInspector {
 							Thread.sleep(100L);
 						}
 
-						if ((new Date().getTime() > entity.getEndDate().getTime())
+						if ((LocalDateTime.now().isAfter(entity.getEndDate()))
 								&& !(TaskStatus.OVERDUE.equals(entity.getStatus()))
 								&& nonArchiveTask) {
 							entity.setStatus(TaskStatus.OVERDUE);
@@ -163,7 +166,7 @@ public class TasksInspector {
 							//	@formatter:off
 							TaskHistoryModel historyModel = TaskHistoryModel.builder()
 									.taskSuid(entity.getSuid())
-									.date(new Date())
+									.date(LocalDateTime.now())
 									.build();
 							//	@formatter:on
 							historyModel.setActorSuid(entity.getAuthorSuid());
@@ -177,7 +180,7 @@ public class TasksInspector {
 							Thread.sleep(100L);
 						}
 
-						if ((new Date().getTime() > entity.getEndDate().getTime())
+						if ((LocalDateTime.now().isAfter(entity.getEndDate()))
 								&& !TaskStatus.WORKING.equals(entity.getStatus())) {
 							cycleRemappingTask(entity,
 									!(TaskStatus.CLOSED.equals(entity.getStatus()))
@@ -216,14 +219,14 @@ public class TasksInspector {
 	private void cycleRemappingTask(TaskModel aEntity, boolean aNonArchiveTask) {
 		if ((null != aEntity) && aNonArchiveTask) {
 
-			Date startDate = aEntity.getStartDate();
-			Date endDate = aEntity.getEndDate();
+			LocalDateTime startDate = aEntity.getStartDate();
+			LocalDateTime endDate = aEntity.getEndDate();
 
 			Calendar calendarStart = GregorianCalendar.getInstance();
-			calendarStart.setTime(startDate);
+			calendarStart.setTime(java.sql.Timestamp.valueOf(startDate));
 
 			Calendar calendarEnd = GregorianCalendar.getInstance();
-			calendarEnd.setTime(endDate);
+			calendarEnd.setTime(java.sql.Timestamp.valueOf(endDate));
 
 			if ((null != aEntity.getCycleType()) && (null != aEntity.getCycleTime())) {
 
@@ -249,8 +252,8 @@ public class TasksInspector {
 					}
 				}
 
-				aEntity.setStartDate(calendarStart.getTime());
-				aEntity.setEndDate(calendarEnd.getTime());
+				aEntity.setStartDate(new java.sql.Timestamp(calendarStart.getTime().getTime()).toLocalDateTime());
+				aEntity.setEndDate(new java.sql.Timestamp(calendarEnd.getTime().getTime()).toLocalDateTime());
 				aEntity.setStatus(TaskStatus.WORKING);
 				taskService.update(aEntity, true);
 			}
@@ -261,7 +264,7 @@ public class TasksInspector {
 		//	@formatter:off
 		TaskHistoryModel historyEntity = TaskHistoryModel.builder()
 				.taskSuid(aEntity.getSuid())
-				.date(new Date())
+				.date(LocalDateTime.now())
 				.build();
 		//	@formatter:on
 
@@ -728,8 +731,8 @@ public class TasksInspector {
 					.priority(TaskPriority.EVERYDAY)
 					.status(TaskStatus.WORKING)
 					.taskType(TaskType.DEFAULT)
-					.startDate(calendarDefaultStartDate.getTime())
-					.endDate(calendarDefaultEndDate.getTime())
+					.startDate(new java.sql.Timestamp(calendarDefaultStartDate.getTime().getTime()).toLocalDateTime())
+					.endDate(new java.sql.Timestamp(calendarDefaultEndDate.getTime().getTime()).toLocalDateTime())
 					.executorSuid(aEntity.getSubordinationSUID())
 					.cycleType(CycleTypeTask.INT_DAY)
 					.cycleTime(CycleTypeTask.INT_DAY.name() + " 1 " + aEntity.getStartTime())
@@ -761,7 +764,7 @@ public class TasksInspector {
 	 * Метод проверяет время отведенное на исполнениние задачи
 	 *
 	 * @param task задача
-	 * @return {@code true} - если если текущее время не вышло за пределы 90% от
+	 * @return {@code true} - если если текущее время не вышло за пределы 75% от
 	 *         отпущенного на задачу
 	 */
 	private boolean isTimeAfter(TaskModel task) {
@@ -769,9 +772,12 @@ public class TasksInspector {
 		double currentTime = 0;
 		Date date = new Date();
 		try {
-			timeLeftOver = ((task.getEndDate().getTime() - task.getStartDate().getTime()) / 1000)
-					* 0.75;
-			currentTime = (date.getTime() - task.getStartDate().getTime()) / 1000;
+			long startDate = Optional.ofNullable(task.getStartDate())
+					.orElse(LocalDateTime.now()).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+			long endDate = Optional.ofNullable(task.getEndDate())
+					.orElse(LocalDateTime.now()).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+			timeLeftOver = ((endDate - startDate) / 1000) * 0.75;
+			currentTime = (date.getTime() - startDate) / 1000;
 		} catch (Exception e) {
 			// TODO Логирование
 			e.printStackTrace();

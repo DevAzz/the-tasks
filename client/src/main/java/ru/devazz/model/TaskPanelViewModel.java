@@ -8,6 +8,7 @@ import ru.devazz.server.api.model.TaskModel;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Модель представления панели задачи
@@ -64,7 +65,7 @@ public class TaskPanelViewModel extends PresentationModel<ITaskService, TaskMode
 		setTitleLabelText(task.getName());
 		setAuthorLabelValue((null != task.getAuthor()) ? task.getAuthor().getName() : "");
 
-		SimpleDateFormat parser = new SimpleDateFormat("HH:mm dd.MM.yyyy");
+		DateTimeFormatter parser = DateTimeFormatter.ofPattern("HH:mm dd.MM.yyyy");
 
 		String date = "Дата начала: " + parser.format(task.getStartedDate()) + "      ";
 		setDateLabelPropertyValue(date);

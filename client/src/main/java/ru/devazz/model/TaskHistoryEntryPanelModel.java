@@ -9,6 +9,7 @@ import ru.devazz.server.api.ICommonService;
 import ru.devazz.server.api.model.IEntity;
 
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Модель представления панели исторической записи
@@ -54,7 +55,7 @@ public class TaskHistoryEntryPanelModel extends PresentationModel<ICommonService
 		setTextLabelProperty(aEntity.getText());
 		setTitleLabelText(aEntity.getName());
 
-		SimpleDateFormat parser = new SimpleDateFormat("HH:mm dd.MM.yyyy");
+		DateTimeFormatter parser = DateTimeFormatter.ofPattern("HH:mm dd.MM.yyyy");
 
 		String date = " " + parser.format(aEntity.getDate());
 		setDateLabelPropertyValue(date);

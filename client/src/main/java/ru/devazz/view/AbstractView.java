@@ -171,7 +171,7 @@ public abstract class AbstractView<T extends PresentationModel<? extends ICommon
 	 */
 	@FXML
 	protected void closeTabView() {
-		closeTab();
+//		closeTab();
 		model.setOpenFlagValue(false);
 		fireClose();
 	}

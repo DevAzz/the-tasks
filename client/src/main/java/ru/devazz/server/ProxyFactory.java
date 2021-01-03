@@ -22,9 +22,9 @@ public class ProxyFactory {
 	private static ProxyFactory instance;
 
 	/** Карта соответствия типов и имен сервисов */
-	private Map<Class<? extends ICommonService>, Object> mapServiceType = new HashMap<>();
+	private final Map<Class<? extends ICommonService>, Object> mapServiceType = new HashMap<>();
 
-	private Map<String, IMessageListener> subscriberMap = new ConcurrentHashMap<>();
+	private final Map<String, IMessageListener> subscriberMap = new ConcurrentHashMap<>();
 
 	@Autowired
 	private IUserService userService;
@@ -57,6 +57,7 @@ public class ProxyFactory {
 	 * Конструктор
 	 */
 	private ProxyFactory() {
+		instance = this;
 	}
 
 	/**

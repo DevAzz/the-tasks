@@ -14,6 +14,9 @@ import ru.devazz.utils.Utils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 /**
@@ -240,7 +243,7 @@ public class TasksViewModel extends PresentationModel<ITaskService, TaskModel> {
 	/**
 	 * Выполняет загрузку всех записей
 	 */
-	public void showAllEntries() {
+	public void uploadAllEntries() {
 		nameActiveFiltersList.clear();
 		customTimeIntervalModel.clearDateFields();
 		filter.getFilterTypeMap().clear();
@@ -282,7 +285,7 @@ public class TasksViewModel extends PresentationModel<ITaskService, TaskModel> {
 				if (null != interval) {
 					String name;
 					if (TaskTimeInterval.CUSTOM_TIME_INTERVAL.equals(interval)) {
-						SimpleDateFormat parser = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+						DateTimeFormatter parser = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
 						name = "От " + parser.format(filter.getStartDate()) + " до "
 								+ parser.format(filter.getEndDate());
 					} else {
@@ -488,61 +491,61 @@ public class TasksViewModel extends PresentationModel<ITaskService, TaskModel> {
 	 * @param aType тип представления
 	 */
 	public void paramLoad(TasksViewType aType, final int aPageNumber) {
-		Thread thread = new Thread(() -> {
+		Platform.runLater(() -> {
 			try {
 				listDataModelEntities.clear();
 				visibleTasks.clear();
 				switch (aType) {
-				case ARCHIVE:
-					listDataModelEntities.addAll(getService().getTasksByViewTypeWithPagination(
-							currentUserPositionSuid, TasksViewType.ARCHIVE, countPageEntries,
-							calcOffset(countPageEntries, aPageNumber), filter));
-					break;
-				case CURRENT_IN:
-					listDataModelEntities.addAll(getService().getTasksByViewTypeWithPagination(
-							positionSuid, TasksViewType.CURRENT_IN, countPageEntries,
-							calcOffset(countPageEntries, aPageNumber), filter));
-					break;
-				case CURRENT_OUT:
-					listDataModelEntities.addAll(getService().getTasksByViewTypeWithPagination(
-							positionSuid, TasksViewType.CURRENT_OUT, countPageEntries,
-							calcOffset(countPageEntries, aPageNumber), filter));
-					break;
-				case CURRENT_ARCHIVE:
-					listDataModelEntities.addAll(getService().getTasksByViewTypeWithPagination(
-							positionSuid, TasksViewType.CURRENT_ARCHIVE, countPageEntries,
-							calcOffset(countPageEntries, aPageNumber), filter));
-					break;
-				case CURRENT_EVERYDAY_IN:
-					listDataModelEntities.addAll(getService().getTasksByViewTypeWithPagination(
-							positionSuid, TasksViewType.CURRENT_EVERYDAY_IN, countPageEntries,
-							calcOffset(countPageEntries, aPageNumber), filter));
-					break;
-				case CURRENT_EVERYDAY_OUT:
-					listDataModelEntities.addAll(getService().getTasksByViewTypeWithPagination(
-							positionSuid, TasksViewType.CURRENT_EVERYDAY_OUT, countPageEntries,
-							calcOffset(countPageEntries, aPageNumber), filter));
-					break;
-				case IN:
-					listDataModelEntities.addAll(getService().getTasksByViewTypeWithPagination(
-							currentUserPositionSuid, TasksViewType.IN, countPageEntries,
-							calcOffset(countPageEntries, aPageNumber), filter));
-					break;
-				case OUT:
-					listDataModelEntities.addAll(getService().getTasksByViewTypeWithPagination(
-							currentUserPositionSuid, TasksViewType.OUT, countPageEntries,
-							calcOffset(countPageEntries, aPageNumber), filter));
-					break;
-				case EVERYDAY_IN:
-					listDataModelEntities.addAll(getService().getTasksByViewTypeWithPagination(
-							currentUserPositionSuid, TasksViewType.EVERYDAY_IN, countPageEntries,
-							calcOffset(countPageEntries, aPageNumber), filter));
-					break;
-				case EVERYDAY_OUT:
-					listDataModelEntities.addAll(getService().getTasksByViewTypeWithPagination(
-							currentUserPositionSuid, TasksViewType.EVERYDAY_OUT, countPageEntries,
-							calcOffset(countPageEntries, aPageNumber), filter));
-					break;
+					case ARCHIVE:
+						listDataModelEntities.addAll(getService().getTasksByViewTypeWithPagination(
+								currentUserPositionSuid, TasksViewType.ARCHIVE, countPageEntries,
+								calcOffset(countPageEntries, aPageNumber), filter));
+						break;
+					case CURRENT_IN:
+						listDataModelEntities.addAll(getService().getTasksByViewTypeWithPagination(
+								positionSuid, TasksViewType.CURRENT_IN, countPageEntries,
+								calcOffset(countPageEntries, aPageNumber), filter));
+						break;
+					case CURRENT_OUT:
+						listDataModelEntities.addAll(getService().getTasksByViewTypeWithPagination(
+								positionSuid, TasksViewType.CURRENT_OUT, countPageEntries,
+								calcOffset(countPageEntries, aPageNumber), filter));
+						break;
+					case CURRENT_ARCHIVE:
+						listDataModelEntities.addAll(getService().getTasksByViewTypeWithPagination(
+								positionSuid, TasksViewType.CURRENT_ARCHIVE, countPageEntries,
+								calcOffset(countPageEntries, aPageNumber), filter));
+						break;
+					case CURRENT_EVERYDAY_IN:
+						listDataModelEntities.addAll(getService().getTasksByViewTypeWithPagination(
+								positionSuid, TasksViewType.CURRENT_EVERYDAY_IN, countPageEntries,
+								calcOffset(countPageEntries, aPageNumber), filter));
+						break;
+					case CURRENT_EVERYDAY_OUT:
+						listDataModelEntities.addAll(getService().getTasksByViewTypeWithPagination(
+								positionSuid, TasksViewType.CURRENT_EVERYDAY_OUT, countPageEntries,
+								calcOffset(countPageEntries, aPageNumber), filter));
+						break;
+					case IN:
+						listDataModelEntities.addAll(getService().getTasksByViewTypeWithPagination(
+								currentUserPositionSuid, TasksViewType.IN, countPageEntries,
+								calcOffset(countPageEntries, aPageNumber), filter));
+						break;
+					case OUT:
+						listDataModelEntities.addAll(getService().getTasksByViewTypeWithPagination(
+								currentUserPositionSuid, TasksViewType.OUT, countPageEntries,
+								calcOffset(countPageEntries, aPageNumber), filter));
+						break;
+					case EVERYDAY_IN:
+						listDataModelEntities.addAll(getService().getTasksByViewTypeWithPagination(
+								currentUserPositionSuid, TasksViewType.EVERYDAY_IN, countPageEntries,
+								calcOffset(countPageEntries, aPageNumber), filter));
+						break;
+					case EVERYDAY_OUT:
+						listDataModelEntities.addAll(getService().getTasksByViewTypeWithPagination(
+								currentUserPositionSuid, TasksViewType.EVERYDAY_OUT, countPageEntries,
+								calcOffset(countPageEntries, aPageNumber), filter));
+						break;
 				}
 				for (TaskModel entity : new ArrayList<>(listDataModelEntities)) {
 					try {
@@ -560,8 +563,6 @@ public class TasksViewModel extends PresentationModel<ITaskService, TaskModel> {
 				e.printStackTrace();
 			}
 		});
-		thread.setDaemon(true);
-		thread.start();
 	}
 
 	public Integer getCountPageEntries() {
@@ -583,11 +584,7 @@ public class TasksViewModel extends PresentationModel<ITaskService, TaskModel> {
 			for (TaskModel entity : new ArrayList<>(listDataModelEntities)) {
 				if (entity.getSuid().equals(aTask.getSuid())) {
 					listDataModelEntities.remove(entity);
-					for (Task task : new ArrayList<>(visibleTasks)) {
-						if (task.getSuid().equals(entity.getSuid())) {
-							visibleTasks.remove(task);
-						}
-					}
+					visibleTasks.removeIf(task -> task.getSuid().equals(entity.getSuid()));
 				}
 			}
 		}
@@ -728,8 +725,8 @@ public class TasksViewModel extends PresentationModel<ITaskService, TaskModel> {
 	public Runnable createSearchRunnable() {
 		return () -> {
 			try {
-				Date startDate = customTimeIntervalModel.getStartDate();
-				Date endDate = customTimeIntervalModel.getEndDate();
+				LocalDateTime startDate = customTimeIntervalModel.getStartDate();
+				LocalDateTime endDate = customTimeIntervalModel.getEndDate();
 				if ((null != startDate) && (null != endDate)) {
 					List<String> list = new ArrayList<>();
 					list.add(TaskTimeInterval.CUSTOM_TIME_INTERVAL.getMenuSuid());
@@ -866,12 +863,12 @@ public class TasksViewModel extends PresentationModel<ITaskService, TaskModel> {
 								break;
 							}
 							for (Task task : list) {
-								Date startDate = task.getStartedDate();
-								Date endDate = task.getEndDate();
+								LocalDateTime startDate = task.getStartedDate();
+								LocalDateTime endDate = task.getEndDate();
 
 								if ((null != startDate) && (null != endDate)) {
-									long longStartDate = startDate.getTime();
-									long longEndDate = endDate.getTime();
+									long longStartDate = startDate.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+									long longEndDate = endDate.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
 									double diskret = ((longEndDate - longStartDate) / 10000);
 
 									double diskretNumber = (new Date().getTime() - longStartDate)

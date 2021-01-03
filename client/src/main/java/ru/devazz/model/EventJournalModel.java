@@ -15,6 +15,8 @@ import ru.devazz.utils.EntityConverter;
 import ru.devazz.utils.EventType;
 import ru.devazz.utils.Utils;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 
 /**
@@ -83,14 +85,14 @@ public class EventJournalModel extends PresentationModel<IEventService, EventMod
 		ObservableList<Event> tempData = FXCollections.observableArrayList();
 		switch (aList) {
 		case "dayFilterItem":
-			Date dateStartDay = Utils.getInstance().getStartDateForFilterDate();
-			Date dateEndDay = Utils.getInstance().getEndDateForFilterDate();
+			LocalDateTime dateStartDay = Utils.getInstance().getStartDateForFilterDate();
+			LocalDateTime dateEndDay = Utils.getInstance().getEndDateForFilterDate();
 			for (EventModel event : listDataModelEntities) {
-				Date eventDate = event.getDate();
-				long eventDateLong = eventDate.getTime();
+				LocalDateTime eventDate = event.getDate();
+				long eventDateLong = eventDate.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
 
-				if ((eventDateLong >= dateStartDay.getTime())
-						&& ((eventDateLong <= dateEndDay.getTime()))) {
+				if ((eventDateLong >= dateStartDay.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli())
+						&& ((eventDateLong <= dateEndDay.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()))) {
 					tempData.add(EntityConverter.getInstatnce()
 							.convertEventModelToClientWrapEvent(event));
 				}
@@ -99,14 +101,14 @@ public class EventJournalModel extends PresentationModel<IEventService, EventMod
 			break;
 
 		case "weekFilterItem":
-			Date dateStartWeek = Utils.getInstance().getStartDateForFilterWeek();
-			Date dateEndWeek = Utils.getInstance().getEndDateForFilterWeek();
+			LocalDateTime dateStartWeek = Utils.getInstance().getStartDateForFilterWeek();
+			LocalDateTime dateEndWeek = Utils.getInstance().getEndDateForFilterWeek();
 			for (EventModel event : listDataModelEntities) {
-				Date eventDate = event.getDate();
-				long eventDateLong = eventDate.getTime();
+				LocalDateTime eventDate = event.getDate();
+				long eventDateLong = eventDate.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
 
-				if ((eventDateLong >= dateStartWeek.getTime())
-						&& ((eventDateLong <= dateEndWeek.getTime()))) {
+				if ((eventDateLong >= dateStartWeek.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli())
+						&& ((eventDateLong <= dateEndWeek.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()))) {
 					tempData.add(EntityConverter.getInstatnce()
 							.convertEventModelToClientWrapEvent(event));
 				}
@@ -114,14 +116,14 @@ public class EventJournalModel extends PresentationModel<IEventService, EventMod
 			break;
 
 		case "monthFilterItem":
-			Date dateStartMonth = Utils.getInstance().getStartDateForFilterMonth();
-			Date dateEndMonth = Utils.getInstance().getEndDateForFilterMonth();
+			LocalDateTime dateStartMonth = Utils.getInstance().getStartDateForFilterMonth();
+			LocalDateTime dateEndMonth = Utils.getInstance().getEndDateForFilterMonth();
 			for (EventModel event : listDataModelEntities) {
-				Date eventDate = event.getDate();
-				long eventDateLong = eventDate.getTime();
+				LocalDateTime eventDate = event.getDate();
+				long eventDateLong = eventDate.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
 
-				if ((eventDateLong >= dateStartMonth.getTime())
-						&& ((eventDateLong <= dateEndMonth.getTime()))) {
+				if ((eventDateLong >= dateStartMonth.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli())
+						&& ((eventDateLong <= dateEndMonth.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()))) {
 					tempData.add(EntityConverter.getInstatnce()
 							.convertEventModelToClientWrapEvent(event));
 				}

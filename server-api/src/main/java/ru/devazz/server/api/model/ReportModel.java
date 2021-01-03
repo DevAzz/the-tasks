@@ -1,9 +1,14 @@
 package ru.devazz.server.api.model;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import lombok.*;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -28,10 +33,14 @@ public class ReportModel implements Serializable, IEntity {
 	private Long postSuid;
 
 	/** Дата начала */
-	private Date dateStart;
+	@JsonDeserialize(using = LocalDateTimeDeserializer.class)
+	@JsonSerialize(using = LocalDateTimeSerializer.class)
+	private LocalDateTime dateStart;
 
 	/** Дата завершения */
-	private Date dateEnd;
+	@JsonDeserialize(using = LocalDateTimeDeserializer.class)
+	@JsonSerialize(using = LocalDateTimeSerializer.class)
+	private LocalDateTime dateEnd;
 
 	/** Пространство дат */
 	private String dateSpace;
@@ -57,7 +66,7 @@ public class ReportModel implements Serializable, IEntity {
 	/** Количество задач на доработке */
 	private Long reworkAmount;
 
-	public void setDateEnd(Date dateEnd) {
+	public void setDateEnd(LocalDateTime dateEnd) {
 		this.dateEnd = dateEnd;
 		SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 		try {

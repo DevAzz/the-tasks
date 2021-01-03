@@ -20,6 +20,8 @@ import ru.devazz.server.api.model.enums.TaskTimeInterval;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -280,7 +282,7 @@ public class TaskHistoryViewModel
 				if (null != interval) {
 					String name;
 					if (TaskTimeInterval.CUSTOM_TIME_INTERVAL.equals(interval)) {
-						SimpleDateFormat parser = new SimpleDateFormat("HH:mm dd.MM.yyyy");
+						DateTimeFormatter parser = DateTimeFormatter.ofPattern("HH:mm dd.MM.yyyy");
 						name = "От " + parser.format(filter.getStartDate()) + " до "
 								+ parser.format(filter.getEndDate());
 					} else {
@@ -501,8 +503,8 @@ public class TaskHistoryViewModel
 	public Runnable createSearchRunnable() {
 		return () -> {
 			try {
-				Date startDate = customTimeIntervalModel.getStartDate();
-				Date endDate = customTimeIntervalModel.getEndDate();
+				LocalDateTime startDate = customTimeIntervalModel.getStartDate();
+				LocalDateTime endDate = customTimeIntervalModel.getEndDate();
 				if ((null != startDate) && (null != endDate)) {
 					List<String> list = new ArrayList<>();
 					list.add(TaskTimeInterval.CUSTOM_TIME_INTERVAL.getMenuSuid());

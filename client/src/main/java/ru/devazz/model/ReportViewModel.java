@@ -17,6 +17,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -192,11 +194,11 @@ public class ReportViewModel extends PresentationModel<IReportService, ReportMod
 	 * Генерация отчета
 	 */
 	public void generateReport() {
-		SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
 		try {
 			ReportModel entity = getService().createReportEntity(positionSuid,
-					formatter.parse(startDateTextProperty.get()),
-					formatter.parse(endDateTextProperty.get()));
+					LocalDateTime.parse(startDateTextProperty.get(), formatter),
+					LocalDateTime.parse(endDateTextProperty.get(), formatter));
 			if (null != entity) {
 
 				JasperPrint jasperReport = generateReportByEntity(entity);

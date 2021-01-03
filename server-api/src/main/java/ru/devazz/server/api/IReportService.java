@@ -2,6 +2,7 @@ package ru.devazz.server.api;
 
 import ru.devazz.server.api.model.ReportModel;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -19,6 +20,6 @@ public interface IReportService extends ICommonService {
 	 * @return сущность отчета
 	 * @throws Exception в случае ошибки
 	 */
-	ReportModel createReportEntity(Long aPositionSuid, Date aStartDate, Date aEndDate) throws Exception;
+	ReportModel createReportEntity(Long aPositionSuid, LocalDateTime aStartDate, LocalDateTime aEndDate) throws Exception;
 
 }

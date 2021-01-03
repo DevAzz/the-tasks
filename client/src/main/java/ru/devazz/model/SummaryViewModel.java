@@ -19,7 +19,10 @@ import ru.devazz.utils.Utils;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 /**
@@ -40,10 +43,10 @@ public class SummaryViewModel extends PresentationModel<ICommonService, IEntity>
 	private ObservableList<SubordinationElement> subElList;
 
 	/** Дата начала */
-	private Date startDate;
+	private LocalDateTime startDate;
 
 	/** Дата завершения */
-	private Date endDate;
+	private LocalDateTime endDate;
 
 	/** Сервис работы с элементами подчиненности */
 	private ISubordinationElementService subElsService;
@@ -74,7 +77,7 @@ public class SummaryViewModel extends PresentationModel<ICommonService, IEntity>
 	 * Выбирает в качестве временного интревала текущий день
 	 */
 	public void selectCurrentDayInterval() {
-		initDateLabelValue(new Date(), Utils.getInstance().getEndDateForFilterDate());
+		initDateLabelValue(LocalDateTime.now(), Utils.getInstance().getEndDateForFilterDate());
 		loadReportEntities();
 	}
 
@@ -99,9 +102,9 @@ public class SummaryViewModel extends PresentationModel<ICommonService, IEntity>
 	/**
 	 * Инициализирует значение лейбла даты сводки
 	 */
-	private void initDateLabelValue(Date aStartDate, Date aEndDate) {
-		Date startDate = aStartDate;
-		Date endDate = aEndDate;
+	private void initDateLabelValue(LocalDateTime aStartDate, LocalDateTime aEndDate) {
+		LocalDateTime startDate = aStartDate;
+		LocalDateTime endDate = aEndDate;
 		if (null == startDate) {
 			startDate = Utils.getInstance().getStartDateForFilterDate();
 		}
@@ -112,7 +115,7 @@ public class SummaryViewModel extends PresentationModel<ICommonService, IEntity>
 		if ((null != startDate) && (null != endDate)) {
 			this.startDate = startDate;
 			this.endDate = endDate;
-			SimpleDateFormat parser = new SimpleDateFormat("HH:mm dd.MM.yyyy");
+			DateTimeFormatter parser = DateTimeFormatter.ofPattern("HH:mm dd.MM.yyyy");
 			setDateLabelPropertyValue(
 					"C " + parser.format(getStartDate()) + " по " + parser.format(getEndDate()));
 		}
@@ -178,20 +181,20 @@ public class SummaryViewModel extends PresentationModel<ICommonService, IEntity>
 		loadReportEntities();
 	}
 
-	private Date getStartDate() {
+	private LocalDateTime getStartDate() {
 		return startDate;
 	}
 
-	private void setStartDate(Date startDate) {
+	private void setStartDate(LocalDateTime startDate) {
 		this.startDate = startDate;
 		initDateLabelValue(startDate, endDate);
 	}
 
-	public Date getEndDate() {
+	public LocalDateTime getEndDate() {
 		return endDate;
 	}
 
-	public void setEndDate(Date endDate) {
+	public void setEndDate(LocalDateTime endDate) {
 		this.endDate = endDate;
 		initDateLabelValue(startDate, endDate);
 	}
@@ -228,10 +231,8 @@ public class SummaryViewModel extends PresentationModel<ICommonService, IEntity>
 	 */
 	public void selectCustomDay(LocalDate aDate) {
 		if (null != aDate) {
-			Date startDate = Date
-					.from(aDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
-			Date endDate = Date
-					.from(aDate.atTime(23, 59).atZone(ZoneId.systemDefault()).toInstant());
+			LocalDateTime startDate = aDate.atStartOfDay();
+			LocalDateTime endDate = aDate.atTime(LocalTime.MAX);
 			setEndDate(endDate);
 			setStartDate(startDate);
 			loadReportEntities();

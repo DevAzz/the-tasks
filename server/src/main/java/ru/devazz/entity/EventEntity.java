@@ -5,6 +5,7 @@ import ru.devazz.server.api.model.IEntity;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -26,7 +27,7 @@ public class EventEntity implements IEntity {
 
 	/** Дата события */
 	@Column(name = "date", nullable = false, columnDefinition = "datetime")
-	private Date date;
+	private LocalDateTime date;
 
 	/** Тип события */
 	@Column(name = "event_type", nullable = false, columnDefinition = "varchar")

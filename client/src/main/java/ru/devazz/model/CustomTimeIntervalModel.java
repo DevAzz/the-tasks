@@ -4,12 +4,12 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.beans.value.ChangeListener;
 import ru.devazz.server.api.ICommonService;
 import ru.devazz.server.api.model.IEntity;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 /**
@@ -18,7 +18,7 @@ import java.util.Date;
 public class CustomTimeIntervalModel extends PresentationModel<ICommonService, IEntity> {
 
 	/** Парсер даты */
-	private static final SimpleDateFormat PARSER = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+	private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
 	/**
 	 * Свойство текста поля ввода начальной даты фильтрации по временному промежутку
@@ -83,11 +83,11 @@ public class CustomTimeIntervalModel extends PresentationModel<ICommonService, I
 	 * @return дата начала для фильтрации по заданному временному промежутку
 	 * @throws ParseException в случае ошибки парсинга
 	 */
-	Date getStartDate() throws ParseException {
-		Date result = null;
+	LocalDateTime getStartDate() throws ParseException {
+		LocalDateTime result = null;
 		String dateFrom = fromTimeIntervalProperty.get();
 		if (!dateFrom.isEmpty()) {
-			result = PARSER.parse(dateFrom);
+			result = LocalDateTime.parse(dateFrom, FORMATTER);
 		}
 		return result;
 	}
@@ -98,11 +98,11 @@ public class CustomTimeIntervalModel extends PresentationModel<ICommonService, I
 	 * @return дата конца для фильтрации по заданному временному промежутку
 	 * @throws ParseException в случае ошибки парсинга
 	 */
-	public Date getEndDate() throws ParseException {
-		Date result = null;
+	public LocalDateTime getEndDate() throws ParseException {
+		LocalDateTime result = null;
 		String dateTo = toTimeIntervalProperty.get();
 		if (!dateTo.isEmpty()) {
-			result = PARSER.parse(dateTo);
+			result = LocalDateTime.parse(dateTo, FORMATTER);
 		}
 		return result;
 	}

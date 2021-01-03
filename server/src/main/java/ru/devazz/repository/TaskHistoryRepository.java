@@ -12,7 +12,9 @@ import ru.devazz.utils.Utils;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.*;
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map.Entry;
@@ -130,8 +132,8 @@ public class TaskHistoryRepository extends AbstractRepository<TaskHistoryEntity>
 		for (Entry<FilterType, List<String>> entry : aFilter.getFilterTypeMap().entrySet()) {
 			switch (entry.getKey()) {
 			case FILTER_BY_DATE:
-				Date startDate = null;
-				Date endDate = null;
+				LocalDateTime startDate;
+				LocalDateTime endDate;
 				for (String filterKey : entry.getValue()) {
 					TaskTimeInterval interval = TaskTimeInterval.getTimeIntervalBySuid(filterKey);
 					if (null != interval) {
@@ -143,36 +145,36 @@ public class TaskHistoryRepository extends AbstractRepository<TaskHistoryEntity>
 							endDate = aFilter.getEndDate();
 							listPredicateDate.add(builder.and(
 									builder.greaterThanOrEqualTo(
-											aRoot.<Date>get(TaskHistoryEntity_.date), startDate),
+											aRoot.get(TaskHistoryEntity_.date), startDate),
 									builder.lessThanOrEqualTo(
-											aRoot.<Date>get(TaskHistoryEntity_.date), endDate)));
+											aRoot.get(TaskHistoryEntity_.date), endDate)));
 							break;
 						case DAY:
 							startDate = Utils.getInstance().getStartDateForFilterDate();
 							endDate = Utils.getInstance().getEndDateForFilterDate();
 							listPredicateDate.add(builder.and(
 									builder.greaterThanOrEqualTo(
-											aRoot.<Date>get(TaskHistoryEntity_.date), startDate),
+											aRoot.get(TaskHistoryEntity_.date), startDate),
 									builder.lessThanOrEqualTo(
-											aRoot.<Date>get(TaskHistoryEntity_.date), endDate)));
+											aRoot.get(TaskHistoryEntity_.date), endDate)));
 							break;
 						case MONTH:
 							startDate = Utils.getInstance().getStartDateForFilterMonth();
 							endDate = Utils.getInstance().getEndDateForFilterMonth();
 							listPredicateDate.add(builder.and(
 									builder.greaterThanOrEqualTo(
-											aRoot.<Date>get(TaskHistoryEntity_.date), startDate),
+											aRoot.get(TaskHistoryEntity_.date), startDate),
 									builder.lessThanOrEqualTo(
-											aRoot.<Date>get(TaskHistoryEntity_.date), endDate)));
+											aRoot.get(TaskHistoryEntity_.date), endDate)));
 							break;
 						case WEEK:
 							startDate = Utils.getInstance().getStartDateForFilterWeek();
 							endDate = Utils.getInstance().getEndDateForFilterWeek();
 							listPredicateDate.add(builder.and(
 									builder.greaterThanOrEqualTo(
-											aRoot.<Date>get(TaskHistoryEntity_.date), startDate),
+											aRoot.get(TaskHistoryEntity_.date), startDate),
 									builder.lessThanOrEqualTo(
-											aRoot.<Date>get(TaskHistoryEntity_.date), endDate)));
+											aRoot.get(TaskHistoryEntity_.date), endDate)));
 							break;
 						}
 					}
@@ -263,36 +265,36 @@ public class TaskHistoryRepository extends AbstractRepository<TaskHistoryEntity>
 	private void sortListHistoryEntries(Filter aFilter, List<TaskHistoryEntity> list) {
 		if (null != aFilter.getSortType()) {
 			switch (aFilter.getSortType()) {
-			case SORT_BY_DATE_FIRST_NEW:
-				list.sort((o1, o2) -> {
-					int sort = 0;
-					Date o1Date = o1.getDate();
-					Date o2Date = o2.getDate();
-					if (o1Date.getTime() == o2Date.getTime()) {
-						sort = 0;
-					} else if (o1Date.getTime() < o2Date.getTime()) {
-						sort = 1;
-					} else {
-						sort = -1;
-					}
-					return sort;
-				});
-				break;
-			case SORT_BY_DATE_FIRST_OLD:
-				list.sort((o1, o2) -> {
-					int sort = 0;
-					Date o1Date = o1.getDate();
-					Date o2Date = o2.getDate();
-					if (o1Date.getTime() == o2Date.getTime()) {
-						sort = 0;
-					} else if (o1Date.getTime() > o2Date.getTime()) {
-						sort = 1;
-					} else {
-						sort = -1;
-					}
-					return sort;
-				});
-				break;
+				case SORT_BY_DATE_FIRST_NEW:
+					list.sort((o1, o2) -> {
+						int sort = 0;
+						LocalDateTime o1Date = o1.getDate();
+						LocalDateTime o2Date = o2.getDate();
+						if (o1Date.equals(o2Date)) {
+							sort = 0;
+						} else if (o1Date.isBefore(o2Date)) {
+							sort = 1;
+						} else {
+							sort = -1;
+						}
+						return sort;
+					});
+					break;
+				case SORT_BY_DATE_FIRST_OLD:
+					list.sort((o1, o2) -> {
+						int sort = 0;
+						LocalDateTime o1Date = o1.getDate();
+						LocalDateTime o2Date = o2.getDate();
+						if (o1Date.equals(o2Date)) {
+							sort = 0;
+						} else if (o1Date.isAfter(o2Date)) {
+							sort = 1;
+						} else {
+							sort = -1;
+						}
+						return sort;
+					});
+					break;
 			default:
 				break;
 			}

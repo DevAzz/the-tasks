@@ -17,6 +17,7 @@ import ru.devazz.utils.dialogs.DialogUtils;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -99,7 +100,7 @@ public class EventJournalView extends AbstractView<EventJournalModel> {
 		nameColumn.setCellValueFactory(new PropertyValueFactory<Event, String>("name"));
 		dateColumn.setCellValueFactory(event -> {
 			SimpleStringProperty property = new SimpleStringProperty();
-			DateFormat dateFormat = new SimpleDateFormat("hh:mm dd/MM/yyyy");
+			DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("hh:mm dd/MM/yyyy");
 			property.setValue(dateFormat.format(event.getValue().getDate()));
 			return property;
 		});

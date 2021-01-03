@@ -113,7 +113,7 @@ public class CurrentTaskViewModel extends PresentationModel<ITaskService, TaskMo
 	private CycleTaskViewModel cycleModel;
 
 	/** Удаленные задачи */
-	private List<Task> deletedTasks = new ArrayList<>();
+	private final List<Task> deletedTasks = new ArrayList<>();
 
 	/**
 	 * Перечисление цветов индикатора прогресса
@@ -205,8 +205,7 @@ public class CurrentTaskViewModel extends PresentationModel<ITaskService, TaskMo
 								(null == newValue) || (null == getEndDateProperty().get())
 										|| (title.isEmpty()) || (exec.isEmpty()));
 						if (null != newValue) {
-							task.setStartDateTime(
-									Date.from(newValue.atZone(ZoneId.systemDefault()).toInstant()));
+							task.setStartDateTime(newValue);
 						}
 						Thread changeDetectThread = new Thread(new ChangeExistCheckRunnable());
 						changeDetectThread.setDaemon(true);
@@ -225,8 +224,7 @@ public class CurrentTaskViewModel extends PresentationModel<ITaskService, TaskMo
 								(null == newValue) || (null == getStartDateProperty().get())
 										|| (title.isEmpty()) || (exec.isEmpty()));
 						if (null != newValue) {
-							task.setEndDateTime(
-									Date.from(newValue.atZone(ZoneId.systemDefault()).toInstant()));
+							task.setEndDateTime(newValue);
 						}
 						Thread changeDetectThread = new Thread(new ChangeExistCheckRunnable());
 						changeDetectThread.setDaemon(true);
@@ -332,45 +330,43 @@ public class CurrentTaskViewModel extends PresentationModel<ITaskService, TaskMo
 	public void initTaskModel(Task initTask) {
 		if (initTask != null) {
 			TaskModel model = service.get(initTask.getSuid());
-			if (model != null) {
-				setTask(EntityConverter.getInstatnce().convertTaskModelToClientWrapTask(model));
-				SubordinationElement currentUserSubEl;
-				currentUserSubEl = Utils.getInstance().getCurrentUserSubEl();
+			setTask(Optional.ofNullable(model)
+					.map(modelValue -> EntityConverter.getInstatnce().convertTaskModelToClientWrapTask(modelValue))
+					.orElse(initTask));
 
-				String title = (null != task.getName()) ? task.getName() : "";
-				String note = (null != task.getNote()) ? task.getNote() : "";
-				String desc = (null != task.getDescription()) ? task.getDescription() : "";
-				String status = (null != task.getStatus()) ? task.getStatus().getName()
-						: "Не установлен";
-				String priority = (null != task.getPriority()) ? task.getPriority().getMenuSuid()
-						: "Не установлен";
-				double percent = (null != task.getExecPercent()) ? task.getExecPercent() : 0;
-				Date startDate = task.getStartDateTime();
-				Date endDate = task.getEndDateTime();
-				String executor = (null != task.getExecutor()) ? task.getExecutor().getName() : "";
-				String author = (null != task.getAuthor()) ? task.getAuthor().getName()
-						: ((null != currentUserSubEl) && getCreateFlagValue())
-						? currentUserSubEl.getName()
-						: "";
-				String path = (null != task.getDocument()) ? task.getDocumentName() : "";
+			SubordinationElement currentUserSubEl;
+			currentUserSubEl = Utils.getInstance().getCurrentUserSubEl();
 
-				getTitleLabelProperty().set(title);
-				getNoteLabelProperty().set(note);
-				getDesciprtionLabelProperty().set(desc);
-				getStatusLabelProperty().set(status);
-				getPriorityLabelProperty().set(priority);
-				getProgressProperty().set(percent);
-				if ((null != startDate) && (null != endDate)) {
-					getStartDateProperty().set(
-							LocalDateTime.ofInstant(startDate.toInstant(), ZoneId.systemDefault()));
-					getEndDateProperty()
-							.set(LocalDateTime
-										 .ofInstant(endDate.toInstant(), ZoneId.systemDefault()));
-				}
-				getExecutorStringProperty().set(executor);
-				setDocumentStringPropertyValue(path);
-				setAuthorTextValue(author);
-			}
+			String title = (null != task.getName()) ? task.getName() : "";
+			String note = (null != task.getNote()) ? task.getNote() : "";
+			String desc = (null != task.getDescription()) ? task.getDescription() : "";
+			String status = (null != task.getStatus()) ? task.getStatus().getName()
+					: "Не установлен";
+			String priority = (null != task.getPriority()) ? task.getPriority().getMenuSuid()
+					: "Не установлен";
+			double percent = (null != task.getExecPercent()) ? task.getExecPercent() : 0;
+			LocalDateTime startDate = task.getStartDateTime();
+			LocalDateTime endDate = task.getEndDateTime();
+			String executor = (null != task.getExecutor()) ? task.getExecutor().getName() : "";
+			String author = (null != task.getAuthor()) ? task.getAuthor().getName()
+					: ((null != currentUserSubEl) && getCreateFlagValue())
+					? currentUserSubEl.getName()
+					: "";
+			String path = (null != task.getDocument()) ? task.getDocumentName() : "";
+
+			getTitleLabelProperty().set(title);
+			getNoteLabelProperty().set(note);
+			getDesciprtionLabelProperty().set(desc);
+			getStatusLabelProperty().set(status);
+			getPriorityLabelProperty().set(priority);
+			getProgressProperty().set(percent);
+
+			getStartDateProperty().set(Optional.ofNullable(startDate).orElse(LocalDateTime.now()));
+			getEndDateProperty().set(Optional.ofNullable(endDate).orElse(LocalDateTime.now()));
+
+			getExecutorStringProperty().set(executor);
+			setDocumentStringPropertyValue(path);
+			setAuthorTextValue(author);
 		}
 	}
 
@@ -722,14 +718,14 @@ public class CurrentTaskViewModel extends PresentationModel<ITaskService, TaskMo
 				Thread thread = new Thread(() -> {
 					try {
 						Thread.sleep(1000L);
-						long startDate = task.getStartDateTime().getTime();
-						long endDate = task.getEndDateTime().getTime();
+						long startDate = task.getStartDateTime().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+						long endDate = task.getEndDateTime().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
 						boolean exitCondition = new Date().getTime() <= (endDate - 10L);
 						double diskret = ((endDate - startDate) / 10000);
 						double sleepTime = diskret - 5;
 						while (exitCondition) {
-							startDate = task.getStartDateTime().getTime();
-							endDate = task.getEndDateTime().getTime();
+							startDate = task.getStartDateTime().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+							endDate = task.getEndDateTime().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
 							double diskretNumber = (new Date().getTime() - startDate) / diskret;
 							double result = 1 - (diskretNumber * 0.0001);
 							progressProperty.set(Math.max(result, 0.01));
@@ -850,12 +846,12 @@ public class CurrentTaskViewModel extends PresentationModel<ITaskService, TaskMo
 		String result = "Осталось времени: ";
 		try {
 			TaskStatus status = task.getStatus();
-			if (new Date().getTime() < task.getStartDateTime().getTime()) {
+			if (new Date().getTime() < task.getStartDateTime().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()) {
 				result = "Задача еще не началась";
 			} else {
 				if (!(TaskStatus.CLOSED.equals(status) || TaskStatus.FAILD.equals(status)
 						|| TaskStatus.DONE.equals(status) || TaskStatus.OVERDUE.equals(status))) {
-					long endDate = task.getEndDate().getTime();
+					long endDate = task.getEndDate().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
 					int secInt = (int) ((endDate - new Date().getTime()) / 1000);
 					int minInt = secInt / 60;
 					int hoursInt = minInt / 60;
@@ -911,8 +907,8 @@ public class CurrentTaskViewModel extends PresentationModel<ITaskService, TaskMo
 			task.setType(TaskType.DEFAULT);
 
 			parser.applyPattern("dd.MM.yyyy hh:mm");
-			task.setStartDateTime(calendarDefaultStartDate.getTime());
-			task.setEndDateTime(calendarDefaultEndDate.getTime());
+			task.setStartDateTime(new java.sql.Timestamp(calendarDefaultStartDate.getTime().getTime()).toLocalDateTime());
+			task.setEndDateTime(new java.sql.Timestamp(calendarDefaultEndDate.getTime().getTime()).toLocalDateTime());
 		}
 	}
 

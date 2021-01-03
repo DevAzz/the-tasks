@@ -35,6 +35,7 @@ import ru.devazz.utils.dialogs.DialogUtils;
 
 import java.awt.*;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -1331,7 +1332,7 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 	@FXML
 	private void showCreateTaskView() {
 		Task task = new Task(0L, "", "", "Описание", null, TaskPriority.CRITICAL, (double) 0,
-							 null, null);
+				LocalDateTime.now(), LocalDateTime.now());
 		try {
 			showCurrentTaskView(task, true);
 		} catch (Exception e) {

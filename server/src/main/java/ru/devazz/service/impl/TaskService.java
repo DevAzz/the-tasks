@@ -19,6 +19,8 @@ import ru.devazz.service.impl.converters.DefaultTaskConverter;
 import ru.devazz.service.impl.converters.TaskEntityConverter;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
@@ -105,7 +107,7 @@ public class TaskService extends AbstractEntityService<TaskModel, TaskEntity>
         //	@formatter:off
         TaskHistoryModel historyEntity = TaskHistoryModel.builder()
                 .taskSuid(aEntity.getSuid())
-                .date(new Date())
+                .date(LocalDateTime.now())
                 .build();
         //	@formatter:on
 
@@ -218,7 +220,7 @@ public class TaskService extends AbstractEntityService<TaskModel, TaskEntity>
             System.out.println();
             System.out.println(aType.getName() + " " + suid);
             System.out.println();
-            entity.setDate(new Date());
+            entity.setDate(LocalDateTime.now());
             entity.setEventType(aType.getName());
             entity.setSuid(suid);
 
@@ -226,7 +228,7 @@ public class TaskService extends AbstractEntityService<TaskModel, TaskEntity>
             entity.setExecutorSuid(executer.getSuid());
             entity.setTaskSuid(aEntity.getSuid());
 
-            SimpleDateFormat formatter = new SimpleDateFormat("HH:mm dd.MM.yyyy");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm dd.MM.yyyy");
             String nameEntity = new String(Base64.getDecoder().decode(aEntity.getName()));
 
             switch (aType) {
@@ -243,21 +245,21 @@ public class TaskService extends AbstractEntityService<TaskModel, TaskEntity>
                     entity.setName(new String(Base64.getEncoder().encode(("Удалена задача \""
                                                                           + nameEntity + "\"" +
                                                                           ". " + formatter
-                                                                                  .format(new Date()))
+                                                                                  .format(LocalDateTime.now()))
                                                                                  .getBytes())));
                     break;
                 case UPDATE:
                     entity.setName(new String(Base64.getEncoder().encode(("Обновлена задача \""
                                                                           + nameEntity + "\"" +
                                                                           ". " + formatter
-                                                                                  .format(new Date()))
+                                                                                  .format(LocalDateTime.now()))
                                                                                  .getBytes())));
                     break;
                 case DONE:
                     entity.setName(new String(Base64.getEncoder().encode(("Завершена задача \""
                                                                           + nameEntity + "\"" +
                                                                           ". " + formatter
-                                                                                  .format(new Date()))
+                                                                                  .format(LocalDateTime.now()))
                                                                                  .getBytes())));
                     break;
                 case REWORK:
@@ -265,27 +267,27 @@ public class TaskService extends AbstractEntityService<TaskModel, TaskEntity>
                             new String(Base64.getEncoder()
                                                .encode(("Задача \"" + nameEntity + "\""
                                                         + " отправлена на доработку. "
-                                                        + formatter.format(new Date()))
+                                                        + formatter.format(LocalDateTime.now()))
                                                                .getBytes())));
                     break;
                 case FAIL:
                     entity.setName(new String(Base64.getEncoder().encode(("Задача \"" + nameEntity
                                                                           + "\"" + " отклонена. " +
                                                                           formatter
-                                                                                  .format(new Date()))
+                                                                                  .format(LocalDateTime.now()))
                                                                                  .getBytes())));
                     break;
                 case CLOSED:
                     entity.setName(new String(Base64.getEncoder().encode(("Задача \"" + nameEntity
                                                                           + "\"" + " принята. " +
                                                                           formatter
-                                                                                  .format(new Date()))
+                                                                                  .format(LocalDateTime.now()))
                                                                                  .getBytes())));
                 case OVERDUE:
                     entity.setName(new String(Base64.getEncoder().encode(("Задача \"" + nameEntity
                                                                           + "\"" + " просрочена. " +
                                                                           formatter
-                                                                                  .format(new Date()))
+                                                                                  .format(LocalDateTime.now()))
                                                                                  .getBytes())));
                 case TASK_REMAPPING:
                     entity.setName(
@@ -293,7 +295,7 @@ public class TaskService extends AbstractEntityService<TaskModel, TaskEntity>
                                     Base64.getEncoder()
                                             .encode(("Задача \"" + nameEntity + "\""
                                                      + " переназначена. " +
-                                                     formatter.format(new Date()))
+                                                     formatter.format(LocalDateTime.now()))
                                                             .getBytes())));
                 default:
                     break;

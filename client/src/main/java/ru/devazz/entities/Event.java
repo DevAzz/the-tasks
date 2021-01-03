@@ -2,6 +2,7 @@ package ru.devazz.entities;
 
 import ru.devazz.utils.EventType;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -19,7 +20,7 @@ public class Event {
 	private String name;
 
 	/** Дата события */
-	private Date date;
+	private LocalDateTime date;
 
 	/** Тип события для фильтра по типу события */
 	private EventType eventType;
@@ -43,7 +44,7 @@ public class Event {
 	 * @param name наименование события
 	 * @param aDate дата
 	 */
-	public Event(Long aSuid, String name, Date aDate, Long aTaskSuid, EventType aEventType,
+	public Event(Long aSuid, String name, LocalDateTime aDate, Long aTaskSuid, EventType aEventType,
 			SubordinationElement aAuthor, SubordinationElement aExecutor) {
 		super();
 		this.suid = aSuid;
@@ -96,7 +97,7 @@ public class Event {
 	 *
 	 * @return the {@link#date}
 	 */
-	public Date getDate() {
+	public LocalDateTime getDate() {
 		return date;
 	}
 
@@ -105,7 +106,7 @@ public class Event {
 	 *
 	 * @param {@link#date}
 	 */
-	public void setDate(Date date) {
+	public void setDate(LocalDateTime date) {
 		this.date = date;
 	}
 
@@ -274,7 +275,7 @@ public class Event {
 			return this;
 		}
 
-		public EventBuilder addDate(Date aDate) {
+		public EventBuilder addDate(LocalDateTime aDate) {
 			event.setDate(aDate);
 			return this;
 		}

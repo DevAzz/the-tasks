@@ -57,8 +57,7 @@ public class DecisionDialogViewModel extends PresentationModel<ITaskService, Tas
 		endDateProperty
 				.addListener((observable, oldValue, newValue) -> {
 					if (null != newValue) {
-						task.setEndDateTime(
-								Date.from(newValue.atZone(ZoneId.systemDefault()).toInstant()));
+						task.setEndDateTime(newValue);
 					}
 				});
 	}
@@ -115,14 +114,13 @@ public class DecisionDialogViewModel extends PresentationModel<ITaskService, Tas
 
 			String name = (null != task.getName()) ? task.getName() : "";
 			String note = (null != task.getNote()) ? task.getNote() : "";
-			Date endDate = task.getEndDateTime();
+			LocalDateTime endDate = task.getEndDateTime();
 			String path = (null != task.getDocument()) ? task.getDocumentName() : "";
 
 			setNameLabelValue(name);
 			setNoteLabelValue(note);
 			if (null != endDate) {
-				setEndDateValue(
-						LocalDateTime.ofInstant(endDate.toInstant(), ZoneId.systemDefault()));
+				setEndDateValue(endDate);
 			}
 			setDocumentStringPropertyValue(path);
 		}
@@ -134,7 +132,7 @@ public class DecisionDialogViewModel extends PresentationModel<ITaskService, Tas
 	 * @return представление даты завершения задачи
 	 */
 	public LocalDateTime getTaskEndLocalDateTime() {
-		return LocalDateTime.ofInstant(task.getEndDateTime().toInstant(), ZoneId.systemDefault());
+		return task.getEndDateTime();
 	}
 
 	/**

@@ -88,7 +88,7 @@ public class EntityConverter {
 					.addDescription(description)
 					.addStatus(aEntity.getStatus())
 					.addTaskPriority(aEntity.getPriority())
-					.addProgress(computeProgress(aEntity.getStartDate(), aEntity.getEndDate()))
+					.addProgress(computeProgress(java.sql.Timestamp.valueOf(aEntity.getStartDate()), java.sql.Timestamp.valueOf(aEntity.getEndDate())))
 					.addStartDateTime(aEntity.getStartDate())
 					.addEndDateTime(aEntity.getEndDate())
 					.addExecutor(EntityConverter.getInstatnce().convertSubElEntityToClientWrap(entity))

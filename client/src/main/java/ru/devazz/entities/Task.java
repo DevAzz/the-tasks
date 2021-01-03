@@ -10,6 +10,7 @@ import ru.devazz.utils.Utils;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.text.ParseException;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -39,10 +40,10 @@ public class Task implements SelectableObject {
 	private Double execPercent;
 
 	/** Дата начала */
-	private Date startDateTime;
+	private LocalDateTime startDateTime;
 
 	/** Дата завершения */
-	private Date endDateTime;
+	private LocalDateTime endDateTime;
 
 	/** Исполнитель */
 	private SubordinationElement executor;
@@ -72,7 +73,7 @@ public class Task implements SelectableObject {
 	 * @param status Статус задачи
 	 */
 	public Task(Long aSuid, String name, String note, String aDescription, TaskStatus status,
-				TaskPriority aPriority, Double aPercent, Date startDateTime, Date endDateTime) {
+				TaskPriority aPriority, Double aPercent, LocalDateTime startDateTime, LocalDateTime endDateTime) {
 		super();
 		this.name = name;
 		this.note = note;
@@ -156,7 +157,7 @@ public class Task implements SelectableObject {
 			return this;
 		}
 
-		public TaskBuilder addStartDateTime(Date aDate) {
+		public TaskBuilder addStartDateTime(LocalDateTime aDate) {
 			task.setStartDateTime(aDate);
 			return this;
 		}
@@ -203,7 +204,7 @@ public class Task implements SelectableObject {
 			return this;
 		}
 
-		public TaskBuilder addEndDateTime(Date aDate) {
+		public TaskBuilder addEndDateTime(LocalDateTime aDate) {
 			task.setEndDateTime(aDate);
 			return this;
 		}
@@ -359,7 +360,7 @@ public class Task implements SelectableObject {
 	 *
 	 * @return the {@link#startDateTime}
 	 */
-	public Date getStartDateTime() {
+	public LocalDateTime getStartDateTime() {
 		return startDateTime;
 	}
 
@@ -368,7 +369,7 @@ public class Task implements SelectableObject {
 	 *
 	 * @param startDateTime значение поля
 	 */
-	public void setStartDateTime(Date startDateTime) {
+	public void setStartDateTime(LocalDateTime startDateTime) {
 		this.startDateTime = startDateTime;
 	}
 
@@ -377,7 +378,7 @@ public class Task implements SelectableObject {
 	 *
 	 * @return the {@link#endDateTime}
 	 */
-	public Date getEndDateTime() {
+	public LocalDateTime getEndDateTime() {
 		return endDateTime;
 	}
 
@@ -386,7 +387,7 @@ public class Task implements SelectableObject {
 	 *
 	 * @param endDateTime значение поля
 	 */
-	public void setEndDateTime(Date endDateTime) {
+	public void setEndDateTime(LocalDateTime endDateTime) {
 		this.endDateTime = endDateTime;
 	}
 
@@ -414,7 +415,7 @@ public class Task implements SelectableObject {
 	 * @return дата начала
 	 * @throws ParseException в случае ошибки парсинга
 	 */
-	public Date getStartedDate() throws ParseException {
+	public LocalDateTime getStartedDate() throws ParseException {
 		return startDateTime;
 	}
 
@@ -424,7 +425,7 @@ public class Task implements SelectableObject {
 	 * @return дата начала
 	 * @throws ParseException в случае ошибки парсинга
 	 */
-	public Date getEndDate() throws ParseException {
+	public LocalDateTime getEndDate() throws ParseException {
 		return endDateTime;
 	}
 

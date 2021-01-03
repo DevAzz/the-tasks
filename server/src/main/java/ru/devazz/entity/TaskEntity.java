@@ -12,6 +12,7 @@ import ru.devazz.server.api.model.enums.TaskType;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -54,11 +55,11 @@ public class TaskEntity implements IEntity {
 
 	/** Дата начала */
 	@Column(name = "start_date", nullable = false, unique = true, columnDefinition = "datetime")
-	private Date startDate;
+	private LocalDateTime startDate;
 
 	/** Дата конца */
 	@Column(name = "end_date", nullable = false, unique = true, columnDefinition = "datetime")
-	private Date endDate;
+	private LocalDateTime endDate;
 
 	/** идентификатор должностного лица (автор задачи) */
 	@Column(name = "author_id")
