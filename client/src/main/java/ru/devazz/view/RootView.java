@@ -517,8 +517,8 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 	public void showEventJournalView() throws Exception {
 		boolean menuSelected = eventJournalViewMenuItem.isSelected();
 		if (menuSelected) {
+			eventJournalView = getEventJournalView();
 			if (!commonCentralTabPane.getTabs().contains(eventJournalView.getTab())) {
-				eventJournalView = getEventJournalView();
 				eventJournalView.setStage(getStage());
 				eventJournalView.addCloseListener(() -> eventJournalViewMenuItem.setSelected(false));
 				commonCentralTabPane.getTabs().add(eventJournalView.getTab());
@@ -645,7 +645,7 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 
 					subTreeView.setCreateTaskHandler(event -> {
 						Task task = new Task(0L, "", "", "Описание", null, TaskPriority.CRITICAL,
-											 (double) 0, null, null);
+											 (double) 0, LocalDateTime.now(), LocalDateTime.now());
 						task.setExecutor(subInfoView.getModel().getSelectionSub());
 						try {
 							showCurrentTaskView(task, true);
@@ -726,9 +726,7 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 	public void showSubInfo() throws Exception {
 		boolean menuSelected = subInfoMenuItem.isSelected();
 		if (menuSelected) {
-			if (null == subInfoView) {
-				subInfoView = getSubInfoView();
-			}
+			subInfoView = getSubInfoView();
 			SplitPane sPane = (SplitPane) rightSplitPane.getItems().get(1);
 			AnchorPane pane = (AnchorPane) sPane.getItems().get(0);
 			if (null != pane) {
@@ -1487,72 +1485,42 @@ public class RootView extends AbstractView<RootViewPresentationModel> {
 	}
 
 	private SubordinationTreeView getSubTreeView() throws IOException {
-		if (subTreeView == null) {
-			subTreeView = Utils.getInstance().loadView(SubordinationTreeView.class);
-		}
-		return subTreeView;
+		return Utils.getInstance().loadView(SubordinationTreeView.class);
 	}
 
 	private EventIndicatorView getEventIndicatorView() throws IOException {
-		if (eventIndicatorView == null) {
-			eventIndicatorView = Utils.getInstance().loadView(EventIndicatorView.class);
-		}
-		return eventIndicatorView;
+		return Utils.getInstance().loadView(EventIndicatorView.class);
 	}
 
 	private SubInfoView getSubInfoView() throws IOException {
-		if (subInfoView == null) {
-			subInfoView = Utils.getInstance().loadView(SubInfoView.class);
-		}
-		return subInfoView;
+		return Utils.getInstance().loadView(SubInfoView.class);
 	}
 
 	private PositionBookView getPositionBookView() throws IOException {
-		if (positionBookView == null) {
-			positionBookView = Utils.getInstance().loadView(PositionBookView.class);
-		}
-		return positionBookView;
+		return Utils.getInstance().loadView(PositionBookView.class);
 	}
 
 	private ExtendedSearchView getExtendedSearchView() throws IOException {
-		if (extendedSearchView == null) {
-			extendedSearchView = Utils.getInstance().loadView(ExtendedSearchView.class);
-		}
-		return extendedSearchView;
+		return Utils.getInstance().loadView(ExtendedSearchView.class);
 	}
 
 	private EventJournalView getEventJournalView() throws IOException {
-		if (eventJournalView == null) {
-			eventJournalView = Utils.getInstance().loadView(EventJournalView.class);
-		}
-		return eventJournalView;
+		return Utils.getInstance().loadView(EventJournalView.class);
 	}
 
 	private WorkbenchView getWorkbenchView() throws IOException {
-		if (workbenchView == null) {
-			workbenchView = Utils.getInstance().loadView(WorkbenchView.class);
-		}
-		return workbenchView;
+		return Utils.getInstance().loadView(WorkbenchView.class);
 	}
 
 	private ReportView getReportView() throws IOException {
-		if (reportView == null) {
-			reportView = Utils.getInstance().loadView(ReportView.class);
-		}
-		return reportView;
+		return Utils.getInstance().loadView(ReportView.class);
 	}
 
 	private SummaryView getSummaryView() throws IOException {
-		if (summaryView == null) {
-			summaryView = Utils.getInstance().loadView(SummaryView.class);
-		}
-		return summaryView;
+		return Utils.getInstance().loadView(SummaryView.class);
 	}
 
 	private LegendOfIconsView getLegendView() throws IOException {
-		if (legendView == null) {
-			legendView = Utils.getInstance().loadView(LegendOfIconsView.class);
-		}
-		return legendView;
+		return Utils.getInstance().loadView(LegendOfIconsView.class);
 	}
 }

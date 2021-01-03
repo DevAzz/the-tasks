@@ -157,21 +157,10 @@ public abstract class AbstractView<T extends PresentationModel<? extends ICommon
 	}
 
 	/**
-	 * Закрывает вкладку
-	 */
-	private void closeTab() {
-		TabPane tabPane = getTabPane();
-		if (null != tabPane) {
-			tabPane.getTabs().remove(getTab());
-		}
-	}
-
-	/**
 	 * Закрывает вкладочное представление
 	 */
 	@FXML
 	protected void closeTabView() {
-//		closeTab();
 		model.setOpenFlagValue(false);
 		fireClose();
 	}
