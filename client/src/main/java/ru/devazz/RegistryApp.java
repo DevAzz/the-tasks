@@ -4,17 +4,18 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.jms.annotation.EnableJms;
 import ru.devazz.utils.Utils;
 import ru.devazz.view.RegistryView;
 
 /**
  * Приложение регистрации пользователей
  */
-public class RegistryApp extends Application {
+@SpringBootApplication
+@EnableJms
+public class RegistryApp extends AbstractJavaFxApplicationSupport {
 
-	/**
-	 * @see javafx.application.Application#start(javafx.stage.Stage)
-	 */
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		RegistryView view = Utils.getInstance().loadView(RegistryView.class);
@@ -32,6 +33,6 @@ public class RegistryApp extends Application {
 	 * @throws Exception в случае если не введены параметры
 	 */
 	public static void main(String[] args) throws Exception {
-		launch(args);
+		launchApp(RegistryApp.class, args);
 	}
 }

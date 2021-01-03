@@ -28,7 +28,7 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 
     protected static void launchApp(Class<? extends AbstractJavaFxApplicationSupport> appClass, String[] args)
             throws Exception {
-        if (4 <= args.length) {
+        if (3 <= args.length) {
             AbstractJavaFxApplicationSupport.savedArgs = args;
 
             StringBuilder builder = new StringBuilder(args[0]);
@@ -43,13 +43,7 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
             String password = builder.substring(builder.lastIndexOf("=") + 1);
             Utils.getInstance().setServerConnectionPassword(password);
 
-            builder = new StringBuilder(args[3]);
-            String registration = builder.substring(builder.lastIndexOf("=") + 1);
-            if (Boolean.parseBoolean(registration)) {
-                RegistryApp.main(null);
-            } else {
-                Application.launch(appClass, args);
-            }
+            Application.launch(appClass, args);
         } else {
             throw new Exception("Некорректные параметры запуска приложения");
         }

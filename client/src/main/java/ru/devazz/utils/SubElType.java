@@ -5,9 +5,9 @@ package ru.devazz.utils;
  */
 public enum SubElType {
 
-	HEAD("НАЧ. ОРГ.", 1L, -1L),
+	HEAD("Начальник", 1L, -1L),
 
-	SUB_HEAD("ЗАМ. НАЧ. ОРГ", 3L, 2L);
+	SUB_HEAD("Подчиненный", 3L, 2L);
 
 	/** Наименование элемента подчиненности */
 	private String name;
@@ -18,13 +18,7 @@ public enum SubElType {
 	/** Идентификатор подчинения (родительского элемента) */
 	private Long pricipalSuid;
 
-	/**
-	 * Конструктор
-	 *
-	 * @param name
-	 * @param pricipalSuid
-	 */
-	private SubElType(String name, Long aSubElSuid, Long pricipalSuid) {
+	SubElType(String name, Long aSubElSuid, Long pricipalSuid) {
 		this.name = name;
 		this.subElSuid = aSubElSuid;
 		this.pricipalSuid = pricipalSuid;
@@ -39,20 +33,7 @@ public enum SubElType {
 		return name;
 	}
 
-	/**
-	 * Возвращает {@link#pricipalSuid}
-	 *
-	 * @return the {@link#pricipalSuid}
-	 */
-	public Long getPricipalSuid() {
-		return pricipalSuid;
-	}
 
-	/**
-	 * Возвращает {@link#subElSuid}
-	 *
-	 * @return the {@link#subElSuid}
-	 */
 	public Long getSubElSuid() {
 		return subElSuid;
 	}

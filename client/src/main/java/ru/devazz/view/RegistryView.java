@@ -32,6 +32,7 @@ import java.awt.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.security.NoSuchAlgorithmException;
+import java.util.Optional;
 
 /**
  * Регистрация пользователей
@@ -199,19 +200,13 @@ public class RegistryView extends AbstractView<RegistryModel> {
 		subEls = FXCollections.observableArrayList();
 		subEls.addAll(SubElType.values());
 		subElBox.setItems(subEls);
-		subElBox.setConverter(new StringConverter<SubElType>() {
+		subElBox.setConverter(new StringConverter<>() {
 
-			/**
-			 * @see javafx.util.StringConverter#toString(Object)
-			 */
 			@Override
 			public String toString(SubElType object) {
-				return object.getName();
+				return Optional.ofNullable(object).map(SubElType::getName).orElse(null);
 			}
 
-			/**
-			 * @see javafx.util.StringConverter#fromString(String)
-			 */
 			@Override
 			public SubElType fromString(String string) {
 				return null;
@@ -249,7 +244,7 @@ public class RegistryView extends AbstractView<RegistryModel> {
 			rootPane.getChildren().addAll(loadAnimation.getCircles());
 			loadAnimation.start();
 
-			loadFlag.addListener((ChangeListener<Boolean>) (observable, oldValue, newValue) -> {
+			loadFlag.addListener((observable, oldValue, newValue) -> {
 				if (newValue) {
 					loadAnimation.stop();
 					Platform.runLater(
@@ -415,14 +410,12 @@ public class RegistryView extends AbstractView<RegistryModel> {
 			AnchorPane internalPane = new AnchorPane();
 			ComboBox<SubElType> comboBox = new ComboBox<>();
 			comboBox.setItems(subEls);
-			comboBox.setConverter(new StringConverter<SubElType>() {
+			comboBox.setConverter(new StringConverter<>() {
 
-				/**
-				 * @see javafx.util.StringConverter#toString(Object)
-				 */
+
 				@Override
 				public String toString(SubElType object) {
-					return object.getName();
+					return Optional.ofNullable(object).map(SubElType::getName).orElse(null);
 				}
 
 				/**
